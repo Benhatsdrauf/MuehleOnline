@@ -17,6 +17,6 @@ class Game extends Model
 
     public function game_to_moves()
     {
-        $this->hasMany(GameToMove::class, "game_id", "id");
+        return $this->hasMany(GameToMove::class, "game_id", "id");
     }
 }

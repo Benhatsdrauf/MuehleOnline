@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class shadow extends Model
+class Shadow extends Model
 {
     protected $table = "shadow";
 
@@ -17,6 +17,6 @@ class shadow extends Model
 
     public function user()
     {
-        $this->hasOne(Users::class, "shadow_id", "id");
+        return $this->hasOne(User::class, "shadow_id", "id");
     }
 }

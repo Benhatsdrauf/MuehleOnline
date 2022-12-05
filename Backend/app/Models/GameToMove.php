@@ -17,16 +17,16 @@ class GameToMove extends Model
 
     public function game()
     {
-        $this->belongsTo(Game::class, "game_id", "id");
+        return $this->belongsTo(Game::class, "game_id", "id");
     }
 
     public function move()
     {
-        $this->belongsTo(Move::class, "move_id", "id");
+        return $this->belongsTo(Move::class, "move_id", "id");
     }
 
     public function user_to_game_to_moves()
     {
-        $this->hasMany(UserToGameToMove::class, "game_to_move_id", "id");
+        return $this->hasMany(UserToGameToMove::class, "game_to_move_id", "id");
     }
 }

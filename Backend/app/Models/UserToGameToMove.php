@@ -17,11 +17,11 @@ class UserToGameToMove extends Model
 
     public function user()
     {
-        $this->belongsTo(User::class, "user_id", "id");
+        return $this->belongsTo(User::class, "user_id", "id");
     }
 
     public function game_to_move()
     {
-        $this->belongsTo(GameToMove::class, "game_to_move_id", "id");
+        return $this->belongsTo(GameToMove::class, "game_to_move_id", "id");
     }
 }

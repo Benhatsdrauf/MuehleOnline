@@ -17,6 +17,6 @@ class Statistic extends Model
 
     public function user()
     {
-        $this->hasOne(User::class, "statistic_id", "id");
+        return $this->hasOne(User::class, "statistic_id", "id");
     }
 }

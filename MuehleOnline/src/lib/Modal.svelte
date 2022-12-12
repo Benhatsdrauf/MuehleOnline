@@ -58,7 +58,7 @@
         left: 50%;
         top: 50%;
         width: calc(100vw - 4em);
-        max-width: 32em;
+        max-width: 45em;
         max-height: calc(100vh - 4em);
         overflow: auto;
         transform: translate(-50%, -50%);

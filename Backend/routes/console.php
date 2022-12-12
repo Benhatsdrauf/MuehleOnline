@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Game;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -22,6 +23,7 @@ Artisan::command('inspire', function () {
 
 Artisan::command("aaa", function () {
     
-    $user = User::where("name", "Benjamin")->first();
-    $this->info(json_encode($user->shadow()->first()));
+    $game = Game::find(1);
+    $user = User::find(1);
+    $this->info(json_encode($user->games()->get()));
 });

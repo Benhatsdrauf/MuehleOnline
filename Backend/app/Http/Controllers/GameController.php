@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Game;
 use App\Models\UserToGame;
 use App\Models\User;
+use App\Logic\Error;
+
+use \stdClass;
 
 class GameController extends Controller
 {
@@ -21,12 +24,34 @@ class GameController extends Controller
         $game->invite_id = bin2hex(openssl_random_pseudo_bytes(16));
         $game->save();
 
-        $utg = new UserToGame;
-        $utg->is_white = true;
-        $utg->user_id = $user->id;
-        $utg->game_id = $game->id;
-        $utg->save();
+        $user->games()->attach($game->id, ["is_white" => true]);
 
-        return response()->json(["invite_link" => "http://localhost:5000/join/". $game->invite_id]);
+        return response()->json(["invite_link" => "http://localhost:5000/game/join/". $game->invite_id]);
+    }
+
+    public function join(Request $request, $guid)
+    {
+        $sender = $request->user();
+
+        $user = User::where("name", $sender->name)->first();
+
+        $game = Game::where("invite_id", $guid)->first();
+
+        if($game == null)
+        {
+            Error::throw(["guid" => "This guid does not exist."], 400);
+        }
+
+        if(count($game->users()->get()) > 1)
+        {
+            Error::throw(["guid" => "This guid does not exist."], 400);
+        }
+
+        if($game->users()->first()->id == $user->id)
+        {
+            Error::throw(["guid" => "You are already participating in this game."], 400);
+        }
+
+        $user->games()->attach($game->id, ["is_white" => false]);
     }
 }

@@ -21,8 +21,13 @@ Route::get('/', function () {
 });
 
 
-Route::post("/register",[RegisterController::class, "register"]);
-Route::post("/login",[LoginController::class, "login"]);
-Route::post("/logout", [LoginController::class, "logout"])->middleware("auth:sanctum");
+Route::prefix("auth")->group(function() {
+    Route::post("/register",[RegisterController::class, "register"]);
+    Route::post("/login",[LoginController::class, "login"]);
+    Route::post("/logout", [LoginController::class, "logout"])->middleware("auth:sanctum");
+});
 
-Route::post("/start-game", [GameController::class, "create"])->middleware("auth:sanctum");
+Route::prefix("game")->group(function() {
+    Route::post("/create", [GameController::class, "create"])->middleware("auth:sanctum");
+    Route::get("/join/{guid}", [GameController::class, "join"])->middleware("auth:sanctum");
+});

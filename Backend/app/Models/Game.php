@@ -24,4 +24,9 @@ class Game extends Model
     {
         return $this->hasMany(Move::class, "game_id" , "id");
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, "user_to_game", "game_id", "user_id");
+    }
 }

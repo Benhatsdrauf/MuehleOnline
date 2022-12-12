@@ -24,7 +24,6 @@
         if (response) {
             inviteLink = response.invite_link;
             showModal = true;
-            console.log(response.Invite_link);
         }
     }
 
@@ -48,15 +47,15 @@
 <button on:click={StartGame}> Play Now! </button>
 
 {#if showModal}
-    <Modal on:close={() => (showModal = true)}>
+    <Modal on:close={() => (showModal = false)}>
         <h1>This is the start game modal</h1>
         <div>
             <code>{inviteLink}</code>
             <button on:click={CopyToClipBoard}>Copy!</button>
-            <span
-                >Send the Link to a friend the game will start as soon as your
-                friend joins</span
-            >
+            <p>
+                Send the Link to a friend the game will start as soon as your
+                friend joins
+            </p>
         </div>
     </Modal>
 {/if}

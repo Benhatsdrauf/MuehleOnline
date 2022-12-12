@@ -37,31 +37,29 @@ return new class extends Migration
             $table->foreign("statistic_id")->references("id")->on("statistic");
         });
 
+        Schema::create("game", function (Blueprint $table) {
+            $table->id();
+            $table->string("invite_id");
+            $table->boolean("is_active");
+            $table->dateTime("end_time")->nullable();
+            $table->timestamps();
+        });
+
         Schema::create("move", function (Blueprint $table) {
             $table->id();
             $table->string("row");
             $table->string("column");
-        });
-
-        Schema::create("game", function (Blueprint $table) {
-            $table->id();
-        });
-
-        Schema::create("game_to_move", function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger("game_id");
-            $table->unsignedBigInteger("move_id");
             $table->foreign("game_id")->references("id")->on("game");
-            $table->foreign("move_id")->references("id")->on("move");
         });
 
-        Schema::create("user_to_game_to_move", function (Blueprint $table) {
+        Schema::create("user_to_game", function (Blueprint $table) {
             $table->id();
             $table->boolean("is_white");
             $table->unsignedBigInteger("user_id");
-            $table->unsignedBigInteger("game_to_move_id");
+            $table->unsignedBigInteger("game_id");
             $table->foreign("user_id")->references("id")->on("user");
-            $table->foreign("game_to_move_id")->references("id")->on("game_to_move");
+            $table->foreign("game_id")->references("id")->on("game");
         });
     }
 
@@ -72,12 +70,11 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists("user_to_game");
+        Schema::dropIfExists("move");
+        Schema::dropIfExists("game");
+        Schema::dropIfExists("user");
         Schema::dropIfExists("shadow");
         Schema::dropIfExists("statistic");
-        Schema::dropIfExists("user");
-        Schema::dropIfExists("game");
-        Schema::dropIfExists("move");
-        Schema::dropIfExists("userToGameToMove");
-        Schema::dropIfExists("gameToMove");
     }
 };

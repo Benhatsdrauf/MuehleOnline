@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class move extends Model
+class Move extends Model
 {
     protected $table = "move";
 
     public $timestamps = false;
 
     protected $fillable = [
-        "row", "column"
+        "row", "column", "game_id"
     ];
 
-    public function game_to_moves()
+    public function game()
     {
-        return $this->hasMany(GameToMove::class, "move_id", "id");
+        return $this->belognsTo(Game::class, "game_id", "id");
     }
 }

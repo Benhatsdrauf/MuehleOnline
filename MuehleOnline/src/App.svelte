@@ -3,6 +3,7 @@
   import LandingPage from "./pages/LandingPage.svelte";
   import HomePage from "./pages/HomePage.svelte";
   import GamePage from "./pages/GamePage.svelte";
+  import LobbyPage from "./pages/LobbyPage.svelte";
 </script>
 
 <Router>
@@ -13,6 +14,10 @@
 
     <Route path="gamePage">
       <GamePage />
+    </Route>
+
+    <Route path="game/join/:id" let:params>
+      <LobbyPage />
     </Route>
 
     <Route>

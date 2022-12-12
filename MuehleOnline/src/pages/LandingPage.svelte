@@ -10,7 +10,9 @@
 <div class="background">
     <div class="context">
         <h1>MuehleOnline</h1>
-        <button on:click={() => (showModal = true)}> Login! </button>
+        <button class="cta" on:click={() => (showModal = true)}>
+            Login!
+        </button>
     </div>
     <ul class="circles">
         <li />
@@ -60,9 +62,18 @@
         position: relative;
         z-index: 5;
         display: flex;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
         padding-top: 20px;
         color: azure;
+    }
+
+    .cta {
+        margin-top: 50px;
+        width: 150px;
+        height: 50px;
+        font-size: larger;
     }
 
     .background {

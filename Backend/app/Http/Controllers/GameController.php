@@ -37,7 +37,7 @@ class GameController extends Controller
 
         $user->games()->attach($game->id, ["is_white" => true]);
 
-        return response()->json(["invite_link" => "http://localhost:5000/game/join/". $game->invite_id]);
+        return response()->json(["invite_link" => "http://localhost:5173/game/join/". $game->invite_id]);
     }
 
     public function join(Request $request, $guid)

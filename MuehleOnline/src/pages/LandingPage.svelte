@@ -10,7 +10,7 @@
 <div class="background">
     <div class="context">
         <h1>MuehleOnline</h1>
-        <button on:click={() => (showModal = true)}> Play Now! </button>
+        <button on:click={() => (showModal = true)}> Login! </button>
     </div>
     <ul class="circles">
         <li />

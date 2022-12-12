@@ -72,12 +72,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists("shadow");
-        Schema::dropIfExists("statistic");
-        Schema::dropIfExists("user");
+        Schema::dropIfExists("user_to_game_to_move");
+        Schema::dropIfExists("game_to_move");
         Schema::dropIfExists("game");
         Schema::dropIfExists("move");
-        Schema::dropIfExists("userToGameToMove");
-        Schema::dropIfExists("gameToMove");
+        Schema::dropIfExists("user");
+        Schema::dropIfExists("shadow");
+        Schema::dropIfExists("statistic");
     }
 };

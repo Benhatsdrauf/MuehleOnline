@@ -31,8 +31,13 @@ class User extends Authenticatable
         return $this->belongsTo(Shadow::class, "shadow_id", "id");
     }
 
-    public function user_to_game_to_moves()
+    public function user_to_game()
     {
-        return $this->hasMany(UserToGameToMove::class, "user_id", "id");
+        return $this->hasMany(UserToGame::class, "user_id", "id");
+    }
+
+    public function games()
+    {
+        return $this->belongsToMany(Game::class, "user_to_game", "user_id", "game_id");
     }
 }

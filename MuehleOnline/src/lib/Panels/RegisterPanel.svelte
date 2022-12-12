@@ -1,19 +1,39 @@
 <script>
+    import Request from "../../../scripts/request";
+    import { useNavigate } from "svelte-navigator";
+
+    const navigate = useNavigate();
+
     let userName = "";
     let password = "";
-    let confirmPassword = "";
+
+    async function Register() {
+        const data = {
+            name: userName,
+            pw: password,
+        };
+
+        let response = await Request(
+            "http://localhost:420/register",
+            data
+        ).catch((err) => {
+            console.log(err);
+            return;
+        });
+
+        localStorage.setItem("token", response.token);
+        navigate("home");
+
+        console.log(localStorage.getItem("token"));
+    }
 </script>
 
 <h1>Register Panel</h1>
 
 <input type="text" placeholder="Username" bind:value={userName} />
 <input type="password" placeholder="Password" bind:value={password} />
-<input
-    type="password"
-    placeholder="confirm Password"
-    bind:value={confirmPassword}
-/>
-<button type="button">Register</button>
+
+<button type="button" on:click={Register}>Register</button>
 
 <style>
 </style>

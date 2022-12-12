@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\GameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,6 @@ Route::get('/', function () {
 
 Route::post("/register",[RegisterController::class, "register"]);
 Route::post("/login",[LoginController::class, "login"]);
-
 Route::post("/logout", [LoginController::class, "logout"])->middleware("auth:sanctum");
+
+Route::post("/start-game", [GameController::class, "create"])->middleware("auth:sanctum");

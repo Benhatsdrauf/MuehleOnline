@@ -28,9 +28,15 @@
 
 <h1>Login Panel</h1>
 
-<input type="text" placeholder="Username" bind:value={userName} />
-<input type="password" placeholder="Password" bind:value={password} />
-<button type="button" on:click={Login}>Login</button>
+<div class="container">
+    <input type="text" placeholder="Username" bind:value={userName} />
+    <input type="password" placeholder="Password" bind:value={password} />
+    <button type="button" on:click={Login}>Login</button>
+</div>
 
 <style>
+    .container {
+        display: flex;
+        gap: 16px;
+    }
 </style>

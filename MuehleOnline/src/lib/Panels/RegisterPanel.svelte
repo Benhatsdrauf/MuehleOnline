@@ -30,10 +30,15 @@
 
 <h1>Register Panel</h1>
 
-<input type="text" placeholder="Username" bind:value={userName} />
-<input type="password" placeholder="Password" bind:value={password} />
-
-<button type="button" on:click={Register}>Register</button>
+<div class="contianer">
+    <input type="text" placeholder="Username" bind:value={userName} />
+    <input type="password" placeholder="Password" bind:value={password} />
+    <button type="button" on:click={Register}>Register</button>
+</div>
 
 <style>
+    .contianer {
+        display: flex;
+        gap: 16px;
+    }
 </style>

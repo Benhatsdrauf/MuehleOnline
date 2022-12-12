@@ -22,9 +22,4 @@
 </Router>
 
 <style>
-  .navigation {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
 </style>

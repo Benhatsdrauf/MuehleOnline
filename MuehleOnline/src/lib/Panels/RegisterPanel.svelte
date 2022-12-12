@@ -1,4 +1,5 @@
 <script>
+    import Request from "../../../scripts/request";
     import { useNavigate } from "svelte-navigator";
 
     const navigate = useNavigate();
@@ -11,24 +12,17 @@
             name: userName,
             pw: password,
         };
-        await fetch("http://localhost:420/register", {
-            method: "Post",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-            body: JSON.stringify(data),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                const token = data.token;
-                localStorage.setItem("token", token);
-                navigate("home");
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+
+        let response = await Request(
+            "http://localhost:420/register",
+            data
+        ).catch((err) => {
+            console.log(err);
+            return;
+        });
+
+        localStorage.setItem("token", response.token);
+        navigate("home");
 
         console.log(localStorage.getItem("token"));
     }

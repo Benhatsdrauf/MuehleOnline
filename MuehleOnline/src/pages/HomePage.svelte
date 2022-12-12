@@ -1,25 +1,19 @@
 <script>
+    import authorizedRequest from "../../scripts/authorizedRequest";
+
     import { useNavigate } from "svelte-navigator";
 
     const navigate = useNavigate();
 
     async function Logout() {
-        await fetch("http://localhost:420/logout", {
-            method: "Post",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        })
-            .then(() => {
-                localStorage.removeItem("token");
-                navigate("/");
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        let response = await authorizedRequest(
+            "http://localhost:420/logout"
+        ).catch((err) => {
+            console.log(err);
+            return;
+        });
+
+        navigate("/");
     }
 </script>
 

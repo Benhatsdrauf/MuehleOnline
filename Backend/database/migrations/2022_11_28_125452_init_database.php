@@ -33,8 +33,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->unsignedBigInteger("shadow_id");
             $table->unsignedBigInteger("statistic_id");
-            $table->foreign("shadow_id")->references("id")->on("shadow");
-            $table->foreign("statistic_id")->references("id")->on("statistic");
+            $table->foreign("shadow_id")->references("id")->on("shadow")->onDelete("cascade");
+            $table->foreign("statistic_id")->references("id")->on("statistic")->onDelete("cascade");
         });
 
         Schema::create("game", function (Blueprint $table) {
@@ -50,7 +50,7 @@ return new class extends Migration
             $table->string("row");
             $table->string("column");
             $table->unsignedBigInteger("game_id");
-            $table->foreign("game_id")->references("id")->on("game");
+            $table->foreign("game_id")->references("id")->on("game")->onDelete("cascade");
         });
 
         Schema::create("user_to_game", function (Blueprint $table) {
@@ -58,8 +58,8 @@ return new class extends Migration
             $table->boolean("is_white");
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id");
-            $table->foreign("user_id")->references("id")->on("user");
-            $table->foreign("game_id")->references("id")->on("game");
+            $table->foreign("user_id")->references("id")->on("user")->onDelete("cascade");
+            $table->foreign("game_id")->references("id")->on("game")->onDelete("cascade");
         });
     }
 

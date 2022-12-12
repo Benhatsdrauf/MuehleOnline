@@ -24,6 +24,17 @@ class GameController extends Controller
         $game->invite_id = bin2hex(openssl_random_pseudo_bytes(16));
         $game->save();
 
+
+        $senderGames = $user->games()->get();
+
+        foreach($senderGames as $currentGame)
+        {
+            if(count($currentGame->users()->get()) < 2)
+            {
+                $currentGame->delete();
+            }
+        }
+
         $user->games()->attach($game->id, ["is_white" => true]);
 
         return response()->json(["invite_link" => "http://localhost:5000/game/join/". $game->invite_id]);
@@ -52,6 +63,8 @@ class GameController extends Controller
             Error::throw(["guid" => "You are already participating in this game."], 400);
         }
 
+        $game->is_active = true;
+        $game->save();
         $user->games()->attach($game->id, ["is_white" => false]);
     }
 }

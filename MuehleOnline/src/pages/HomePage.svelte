@@ -15,7 +15,7 @@
 
     async function StartGame() {
         let response = await authorizedRequest(
-            "http://localhost:420/start-game"
+            "http://localhost:420/game/create"
         ).catch((err) => {
             console.log(err);
             return;
@@ -29,7 +29,7 @@
 
     async function Logout() {
         let response = await authorizedRequest(
-            "http://localhost:420/logout"
+            "http://localhost:420/auth/logout"
         ).catch((err) => {
             console.log(err);
             return;

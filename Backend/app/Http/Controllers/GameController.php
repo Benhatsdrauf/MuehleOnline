@@ -27,6 +27,6 @@ class GameController extends Controller
         $utg->game_id = $game->id;
         $utg->save();
 
-        return response()->json(["invite_link" => "http://localhost:5000/game/". $game->invite_id]);
+        return response()->json(["invite_link" => "http://localhost:5000/join/". $game->invite_id]);
     }
 }

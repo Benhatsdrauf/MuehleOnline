@@ -16,7 +16,7 @@
         };
 
         let response = await Request(
-            "http://localhost:420/auth/register",
+            "auth/register",
             data
         ).catch((err) => {
             console.log(err);

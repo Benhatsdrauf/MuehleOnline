@@ -15,7 +15,7 @@
 
     async function StartGame() {
         let response = await authorizedRequest(
-            "http://localhost:420/game/create"
+            "game/create"
         ).catch((err) => {
             console.log(err);
             return;

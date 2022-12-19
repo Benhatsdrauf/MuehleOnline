@@ -14,10 +14,7 @@
             pw: password,
         };
 
-        let response = await Request(
-            "http://localhost:420/auth/login",
-            data
-        ).catch((err) => {
+        let response = await Request("auth/login", data).catch((err) => {
             console.log(err);
             return;
         });

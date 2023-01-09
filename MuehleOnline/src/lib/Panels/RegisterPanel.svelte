@@ -1,5 +1,5 @@
 <script>
-    import Request from "../../../scripts/request";
+    import {Request} from "../../../scripts/request";
     import { useNavigate } from "svelte-navigator";
 
     export let navigateTo;

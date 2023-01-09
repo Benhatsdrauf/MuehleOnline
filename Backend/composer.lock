@@ -87,6 +87,7 @@
                 "source": "https://github.com/beyondcode/laravel-websockets/tree/1.13.2"
             },
             "time": "2022-10-19T18:15:42+00:00"
+
         },
         {
             "name": "brick/math",
@@ -3061,6 +3062,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/4ace4873873b06c25cecb2dd6d9fdcbf2f20b640",
                 "reference": "4ace4873873b06c25cecb2dd6d9fdcbf2f20b640",
+
                 "shasum": ""
             },
             "require": {
@@ -3109,6 +3111,7 @@
                 "source": "https://github.com/pusher/pusher-http-php/tree/7.2.2"
             },
             "time": "2022-12-20T19:52:36+00:00"
+
         },
         {
             "name": "ralouphie/getallheaders",

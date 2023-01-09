@@ -42,11 +42,11 @@
             </TabList>
 
             <TabPanel>
-                <LoginPanel />
+                <LoginPanel navigateTo="/home" />
             </TabPanel>
 
             <TabPanel>
-                <RegisterPanel />
+                <RegisterPanel navigateTo="/home" />
             </TabPanel>
         </Tabs>
     </Modal>

@@ -2,6 +2,23 @@
     import Modal from "../lib/Modal.svelte";
     import authorizedRequest from "../../scripts/authorizedRequest";
 
+    import Echo from "laravel-echo";
+    import Pusher from "pusher-js";
+
+    let pusher = Pusher;
+
+    let echo = new Echo({
+        broadcaster: "pusher",
+        key: import.meta.env.VITE_PUSHER_APP_KEY,
+        wsHost: "127.0.0.1",
+        forceTLS: false,
+        disableStatus: true,
+    });
+
+    echo.channel("player_ready").listen("PlayerReady", (e) => {
+        console.log(e);
+    });
+
     let showModal = false;
     let inviteLink = "";
 
@@ -14,9 +31,7 @@
     }
 
     async function StartGame() {
-        let response = await authorizedRequest(
-            "http://localhost:420/start-game"
-        ).catch((err) => {
+        let response = await authorizedRequest("game/create").catch((err) => {
             console.log(err);
             return;
         });
@@ -28,9 +43,7 @@
     }
 
     async function Logout() {
-        let response = await authorizedRequest(
-            "http://localhost:420/logout"
-        ).catch((err) => {
+        let response = await authorizedRequest("auth/logout").catch((err) => {
             console.log(err);
             return;
         });

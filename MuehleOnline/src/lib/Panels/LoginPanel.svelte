@@ -2,6 +2,8 @@
     import Request from "../../../scripts/request";
     import { useNavigate } from "svelte-navigator";
 
+    export let navigateTo;
+
     const navigate = useNavigate();
     let userName = "";
     let password = "";
@@ -12,15 +14,13 @@
             pw: password,
         };
 
-        let response = await Request("http://localhost:420/login", data).catch(
-            (err) => {
-                console.log(err);
-                return;
-            }
-        );
+        let response = await Request("auth/login", data).catch((err) => {
+            console.log(err);
+            return;
+        });
 
         localStorage.setItem("token", response.token);
-        navigate("home");
+        navigate(navigateTo);
 
         console.log(localStorage.getItem("token"));
     }

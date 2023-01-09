@@ -38,7 +38,7 @@ return [
             'options' => [
                 'host' => env('PUSHER_HOST'),
                 'port' => env('PUSHER_PORT', 443),
-                'scheme' => env('PUSHER_SCHEME', 'https'),
+                'scheme' => env('PUSHER_SCHEME', 'https')
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html

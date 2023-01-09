@@ -14,6 +14,7 @@ class PlayerReady implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $ready;
     /**
      * Create a new event instance.
      *
@@ -31,6 +32,6 @@ class PlayerReady implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('player_ready');
+        return new Channel('player_ready');
     }
 }

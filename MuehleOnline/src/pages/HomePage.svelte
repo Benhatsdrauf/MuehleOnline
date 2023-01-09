@@ -1,9 +1,10 @@
 <script>
     import Modal from "../lib/Modal.svelte";
-    import authorizedRequest from "../../scripts/authorizedRequest";
+    import {AuthorizedRequest} from "../../scripts/request";
 
     import Echo from "laravel-echo";
     import Pusher from "pusher-js";
+
 
     let pusher = Pusher;
 
@@ -11,6 +12,7 @@
         broadcaster: "pusher",
         key: import.meta.env.VITE_PUSHER_APP_KEY,
         wsHost: "127.0.0.1",
+        wsPort: "6001",
         forceTLS: false,
         disableStatus: true,
     });
@@ -31,7 +33,7 @@
     }
 
     async function StartGame() {
-        let response = await authorizedRequest("game/create").catch((err) => {
+        let response = await AuthorizedRequest("game/create").catch((err) => {
             console.log(err);
             return;
         });
@@ -43,7 +45,7 @@
     }
 
     async function Logout() {
-        let response = await authorizedRequest("auth/logout").catch((err) => {
+        let response = await AuthorizedRequest("auth/logout").catch((err) => {
             console.log(err);
             return;
         });

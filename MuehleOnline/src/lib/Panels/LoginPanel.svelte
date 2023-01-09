@@ -1,8 +1,7 @@
 <script>
     import {Request} from "../../../scripts/request";
     import { useNavigate } from "svelte-navigator";
-
-    export let navigateTo;
+    import {hash} from "../../../scripts/hash";
 
     const navigate = useNavigate();
     let userName = "";
@@ -20,9 +19,10 @@
         });
 
         localStorage.setItem("token", response.token);
-        navigate(navigateTo);
+        navigate("home");
 
-        console.log(localStorage.getItem("token"));
+        let splitToken = response.token.split("|")[1];
+        localStorage.setItem("hashedToken", await hash(splitToken));    
     }
 </script>
 

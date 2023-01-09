@@ -1,6 +1,9 @@
 <script>
     import Modal from "../lib/Modal.svelte";
     import {AuthorizedRequest} from "../../scripts/request";
+    import {hash} from "../../scripts/hash";
+    import { onMount } from 'svelte';
+
 
     import Echo from "laravel-echo";
     import Pusher from "pusher-js";
@@ -10,6 +13,7 @@
 
     let echo = new Echo({
         broadcaster: "pusher",
+        authEndpoint: 'http://localhost:5000/broadcasting/auth',
         key: import.meta.env.VITE_PUSHER_APP_KEY,
         wsHost: "127.0.0.1",
         wsPort: "6001",
@@ -17,7 +21,7 @@
         disableStatus: true,
     });
 
-    echo.channel("player_ready").listen("PlayerReady", (e) => {
+    echo.channel("player_ready."+ localStorage.getItem("hashedToken")).listen("PlayerReady", (e) => {
         console.log(e);
     });
 

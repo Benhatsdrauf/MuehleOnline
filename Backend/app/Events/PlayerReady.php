@@ -15,14 +15,16 @@ class PlayerReady implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $ready;
+    private $token;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(string $token)
     {
         $this->ready = true;
+        $this->token = $token;
     }
 
     /**
@@ -32,6 +34,6 @@ class PlayerReady implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('player_ready');
+        return new Channel("player_ready.".$this->token);
     }
 }

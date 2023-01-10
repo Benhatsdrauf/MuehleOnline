@@ -7,6 +7,8 @@ use App\Models\Game;
 use App\Models\UserToGame;
 use App\Models\User;
 use App\Logic\Error;
+use App\Events\PlayerReady;
+use Laravel\Sanctum\PersonalAccessToken;
 
 use \stdClass;
 
@@ -65,6 +67,14 @@ class GameController extends Controller
 
         $game->is_active = true;
         $game->save();
+
+        $partnerId = $game->users()->first()->id;
+
         $user->games()->attach($game->id, ["is_white" => false]);
+
+
+        $partnerToken = PersonalAccessToken::where("tokenable_id", $partnerId)->first()->token;
+
+        event(new playerReady($partnerToken));
     }
 }

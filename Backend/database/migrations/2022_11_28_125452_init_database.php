@@ -56,6 +56,7 @@ return new class extends Migration
         Schema::create("user_to_game", function (Blueprint $table) {
             $table->id();
             $table->boolean("is_white");
+            $table->boolean("won");
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id");
             $table->foreign("user_id")->references("id")->on("user")->onDelete("cascade");

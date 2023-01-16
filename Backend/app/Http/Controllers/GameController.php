@@ -8,6 +8,7 @@ use App\Models\UserToGame;
 use App\Models\User;
 use App\Logic\Error;
 use App\Events\PlayerReady;
+use App\Events\Turn;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 use App\Http\Controllers\UserController;
@@ -177,6 +178,6 @@ class GameController extends Controller
 
         $partnerToken = PersonalAccessToken::where("tokenable_id", $opponent->id)->first()->token;
 
-        event(new playerReady($partnerToken));
+        event(new turn($partnerToken));
     }
 }

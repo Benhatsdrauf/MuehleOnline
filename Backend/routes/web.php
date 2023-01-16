@@ -37,6 +37,8 @@ Route::prefix("game")->group(function() {
     Route::post("/create", [GameController::class, "create"])->middleware("auth:sanctum");
     Route::get("/join/{guid}", [GameController::class, "join"])->middleware("auth:sanctum");
     Route::get("/quit", [GameController::class, "quit"])->middleware("auth:sanctum");
+    Route::get("/pull", [GameController::class, "getCurrentState"])->middleware("auth:sanctum");
+    Route::post("/action", [GameController::class, "move"])->middleware("auth:sanctum");
 });
 
 Route::prefix("user")->group(function() {

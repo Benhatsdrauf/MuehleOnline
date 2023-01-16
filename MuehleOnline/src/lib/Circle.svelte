@@ -5,14 +5,7 @@
     export let status = "initial";
 </script>
 
-<circle
-    on:click={() => {
-        console.log(index);
-    }}
-    cx="{x}%"
-    cy="{y}%"
-    r="15"
-/>
+<circle on:click cx="{x}%" cy="{y}%" r="15" />
 
 <style>
     circle {

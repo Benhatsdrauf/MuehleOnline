@@ -43,7 +43,7 @@
     --color-clay-dark: #B0542E;
     --color-terra-light: #D1B795;
     --color-terra: #AA8D6D;
-    --color-terra-dark: #846554;
+    --color-terra-dark: #72452e;
     --color-ruby-light: #F56E7C;
     --color-ruby: #E34858;
     --color-ruby-dark: #AD0B37;
@@ -54,6 +54,7 @@
     --color-slate: #5789A4;
     --color-slate-dark: #3B6579;
     --color-selceted-issue: #3A4046;
+    --color-board-background: #ffe29a;
 }
 
 body {
@@ -84,13 +85,15 @@ button:focus-visible {
 }
 
 @media (prefers-color-scheme: light) {
-     :root {
+    :root {
         color: #213547;
         background-color: #ffffff;
     }
+
     a:hover {
         color: #747bff;
     }
+
     button {
         background-color: #f9f9f9;
     }

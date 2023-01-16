@@ -1,8 +1,12 @@
 <script>
     import { AuthorizedRequest } from "../../scripts/request";
     import { onMount } from "svelte";
+    import Circle from "../lib/Circle.svelte";
+    import { positions } from "../../scripts/circlePositions";
 
     onMount(async () => {});
+
+    let gameState = "initial";
 </script>
 
 <h3>gamePage</h3>
@@ -70,45 +74,15 @@
             stroke-width="5"
         />
 
-        <circle cx="5%" cy="5%" r="15" />
-        <circle cx="50%" cy="5%" r="15" />
-        <circle cx="95%" cy="5%" r="15" />
-
-        <circle cx="20%" cy="20%" r="15" />
-        <circle cx="50%" cy="20%" r="15" />
-        <circle cx="80%" cy="20%" r="15" />
-
-        <circle cx="35%" cy="35%" r="15" />
-        <circle cx="50%" cy="35%" r="15" />
-        <circle cx="65%" cy="35%" r="15" />
-
-        <circle cx="5%" cy="50%" r="15" />
-        <circle cx="20%" cy="50%" r="15" />
-        <circle cx="35%" cy="50%" r="15" />
-        <circle cx="65%" cy="50%" r="15" />
-        <circle cx="80%" cy="50%" r="15" />
-        <circle cx="95%" cy="50%" r="15" />
-
-        <circle cx="35%" cy="65%" r="15" />
-        <circle cx="50%" cy="65%" r="15" />
-        <circle cx="65%" cy="65%" r="15" />
-
-        <circle cx="20%" cy="80%" r="15" />
-        <circle cx="50%" cy="80%" r="15" />
-        <circle cx="80%" cy="80%" r="15" />
-
-        <circle cx="5%" cy="95%" r="15" />
-        <circle cx="50%" cy="95%" r="15" />
-        <circle cx="95%" cy="95%" r="15" />
+        {#each positions as position, i}
+            <Circle
+                status={gameState}
+                x={position[0]}
+                y={position[1]}
+                index={i}
+            />
+        {/each}
     </svg>
-
-    <!-- <div class="game-field outer">
-        <div class="game-field middle">
-            <div class="game-field inner">
-                <div>Field1</div>
-            </div>
-        </div>
-    </div> -->
 </div>
 
 <style>
@@ -128,23 +102,4 @@
         justify-content: center;
         align-items: center;
     }
-
-    /* .outer {
-        background-color: aqua;
-        border: 5px solid black;
-    }
-
-    .middle {
-        height: 500px;
-        width: 500px;
-        background-color: red;
-        border: 5px solid black;
-    }
-
-    .inner {
-        height: 250px;
-        width: 250px;
-        background-color: green;
-        border: 5px solid black;
-    }  */
 </style>

@@ -30,6 +30,7 @@ class RegisterController extends Controller
 
         $user = new User;
         $user->name = $request->name;
+        $user->elo = 1000;
         $user->shadow_id = $shadow->id; 
         $user->statistic_id = $stat->id;   
         $user->save();

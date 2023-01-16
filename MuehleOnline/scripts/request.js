@@ -39,5 +39,25 @@
                     return Promise.reject(response);
                 }
             })
+    }
+
+    export async function AuthorizedGetRequest(url) {
+        return await fetch("http://localhost:5000/" + url, {
+                method: "Get",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+
+                } else {
+                    return Promise.reject(response);
+                }
+            })
 
     }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\UserController;
 
 use App\Events\PlayerReady;
 
@@ -35,4 +36,9 @@ Route::prefix("auth")->group(function() {
 Route::prefix("game")->group(function() {
     Route::post("/create", [GameController::class, "create"])->middleware("auth:sanctum");
     Route::get("/join/{guid}", [GameController::class, "join"])->middleware("auth:sanctum");
+    Route::get("/quit", [GameController::class, "quit"])->middleware("auth:sanctum");
+});
+
+Route::prefix("user")->group(function() {
+    Route::get("/info", [UserController::class, "getInfo"])->middleware("auth:sanctum");
 });

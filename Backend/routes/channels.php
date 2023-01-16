@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -18,7 +20,23 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 /*
-Broadcast::channel('player_ready', function ($user) {
+Broadcast::channel('player_ready.{token}', function ($user, $token) {
+
     return true;
+    
+
+    if(!is_string($token))
+    {
+        return false;
+    }
+
+    if (PersonalAccessToken::where("token", $token)->exists()) {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
 });
 */

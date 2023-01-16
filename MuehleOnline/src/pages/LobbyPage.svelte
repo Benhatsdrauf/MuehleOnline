@@ -3,16 +3,29 @@
     import { LoginPanel, RegisterPanel } from "../lib/Panels";
     import { Tabs, TabList, TabPanel, Tab } from "../lib/Tabs";
     import { useNavigate } from "svelte-navigator";
+    import {AuthorizedGetRequest} from "../../scripts/request";
     import { onMount } from "svelte";
 
     const navigate = useNavigate();
     let showModal = false;
 
-    onMount(() => {
+    onMount(() => {        
+
         if (localStorage.getItem("token") === null) {
             showModal = true;
             return;
         }
+
+        let path = window.location.pathname;
+
+        AuthorizedGetRequest("game/join/"+path.split("/")[3])
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch((err) => {
+            console.log(err);
+            return;
+        });
 
         navigate("/gamePage");
     });
@@ -27,11 +40,11 @@
             </TabList>
 
             <TabPanel>
-                <LoginPanel navigateTo="/gamePage" />
+                <LoginPanel/>
             </TabPanel>
 
             <TabPanel>
-                <RegisterPanel navigateTo="/gamePage" />
+                <RegisterPanel/>
             </TabPanel>
         </Tabs>
     </Modal>

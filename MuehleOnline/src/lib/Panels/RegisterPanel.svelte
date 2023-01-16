@@ -2,7 +2,8 @@
     import {Request} from "../../../scripts/request";
     import { useNavigate } from "svelte-navigator";
 
-    export let navigateTo;
+    import Fa from 'svelte-fa';
+    import { faKey, faUser } from '@fortawesome/free-solid-svg-icons';
 
     const navigate = useNavigate();
 
@@ -24,23 +25,55 @@
         });
 
         localStorage.setItem("token", response.token);
-        navigate(navigateTo);
+        navigate("home");
 
         console.log(localStorage.getItem("token"));
     }
 </script>
 
-<h1>Register Panel</h1>
 
-<div class="contianer">
-    <input type="text" placeholder="Username" bind:value={userName} />
-    <input type="password" placeholder="Password" bind:value={password} />
-    <button type="button" on:click={Register}>Register</button>
-</div>
+<div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <h1>Register Panel</h1>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text h-100">
+                  <Fa icon={faUser}/>
+                </span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Username"
+                bind:value={userName}
+              />
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text h-100">
+                  <Fa icon={faKey}/>
+                </span>
+              </div>
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Password"
+                bind:value={password}
+              />
+            </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button type="button" on:click={Register}>Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <style>
-    .contianer {
-        display: flex;
-        gap: 16px;
-    }
 </style>

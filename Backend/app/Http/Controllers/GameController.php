@@ -7,6 +7,10 @@ use App\Models\Game;
 use App\Models\UserToGame;
 use App\Models\User;
 use App\Logic\Error;
+use App\Events\PlayerReady;
+use Laravel\Sanctum\PersonalAccessToken;
+use Carbon\Carbon;
+use App\Http\Controllers\UserController;
 
 use \stdClass;
 
@@ -17,6 +21,11 @@ class GameController extends Controller
         $sender = $request->user();
 
         $user = User::where("name", $sender->name)->first();
+
+        if($user->games()->where("is_active", true)->exists())
+        {
+            Error::throw(["game" => "You are still in an active game."], 400);
+        }
 
         $game = new Game;
         $game->is_active = false;
@@ -29,13 +38,13 @@ class GameController extends Controller
 
         foreach($senderGames as $currentGame)
         {
-            if(count($currentGame->users()->get()) < 2)
+            if($currentGame->users()->count() < 2)
             {
                 $currentGame->delete();
             }
         }
 
-        $user->games()->attach($game->id, ["is_white" => true]);
+        $user->games()->attach($game->id, ["is_white" => true, "won" => false, "elo" => 0]);
 
         return response()->json(["invite_link" => "http://localhost:5173/game/join/". $game->invite_id]);
     }
@@ -53,7 +62,7 @@ class GameController extends Controller
             Error::throw(["guid" => "This guid does not exist."], 400);
         }
 
-        if(count($game->users()->get()) > 1)
+        if($game->users()->count() > 1)
         {
             Error::throw(["guid" => "This guid does not exist."], 400);
         }
@@ -61,10 +70,45 @@ class GameController extends Controller
         if($game->users()->first()->id == $user->id)
         {
             Error::throw(["guid" => "You are already participating in this game."], 400);
-        }
+        }       
 
+        $partnerId = $game->users()->first()->id;
+
+        $user->games()->attach($game->id, ["is_white" => false, "won" => false, "elo" => 0]);
         $game->is_active = true;
         $game->save();
-        $user->games()->attach($game->id, ["is_white" => false]);
+
+        $partnerToken = PersonalAccessToken::where("tokenable_id", $partnerId)->first()->token;
+
+        event(new playerReady($partnerToken));
+    }
+
+    public function quit(Request $request)
+    {
+        $user = $request->user();
+
+        $game = $user->games()->where("is_active", true)->first();
+
+        if($game == null)
+        {
+            Error::throw(["game" => "You do not have any active games to quit."], 400);
+        }
+
+        $user->games()->updateExistingPivot($game->id, ["won" => false]);
+
+        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
+
+        if($opponent != null)
+        {
+            $opponent->games()->updateExistingPivot($game->id, ["won" => true]);
+        }
+
+        $game->is_active = false;
+        $game->end_time = Carbon::now();
+        $game->save();
+
+        UserController::eloUpdate($opponent, $user, $game);
+
+        return response()->json();
     }
 }

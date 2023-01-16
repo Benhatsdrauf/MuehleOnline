@@ -18,7 +18,7 @@ class User extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
-        "name"
+        "name", "elo"
     ];
 
     public function statistic()

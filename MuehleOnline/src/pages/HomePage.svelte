@@ -40,6 +40,7 @@
   let inviteLink = "";
   let activeGame = false;
   let username = "";
+  let elo = 1000;
   let gameHistory = [];
 
   
@@ -64,6 +65,7 @@
     await AuthorizedGetRequest("user/info")
     .then((response) => {
       username = response.user.name;
+      elo = response.user.elo;
       activeGame = response.game.active;
       gameHistory = response.history;
     })
@@ -102,18 +104,26 @@
 </script>
 
 <nav class="navbar bgc-secondary">
-  <a class="navbar-brand c-text" href="">
-    <Fa icon={faCat} color="#ffffff" size="1.6x" />
-    MühleOnline
-  </a>
-  <span class="navbar-text c-text">
-    {username}
-  </span>
-  <button
-    class="btn btn-outline-danger my-2 my-sm-0"
-    type="button"
-    on:click={Logout}>Logout</button
-  >
+  <div class="container-fluid">
+    <a class="navbar-brand c-text me-auto" href="">
+      <Fa icon={faCat} color="#ffffff" size="1.6x" />
+      MühleOnline
+    </a>
+    <span class="navbar-text c-text me-2">
+      {elo}
+    </span>
+    <span class="navbar-text c-text me-2">
+      {username}
+    </span>
+    <div class="me-3">
+      <img src="https://api.dicebear.com/5.x/initials/svg?seed={username}" alt="profile" width="30px" height="30px">
+    </div>
+    <button
+      class="btn btn-outline-danger"
+      type="button"
+      on:click={Logout}>Logout</button
+    >
+  </div>
 </nav>
 
 <div class="container-fluid bgc-primary h-100">
@@ -202,7 +212,8 @@
             won={game.won}
             opponent={game.opponent}
             playtime={game.play_time}
-            start_date={game.start_date}/>
+            start_date={game.start_date}
+            elo={game.elo}/>
           </div>
           {/each}
         </div>
@@ -245,6 +256,15 @@
   {
     height: 300px;
     overflow-y: auto;
+  }
+
+  img {
+  border-radius: 50%;
+}
+
+  .border-left
+  {
+    border-left: solid var(--color-white) 2px;
   }
 
 </style>

@@ -10,6 +10,7 @@ use App\Logic\Error;
 use App\Events\PlayerReady;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
+use App\Http\Controllers\UserController;
 
 use \stdClass;
 
@@ -43,7 +44,7 @@ class GameController extends Controller
             }
         }
 
-        $user->games()->attach($game->id, ["is_white" => true, "won" => false]);
+        $user->games()->attach($game->id, ["is_white" => true, "won" => false, "elo" => 0]);
 
         return response()->json(["invite_link" => "http://localhost:5173/game/join/". $game->invite_id]);
     }
@@ -73,7 +74,7 @@ class GameController extends Controller
 
         $partnerId = $game->users()->first()->id;
 
-        $user->games()->attach($game->id, ["is_white" => false, "won" => false]);
+        $user->games()->attach($game->id, ["is_white" => false, "won" => false, "elo" => 0]);
         $game->is_active = true;
         $game->save();
 
@@ -95,16 +96,18 @@ class GameController extends Controller
 
         $user->games()->updateExistingPivot($game->id, ["won" => false]);
 
-        $oponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
+        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-        if($oponent != null)
+        if($opponent != null)
         {
-            $oponent->games()->updateExistingPivot($game->id, ["won" => true]);
+            $opponent->games()->updateExistingPivot($game->id, ["won" => true]);
         }
 
         $game->is_active = false;
         $game->end_time = Carbon::now();
         $game->save();
+
+        UserController::eloUpdate($opponent, $user, $game);
 
         return response()->json();
     }

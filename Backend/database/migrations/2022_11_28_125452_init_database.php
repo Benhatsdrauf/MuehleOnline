@@ -30,6 +30,7 @@ return new class extends Migration
         Schema::create('user', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer("elo");
             $table->rememberToken();
             $table->unsignedBigInteger("shadow_id");
             $table->unsignedBigInteger("statistic_id");
@@ -57,6 +58,7 @@ return new class extends Migration
             $table->id();
             $table->boolean("is_white");
             $table->boolean("won");
+            $table->integer("elo");
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id");
             $table->foreign("user_id")->references("id")->on("user")->onDelete("cascade");

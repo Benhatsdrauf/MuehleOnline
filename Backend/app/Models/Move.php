@@ -12,11 +12,16 @@ class Move extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "row", "column", "game_id"
+        "user_id", "position", "game_id"
     ];
 
     public function game()
     {
         return $this->belognsTo(Game::class, "game_id", "id");
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id", "id");
     }
 }

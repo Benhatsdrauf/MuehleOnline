@@ -12,7 +12,7 @@ class Game extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        "is_active", "end_time", "invite_id"
+        "is_active", "end_time", "invite_id", "whites_turn"
     ];
 
     public function user_to_game()
@@ -27,6 +27,6 @@ class Game extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, "user_to_game", "game_id", "user_id");
+        return $this->belongsToMany(User::class, "user_to_game", "game_id", "user_id")->withPivot("is_white", "won", "elo");
     }
 }

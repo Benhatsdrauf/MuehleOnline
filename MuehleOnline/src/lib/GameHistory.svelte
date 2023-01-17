@@ -10,8 +10,6 @@
     let date = new Date(start_date);
 </script>
 
-
-
 <div class="card" class:bg-success="{won}" class:bg-danger="{!won}">
     <div class="card-body">
         <div class="row">

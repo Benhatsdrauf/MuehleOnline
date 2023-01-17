@@ -5,6 +5,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\StoneController;
 
 use App\Events\PlayerReady;
 
@@ -37,8 +38,11 @@ Route::prefix("game")->group(function() {
     Route::post("/create", [GameController::class, "create"])->middleware("auth:sanctum");
     Route::get("/join/{guid}", [GameController::class, "join"])->middleware("auth:sanctum");
     Route::get("/quit", [GameController::class, "quit"])->middleware("auth:sanctum");
-    Route::get("/pull", [GameController::class, "getCurrentState"])->middleware("auth:sanctum");
-    Route::post("/action", [GameController::class, "move"])->middleware("auth:sanctum");
+    Route::get("/data", [GameController::class, "getCurrentState"])->middleware("auth:sanctum");
+    Route::prefix("/stone")->group(function() {
+        Route::get("/set/{position}", [StoneController::class, "set"])->middleware("auth:sanctum");
+    });
+
 });
 
 Route::prefix("user")->group(function() {

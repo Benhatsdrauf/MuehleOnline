@@ -15,7 +15,7 @@ class Turn implements ShouldBroadcast
     //https://devdojo.com/bobbyiliev/how-to-use-laravel-websockets#:~:text=The%20Laravel%20WebSockets%20package%20emulates,a%20direct%20replacement%20for%20Pusher.
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $your_turn;
+    public $your_turn = true;
     private $token;
     /**
      * Create a new event instance.
@@ -24,7 +24,6 @@ class Turn implements ShouldBroadcast
      */
     public function __construct($token)
     {
-        $this->$your_turn = true;
         $this->$token = $token;
     }
 

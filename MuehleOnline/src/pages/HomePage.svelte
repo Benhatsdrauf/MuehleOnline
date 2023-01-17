@@ -254,9 +254,6 @@
     overflow-y: auto;
   }
 
-  img {
-  border-radius: 50%;
-}
 
   .border-left
   {

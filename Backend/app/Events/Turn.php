@@ -10,20 +10,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Move implements ShouldBroadcast
+class Turn implements ShouldBroadcast
 {
     //https://devdojo.com/bobbyiliev/how-to-use-laravel-websockets#:~:text=The%20Laravel%20WebSockets%20package%20emulates,a%20direct%20replacement%20for%20Pusher.
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $move;
+    public $your_turn;
+    private $token;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($move)
+    public function __construct($token)
     {
-        $this->move = $move;
+        $this->$your_turn = true;
+        $this->$token = $token;
     }
 
     /**
@@ -33,6 +35,6 @@ class Move implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('moves');
+        return new Channel("your_move.".$this->token);
     }
 }

@@ -42,16 +42,18 @@ return new class extends Migration
             $table->id();
             $table->string("invite_id");
             $table->boolean("is_active");
+            $table->boolean("whites_turn");
             $table->dateTime("end_time")->nullable();
             $table->timestamps();
         });
 
         Schema::create("move", function (Blueprint $table) {
             $table->id();
-            $table->string("row");
-            $table->string("column");
+            $table->integer("position");
+            $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id");
             $table->foreign("game_id")->references("id")->on("game")->onDelete("cascade");
+            $table->foreign("user_id")->references("id")->on("user")->onDelete("cascade");
         });
 
         Schema::create("user_to_game", function (Blueprint $table) {

@@ -4,6 +4,7 @@
   import {onMount} from "svelte";
   import { useNavigate } from "svelte-navigator";
   import GameHistory from "../lib/GameHistory.svelte";
+  import Navbar from "../lib/Navbar.svelte";
 
 
   import Fa from "svelte-fa";
@@ -103,28 +104,23 @@
   }
 </script>
 
-<nav class="navbar bgc-secondary">
-  <div class="container-fluid">
-    <a class="navbar-brand c-text me-auto" href="">
-      <Fa icon={faCat} color="#ffffff" size="1.6x" />
-      MühleOnline
-    </a>
-    <span class="navbar-text c-text me-2">
-      {elo}
-    </span>
-    <span class="navbar-text c-text me-2">
-      {username}
-    </span>
-    <div class="me-3">
-      <img src="https://api.dicebear.com/5.x/initials/svg?seed={username}" alt="profile" width="30px" height="30px">
-    </div>
-    <button
-      class="btn btn-outline-danger"
-      type="button"
-      on:click={Logout}>Logout</button
-    >
+
+<Navbar>
+  <span class="navbar-text c-text me-2">
+    {elo}
+  </span>
+  <span class="navbar-text c-text me-2">
+    {username}
+  </span>
+  <div class="me-3">
+    <img src="https://api.dicebear.com/5.x/initials/svg?seed={username}" alt="profile" width="30px" height="30px">
   </div>
-</nav>
+  <button
+    class="btn btn-outline-danger"
+    type="button"
+    on:click={Logout}>Logout</button
+  >
+</Navbar>
 
 <div class="container-fluid bgc-primary h-100">
   <div class="row">

@@ -17,6 +17,7 @@
   let gameState = "initial";
 
   let playerStones = [null, null, null, null, null, null, null, null, null];
+  let opponentStones = [null, null, null, null, null, null, null, null, null];
 
   let isWhite = false;
   let yourTurn = false;
@@ -37,13 +38,21 @@
 
         if (isWhite == true) {
           playerStones = whiteMoves;
+          opponentStones = blackMoves;
         } else {
           playerStones = blackMoves;
+          opponentStones = whiteMoves;
         }
 
         while (playerStones.length < 9) {
           playerStones.push(null);
         }
+
+        while (opponentStones.length < 9) {
+          opponentStones.push(null);
+        }
+
+        console.log(opponentStones);
       })
       .catch();
   });
@@ -161,7 +170,15 @@
           <Stone
             x={positions[stone][0]}
             y={positions[stone][1]}
-            isWhite={true}
+            isWhite={isWhite}
+          />
+        {/each}
+
+        {#each opponentStones.filter((x) => x != null) as stone}
+          <Stone
+            x={positions[stone][0]}
+            y={positions[stone][1]}
+            isWhite={!isWhite}
           />
         {/each}
       </svg>
@@ -169,11 +186,11 @@
     <div class="col-auto">
         <PlayerInfo user="{opponent}"/>
       <svg class="none-played mt-2">
-        {#each playerStones.filter((x) => x === null) as stone, i}
+        {#each opponentStones.filter((x) => x === null) as stone, i}
           <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />
         {/each}
         <text class="unplayed-number" x="50%" y="90%"
-          >{playerStones.filter((x) => x === null).length}</text
+          >{opponentStones.filter((x) => x === null).length}</text
         >
       </svg>
     </div>

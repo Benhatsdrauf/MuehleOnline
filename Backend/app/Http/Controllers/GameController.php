@@ -78,7 +78,9 @@ class GameController extends Controller
 
         $opponent = $game->users()->first();
 
-        $user->games()->attach($game->id, ["is_white" => !$opponent->is_white, "won" => false, "elo" => 0]);
+        $isWhite = !boolval($opponent->games()->find($game->id)->pivot->is_white);
+
+        $user->games()->attach($game->id, ["is_white" => $isWhite, "won" => false, "elo" => 0]);
         $game->is_active = true;
         $game->save();
 
@@ -139,7 +141,7 @@ class GameController extends Controller
         $BlackMoves = [];
 
         $userMoves = $user->moves()->where("game_id", $game->id)->pluck("position")->toArray();
-        $opponentMoves = $opponent->moves()->where("game_id", $game->id)->get("position");
+        $opponentMoves = $opponent->moves()->where("game_id", $game->id)->pluck("position")->toArray();
         $userIsWhite = boolval($game->users()->find($user->id)->pivot->is_white);
 
         if($userIsWhite)

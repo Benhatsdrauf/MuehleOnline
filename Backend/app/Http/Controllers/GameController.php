@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Move;
 use App\Logic\Error;
 use App\Events\PlayerReady;
+use App\Http\Controllers\StatisticController as Stat;
 use App\Events\Turn;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
@@ -98,12 +99,14 @@ class GameController extends Controller
         }
 
         $user->games()->updateExistingPivot($game->id, ["won" => false]);
+        Stat::addLos($user);
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
         if($opponent != null)
         {
             $opponent->games()->updateExistingPivot($game->id, ["won" => true]);
+            Stat::addWin($opponent);
         }
 
         $game->is_active = false;

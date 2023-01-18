@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\StatisticController as Stat;
 use App\Models\Move;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Events\Turn;
@@ -20,6 +21,8 @@ class StoneController extends Controller
         {
             Error::throw(["game" => "You do not have any active games."], 400);
         }
+
+        Stat::addMove($user);
 
         $move = new Move;
         $move->position = $position;

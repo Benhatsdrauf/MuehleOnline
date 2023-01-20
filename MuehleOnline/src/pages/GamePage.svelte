@@ -32,7 +32,7 @@
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
     .listen("Quit", (e) => {
       console.log(e);
-      if (e.ready) {
+      if (e.quit) {
         leaveChannel("opponent_quit");
         showModal = true;
       }
@@ -97,7 +97,7 @@
 
 {#if showModal}
   <Modal on:close={() => (showModal = false)}>
-    <h1>Your opponent left the game</h1>
+    <h3>Your opponent left the game</h3>
     <button
       on:click={() => {
         navigate("/home");

@@ -12,3 +12,9 @@ export let echo = new Echo({
     forceTLS: false,
     disableStatus: true,
 });
+
+export function leaveChannel(channelName) {
+    echo.leaveChannel(
+        `${channelName}.${localStorage.getItem("hashedToken")}`
+    );
+}

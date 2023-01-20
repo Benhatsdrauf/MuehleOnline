@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Game;
 use App\Models\UserToGame;
 use App\Models\User;
+use App\Models\Move;
 use App\Logic\Error;
 use App\Events\PlayerReady;
+use App\Http\Controllers\StatisticController as Stat;
 use App\Events\Turn;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
@@ -76,7 +78,9 @@ class GameController extends Controller
 
         $opponent = $game->users()->first();
 
-        $user->games()->attach($game->id, ["is_white" => !$opponent->is_white, "won" => false, "elo" => 0]);
+        $isWhite = !boolval($opponent->games()->find($game->id)->pivot->is_white);
+
+        $user->games()->attach($game->id, ["is_white" => $isWhite, "won" => false, "elo" => 0]);
         $game->is_active = true;
         $game->save();
 
@@ -97,12 +101,14 @@ class GameController extends Controller
         }
 
         $user->games()->updateExistingPivot($game->id, ["won" => false]);
+        Stat::addLos($user);
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
         if($opponent != null)
         {
             $opponent->games()->updateExistingPivot($game->id, ["won" => true]);
+            Stat::addWin($opponent);
         }
 
         $game->is_active = false;
@@ -127,16 +133,18 @@ class GameController extends Controller
 
         $data = new \stdClass();
         $data->user = new \stdClass();
+        $data->opponent = new \stdClass();
 
-        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user();
+        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
         $WhiteMoves  = [];
         $BlackMoves = [];
 
-        $userMoves = $user->moves()->where("game_id", $game->id)->get("position");
-        $opponentMoves = $user->moves()->where("game_id", $game->id)->get("position");
+        $userMoves = $user->moves()->where("game_id", $game->id)->pluck("position")->toArray();
+        $opponentMoves = $opponent->moves()->where("game_id", $game->id)->pluck("position")->toArray();
+        $userIsWhite = boolval($game->users()->find($user->id)->pivot->is_white);
 
-        if($user->is_white)
+        if($userIsWhite)
         {
             $WhiteMoves = $userMoves;
             $BlackMoves = $opponentMoves;
@@ -147,37 +155,26 @@ class GameController extends Controller
             $BlackMoves = $userMoves;
         }
 
-        $userIsWhite = boolval($game->users()->find($user->id)->pivot->is_white);
 
         $data->user->is_white = $userIsWhite;
         $data->user->has_turn = ($userIsWhite == $game->whites_turn);
         $data->white_moves = $WhiteMoves;
         $data->black_moves = $BlackMoves;
 
+
+        $userStatistic = $user->statistic()->first();
+        $opponentStatistic = $opponent->statistic()->first();
+
+        $data->user->name = $user->name;
+        $data->user->elo = $user->elo;
+        $data->user->wins = $userStatistic->won;
+        $data->user->losses =  $userStatistic->lost;
+
+        $data->opponent->name = $opponent->name;
+        $data->opponent->elo = $opponent->elo;
+        $data->opponent->wins = $opponentStatistic->won;
+        $data->opponent->losses =  $opponentStatistic->lost;
+
         return response()->json($data);
-    }
-
-    public function move(Request $request, integer $position)
-    {
-        $user = $request->user();
-
-        $game = $user->games()->where("is_active", true)->first();
-
-        if($game == null)
-        {
-            Error::throw(["game" => "You do not have any active games."], 400);
-        }
-
-        $move = new Move;
-        $move->position = $position;
-        $move->user_id = $user->id;
-        $move->game_id = $game->id;
-        $move->save();
-
-        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
-
-        $partnerToken = PersonalAccessToken::where("tokenable_id", $opponent->id)->first()->token;
-
-        event(new turn($partnerToken));
     }
 }

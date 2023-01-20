@@ -5,27 +5,12 @@
   import { useNavigate } from "svelte-navigator";
   import GameHistory from "../lib/GameHistory.svelte";
   import Navbar from "../lib/Navbar.svelte";
+  import {echo} from "../../scripts/echo";
 
 
   import Fa from "svelte-fa";
   import { faCat, faChartColumn, faGamepad, faClockRotateLeft, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
-
-  import Echo from "laravel-echo";
-  import Pusher from "pusher-js";
-
-  let pusher = Pusher;
-
-  let echo = new Echo({
-    broadcaster: "pusher",
-    authEndpoint: "http://localhost:5000/broadcasting/auth",
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    wsHost: "127.0.0.1",
-    wsPort: "6001",
-    forceTLS: false,
-    disableStatus: true,
-  });
-
 
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
@@ -254,9 +239,6 @@
     overflow-y: auto;
   }
 
-  img {
-  border-radius: 50%;
-}
 
   .border-left
   {

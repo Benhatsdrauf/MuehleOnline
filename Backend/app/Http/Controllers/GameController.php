@@ -16,7 +16,6 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 use App\Http\Controllers\UserController;
 
-use \stdClass;
 
 class GameController extends Controller
 {
@@ -84,10 +83,8 @@ class GameController extends Controller
         $user->games()->attach($game->id, ["is_white" => $isWhite, "won" => false, "elo" => 0]);
         $game->is_active = true;
         $game->save();
-
-        $partnerToken = PersonalAccessToken::where("tokenable_id", $opponent->id)->first()->token;
-
-        event(new playerReady($partnerToken));
+        
+        event(new playerReady($opponent));
     }
 
     public function quit(Request $request)
@@ -118,9 +115,7 @@ class GameController extends Controller
 
         UserController::eloUpdate($opponent, $user, $game);
 
-        $opponentToken = PersonalAccessToken::where("tokenable_id", $opponent->id)->first()->token;
-
-        event(new Quit($opponentToken));
+        event(new Quit($opponent));
 
         return response()->json();
     }

@@ -33,8 +33,6 @@ class StoneController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-        $partnerToken = PersonalAccessToken::where("tokenable_id", $opponent->id)->first()->token;
-
-        event(new turn($partnerToken));
+        event(new Move($opponent));
     }
 }

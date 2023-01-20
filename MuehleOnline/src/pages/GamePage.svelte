@@ -10,11 +10,13 @@
   import Navbar from "../lib/Navbar.svelte";
   import { useNavigate } from "svelte-navigator";
   import PlayerInfo from "../lib/PlayerInfo.svelte";
-
+  import { echo, leaveChannel } from "../../scripts/echo";
+  import Modal from "../lib/Modal.svelte";
 
   const navigate = useNavigate();
 
   let gameState = "initial";
+  let showModal = false;
 
   let playerStones = [null, null, null, null, null, null, null, null, null];
   let opponentStones = [null, null, null, null, null, null, null, null, null];
@@ -25,6 +27,16 @@
   let opponent = {};
   let whiteMoves;
   let blackMoves;
+
+  echo
+    .channel("opponent_quit." + localStorage.getItem("hashedToken"))
+    .listen("Quit", (e) => {
+      console.log(e);
+      if (e.quit) {
+        leaveChannel("opponent_quit");
+        showModal = true;
+      }
+    });
 
   onMount(() => {
     AuthorizedGetRequest("game/data")
@@ -59,30 +71,45 @@
     playerStones[playerStones.indexOf(null)] = pos;
     console.log(playerStones);
 
-    AuthorizedGetRequest("game/stone/set/" + pos).then().catch();
+    AuthorizedGetRequest("game/stone/set/" + pos)
+      .then()
+      .catch();
   }
 
-  async function quitGame()
-  {
-    AuthorizedGetRequest("game/quit").then(() => {
+  async function quitGame() {
+    AuthorizedGetRequest("game/quit")
+      .then(() => {
         navigate("/home");
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 </script>
 
 <Navbar>
-    <div class="col-auto">
-        <button type="button" class="btn btn-outline-danger" on:click={quitGame}>Quit Game</button>
-      </div>
+  <div class="col-auto">
+    <button type="button" class="btn btn-outline-danger" on:click={quitGame}
+      >Quit Game</button
+    >
+  </div>
 </Navbar>
+
+{#if showModal}
+  <Modal on:close={() => (showModal = false)}>
+    <h3>Your opponent left the game</h3>
+    <button
+      on:click={() => {
+        navigate("/home");
+      }}>Ok</button
+    >
+  </Modal>
+{/if}
 
 <div class="container-fluid bgc-primary">
   <div class="row pt-4">
     <div class="col-auto">
-        <PlayerInfo user="{me}"/>
+      <PlayerInfo user={me} />
       <svg class="none-played mt-2">
         {#each playerStones.filter((x) => x === null) as stone, i}
           <Stone x={50} y={20 + 5 * i} {isWhite} />
@@ -165,11 +192,7 @@
         {/each}
 
         {#each playerStones.filter((x) => x != null) as stone}
-          <Stone
-            x={positions[stone][0]}
-            y={positions[stone][1]}
-            isWhite={isWhite}
-          />
+          <Stone x={positions[stone][0]} y={positions[stone][1]} {isWhite} />
         {/each}
 
         {#each opponentStones.filter((x) => x != null) as stone}
@@ -182,7 +205,7 @@
       </svg>
     </div>
     <div class="col-auto">
-        <PlayerInfo user="{opponent}"/>
+      <PlayerInfo user={opponent} />
       <svg class="none-played mt-2">
         {#each opponentStones.filter((x) => x === null) as stone, i}
           <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />

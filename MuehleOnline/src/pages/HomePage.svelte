@@ -1,15 +1,23 @@
 <script>
   import Modal from "../lib/Modal.svelte";
-  import { AuthorizedGetRequest, AuthorizedRequest } from "../../scripts/request";
-  import {onMount} from "svelte";
+  import {
+    AuthorizedGetRequest,
+    AuthorizedRequest,
+  } from "../../scripts/request";
+  import { onMount } from "svelte";
   import { useNavigate } from "svelte-navigator";
   import GameHistory from "../lib/GameHistory.svelte";
   import Navbar from "../lib/Navbar.svelte";
-  import {echo} from "../../scripts/echo";
-
+  import { echo, leaveChannel } from "../../scripts/echo";
 
   import Fa from "svelte-fa";
-  import { faCat, faChartColumn, faGamepad, faClockRotateLeft, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faCat,
+    faChartColumn,
+    faGamepad,
+    faClockRotateLeft,
+    faRotateLeft,
+  } from "@fortawesome/free-solid-svg-icons";
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
 
   echo
@@ -17,7 +25,7 @@
     .listen("PlayerReady", (e) => {
       console.log(e);
       if (e.ready) {
-        echo.leaveChannel("player_ready." + localStorage.getItem("hashedToken"));
+        leaveChannel("player_ready");
         navigate("/gamePage");
       }
     });
@@ -29,35 +37,32 @@
   let elo = 1000;
   let gameHistory = [];
 
-  
   onMount(() => {
-
-    LoadUserData();  
+    LoadUserData();
   });
 
-  async function quitGame()
-  {
-    AuthorizedGetRequest("game/quit").then(() => {
-      activeGame = false;
-      LoadUserData();
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+  async function quitGame() {
+    AuthorizedGetRequest("game/quit")
+      .then(() => {
+        activeGame = false;
+        LoadUserData();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
-  async function LoadUserData()
-  {
+  async function LoadUserData() {
     await AuthorizedGetRequest("user/info")
-    .then((response) => {
-      username = response.user.name;
-      elo = response.user.elo;
-      activeGame = response.game.active;
-      gameHistory = response.history;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then((response) => {
+        username = response.user.name;
+        elo = response.user.elo;
+        activeGame = response.game.active;
+        gameHistory = response.history;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   const navigate = useNavigate();
@@ -89,7 +94,6 @@
   }
 </script>
 
-
 <Navbar>
   <span class="navbar-text c-text me-2">
     {elo}
@@ -98,12 +102,15 @@
     {username}
   </span>
   <div class="me-3">
-    <img src="https://api.dicebear.com/5.x/initials/svg?seed={username}" alt="profile" width="30px" height="30px">
+    <img
+      src="https://api.dicebear.com/5.x/initials/svg?seed={username}"
+      alt="profile"
+      width="30px"
+      height="30px"
+    />
   </div>
-  <button
-    class="btn btn-outline-danger"
-    type="button"
-    on:click={Logout}>Logout</button
+  <button class="btn btn-outline-danger" type="button" on:click={Logout}
+    >Logout</button
   >
 </Navbar>
 
@@ -140,35 +147,43 @@
   <div class="row">
     <div class="col-5">
       {#if activeGame}
-      <div class="card card-border">
-        <div class="card-header bgc-secondary">
+        <div class="card card-border">
+          <div class="card-header bgc-secondary">
+            <div class="row">
+              <div class="col-auto">
+                <Fa icon={faGamepad} color="#ffffff" size="2x" />
+              </div>
+              <div class="col c-text">
+                <h3>Active Game</h3>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" />
+          <div class="row">
+            <div class="col">
+              <p>You still have one active game.</p>
+            </div>
+          </div>
           <div class="row">
             <div class="col-auto">
-              <Fa icon={faGamepad} color="#ffffff" size="2x" />
+              <p>You have 2 min to join left.</p>
             </div>
-            <div class="col c-text">
-              <h3>Active Game</h3>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn btn-success"
+                on:click={() => {
+                  navigate("/gamePage");
+                }}>Re-join</button
+              >
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-danger" on:click={quitGame}
+                >Quit</button
+              >
             </div>
           </div>
         </div>
-        <div class="card-body"/>
-        <div class="row">
-          <div class="col">
-            <p>You still have one active game.</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-auto">
-            <p>You have 2 min to join left.</p>
-          </div>
-          <div class="col-auto">
-            <button type="button" class="btn btn-success" on:click={() => {navigate("/gamePage")}}>Re-join</button>
-          </div>
-          <div class="col-auto">
-            <button type="button" class="btn btn-danger" on:click={quitGame}>Quit</button>
-          </div>
-        </div>
-      </div>
       {/if}
     </div>
     <div class="col">
@@ -186,16 +201,17 @@
         <div class="card-body" />
         <div class="container history">
           {#each gameHistory as game}
-          <div class="mb-2">
-            <GameHistory
-            username={username} 
-            count={gameHistory.indexOf(game) +1}
-            won={game.won}
-            opponent={game.opponent}
-            playtime={game.play_time}
-            start_date={game.start_date}
-            elo={game.elo}/>
-          </div>
+            <div class="mb-2">
+              <GameHistory
+                {username}
+                count={gameHistory.indexOf(game) + 1}
+                won={game.won}
+                opponent={game.opponent}
+                playtime={game.play_time}
+                start_date={game.start_date}
+                elo={game.elo}
+              />
+            </div>
           {/each}
         </div>
       </div>
@@ -228,21 +244,16 @@
     border-color: var(--color-dark-grey);
   }
 
-  .card-body
-  {
+  .card-body {
     padding-left: 10px;
   }
 
-  .history
-  {
+  .history {
     height: 300px;
     overflow-y: auto;
   }
 
-
-  .border-left
-  {
+  .border-left {
     border-left: solid var(--color-white) 2px;
   }
-
 </style>

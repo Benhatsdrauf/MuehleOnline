@@ -18,7 +18,7 @@
   let gameState = "initial";
   let showModal = false;
 
-  let playerStones = [-1, -1, -1, -1, -1, -1, -1, -1, -1];
+  let playerStones = [null, null, null, null, null, null, null, null, null];
   let opponentStones = [null, null, null, null, null, null, null, null, null];
 
   let isWhite = false;

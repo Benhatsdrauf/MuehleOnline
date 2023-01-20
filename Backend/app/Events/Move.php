@@ -12,30 +12,24 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Logic\DatabaseHelper as helper;
 
-
-class Quit implements ShouldBroadcast
+class Move
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $quit = true;
-    private $token= "";
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct($opponent)
+    public $oldPos = 0;
+    public $newPos = 0;
+    private $token = "";
+
+    public function __construct($opponent, $oldPos, $newPos)
     {
         $this->token = helper::getHashedToken($opponent);
+        $this->oldPos = $oldPos;
+        $this->newPos = $newPos;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
+
     public function broadcastOn()
     {
-        return new Channel("opponent_quit.".$this->token);
+        return new Channel('move.' + $this->token);
     }
 }

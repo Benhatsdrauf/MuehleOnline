@@ -10,21 +10,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+use App\Logic\DatabaseHelper as helper;
+
 class PlayerReady implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $ready;
+    public $ready = true;
     private $token;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(string $token)
+    public function __construct(string $opponent)
     {
-        $this->ready = true;
-        $this->token = $token;
+        $this->token = helper::getHashedToken($opponent);
     }
 
     /**

@@ -33,6 +33,6 @@ class StoneController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-        event(new Move($opponent));
+        event(new Move($opponent, null, $position));
     }
 }

@@ -20,9 +20,11 @@ class Move
     public $newPos = 0;
     private $token = "";
 
-    public function __construct($opponent)
+    public function __construct($opponent, $oldPos, $newPos)
     {
         $this->token = helper::getHashedToken($opponent);
+        $this->oldPos = $oldPos;
+        $this->newPos = $newPos;
     }
 
 

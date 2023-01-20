@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Logic\DatabaseHelper as helper;
 
-class Move
+class MoveEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

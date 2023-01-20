@@ -25,7 +25,6 @@ Route::get('/', function () {
 });
 
 Route::get("/test", function () {
-    event(new PlayerReady());
 });
 
 Route::prefix("auth")->group(function() {

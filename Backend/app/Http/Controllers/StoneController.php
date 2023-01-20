@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Carbon\Carbon;
+
 use App\Http\Controllers\StatisticController as Stat;
 use App\Models\Move;
 use App\Events\MoveEvent;
@@ -44,7 +46,10 @@ class StoneController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
+        //check if sender has mill
         event(new MoveEvent($opponent, null, $position));
+        $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+        $game->save();
     }
 
     public function delete(Request $request, $position)

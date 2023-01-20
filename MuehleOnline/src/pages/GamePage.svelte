@@ -101,8 +101,8 @@
     <button
       on:click={() => {
         navigate("/home");
-      }}
-    />
+      }}>Ok</button
+    >
   </Modal>
 {/if}
 

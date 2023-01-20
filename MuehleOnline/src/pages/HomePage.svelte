@@ -31,6 +31,7 @@
     });
 
   let showModal = false;
+  let showErrorModal = false;
   let inviteLink = "";
   let activeGame = false;
   let username = "";
@@ -73,7 +74,7 @@
 
   async function StartGame() {
     let response = await AuthorizedRequest("game/create").catch((err) => {
-      alert("Please finish ongoing games first.");
+      showErrorModal = true;
       console.log(err);
       return;
     });
@@ -113,6 +114,13 @@
     >Logout</button
   >
 </Navbar>
+
+{#if showErrorModal}
+  <Modal on:close={() => (showErrorModal = false)}>
+    <h3>Please finish ongoing games first.</h3>
+    <button on:click={() => (showErrorModal = false)}>Ok</button>
+  </Modal>
+{/if}
 
 <div class="container-fluid bgc-primary h-100">
   <div class="row">

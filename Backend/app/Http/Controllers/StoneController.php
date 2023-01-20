@@ -8,6 +8,7 @@ use App\Http\Controllers\StatisticController as Stat;
 use App\Models\Move;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Events\Turn;
+use App\Logic\Error;
 
 class StoneController extends Controller
 {

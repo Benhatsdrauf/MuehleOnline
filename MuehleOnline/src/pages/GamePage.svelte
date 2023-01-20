@@ -51,8 +51,6 @@
         while (opponentStones.length < 9) {
           opponentStones.push(null);
         }
-
-        console.log(opponentStones);
       })
       .catch();
   });

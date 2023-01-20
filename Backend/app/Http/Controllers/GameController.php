@@ -11,6 +11,7 @@ use App\Logic\Error;
 use App\Events\PlayerReady;
 use App\Http\Controllers\StatisticController as Stat;
 use App\Events\Turn;
+use App\Events\Quit;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 use App\Http\Controllers\UserController;
@@ -116,6 +117,10 @@ class GameController extends Controller
         $game->save();
 
         UserController::eloUpdate($opponent, $user, $game);
+
+        $opponentToken = PersonalAccessToken::where("tokenable_id", $opponent->id)->first()->token;
+
+        event(new Quit($opponentToken));
 
         return response()->json();
     }

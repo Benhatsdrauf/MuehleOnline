@@ -18,7 +18,7 @@
   let gameState = "initial";
   let showModal = false;
 
-  let playerStones = [null, null, null, null, null, null, null, null, null];
+  let playerStones = [-1, -1, -1, -1, -1, -1, -1, -1, -1];
   let opponentStones = [null, null, null, null, null, null, null, null, null];
 
   let isWhite = false;
@@ -37,6 +37,17 @@
         showModal = true;
       }
     });
+
+  // echo
+  //   .channel("move." + localStorage.getItem("hashedToken"))
+  //   .listen("Move", (e) => {
+  //     console.log(e);
+  //     // check new position and override in array
+  //     //e.newPos,
+  //     //e.oldPos,
+
+  //     leaveChannel("move");
+  //   });
 
   onMount(() => {
     AuthorizedGetRequest("game/data")
@@ -191,11 +202,11 @@
           />
         {/each}
 
-        {#each playerStones.filter((x) => x != null) as stone}
+        {#each playerStones.filter((x) => x != null && x != -1) as stone}
           <Stone x={positions[stone][0]} y={positions[stone][1]} {isWhite} />
         {/each}
 
-        {#each opponentStones.filter((x) => x != null) as stone}
+        {#each opponentStones.filter((x) => x != null && x != -1) as stone}
           <Stone
             x={positions[stone][0]}
             y={positions[stone][1]}

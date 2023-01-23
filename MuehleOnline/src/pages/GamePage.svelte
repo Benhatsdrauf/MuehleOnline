@@ -12,6 +12,7 @@
   import PlayerInfo from "../lib/PlayerInfo.svelte";
   import { echo, leaveChannel } from "../../scripts/echo";
   import Modal from "../lib/Modal.svelte";
+  import { getPossibleMoves } from "../../scripts/gameLogic";
 
   const navigate = useNavigate();
 
@@ -20,6 +21,7 @@
 
   let playerStones = [null, null, null, null, null, null, null, null, null];
   let opponentStones = [null, null, null, null, null, null, null, null, null];
+  let possibleMoves = [];
 
   let isWhite = false;
   let yourTurn = false;
@@ -79,8 +81,21 @@
   });
 
   function playerAction(pos) {
-    playerStones[playerStones.indexOf(null)] = pos;
-    console.log(playerStones);
+    if (playerStones.includes(null)) {
+      playerStones[playerStones.indexOf(null)] = pos;
+      console.log(playerStones);
+    } else {
+      possibleMoves = getPossibleMoves(
+        pos,
+        playerStones.concat(opponentStones)
+      );
+      console.log("position", pos);
+      console.log("possible moves", possibleMoves);
+      console.log(
+        "occupied positions moves",
+        playerStones.concat(opponentStones)
+      );
+    }
 
     AuthorizedGetRequest("game/stone/set/" + pos)
       .then()
@@ -198,12 +213,19 @@
             x={position[0]}
             y={position[1]}
             index={i}
+            isPossible={possibleMoves.includes(i)}
             on:click={() => playerAction(i)}
           />
         {/each}
 
-        {#each playerStones.filter((x) => x != null && x != -1) as stone}
-          <Stone x={positions[stone][0]} y={positions[stone][1]} {isWhite} />
+        <!-- onclick noch fallsch muss nicht den inddx sondern den index der position übergeben -->
+        {#each playerStones.filter((x) => x != null && x != -1) as stone, i}
+          <Stone
+            x={positions[stone][0]}
+            y={positions[stone][1]}
+            {isWhite}
+            on:click={() => playerAction(stone)}
+          />
         {/each}
 
         {#each opponentStones.filter((x) => x != null && x != -1) as stone}

@@ -15,6 +15,7 @@ use App\Events\Quit;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 use App\Http\Controllers\UserController;
+use App\Logic\DatabaseHelper as helper;
 
 
 class GameController extends Controller
@@ -34,6 +35,7 @@ class GameController extends Controller
         $game->is_active = false;
         $game->end_time = null;
         $game->whites_turn = true;
+        $game->time_to_move = Carbon::now()->addMinutes(env('MOVE_TIMEOUT'));
         $game->invite_id = bin2hex(openssl_random_pseudo_bytes(16));
         $game->save();
 
@@ -98,22 +100,9 @@ class GameController extends Controller
             Error::throw(["game" => "You do not have any active games to quit."], 400);
         }
 
-        $user->games()->updateExistingPivot($game->id, ["won" => false]);
-        Stat::addLos($user);
-
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-        if($opponent != null)
-        {
-            $opponent->games()->updateExistingPivot($game->id, ["won" => true]);
-            Stat::addWin($opponent);
-        }
-
-        $game->is_active = false;
-        $game->end_time = Carbon::now();
-        $game->save();
-
-        UserController::eloUpdate($opponent, $user, $game);
+       helper::GameEnded($game, $opponent, $user);
 
         event(new Quit($opponent));
 
@@ -140,8 +129,8 @@ class GameController extends Controller
         $WhiteMoves  = [];
         $BlackMoves = [];
 
-        $userMoves = $user->moves()->where("game_id", $game->id)->pluck("position")->toArray();
-        $opponentMoves = $opponent->moves()->where("game_id", $game->id)->pluck("position")->toArray();
+        $userMoves = helper::GetUserToGame($user, $game)->moves()->pluck("position")->toArray();
+        $opponentMoves = helper::GetUserToGame($opponent, $game)->moves()->pluck("position")->toArray();
         $userIsWhite = boolval($game->users()->find($user->id)->pivot->is_white);
 
         if($userIsWhite)

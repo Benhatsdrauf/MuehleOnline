@@ -2,8 +2,13 @@
 
 namespace App\Console;
 
+use App\Models\Game;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Logic\DatabaseHelper as helper;
+
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,7 +20,34 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            $timedOutGames = Game::all()->where("is_active", true)->where("time_to_move", "<", Carbon::now());
+            
+            foreach($timedOutGames as $game)
+            {
+                $white = $game->user_to_game()->where("is_white", true)->first()->user()->first();
+                $black = $game->user_to_game()->where("is_white", false)->first()->user()->first();
+
+                $whites_turn = $game->whites_turn;
+
+                $winner = "";
+                $loser = "";
+
+                if($whites_turn)
+                {
+                    $winner = $black;
+                    $loser = $white;
+                }
+                else
+                {
+                    $winner = $white;
+                    $loser = $black;
+                }
+
+                helper::GameEnded($game, $winner, $loser);
+            }
+
+        })->everyMinute();
     }
 
     /**

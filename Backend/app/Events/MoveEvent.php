@@ -30,6 +30,6 @@ class MoveEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('move.' + $this->token);
+        return new Channel('move.'. $this->token);
     }
 }

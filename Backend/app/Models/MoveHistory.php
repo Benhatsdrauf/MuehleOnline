@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Move extends Model
+class MoveHistory extends Model
 {
-    protected $table = "move";
+    use HasFactory;
+
+    protected $table = "move_history";
 
     public $timestamps = false;
 
     protected $fillable = [
-        "position", "utg_id"
+        "old_position", "new_position", "created_at", "utg_id"
     ];
 
     public function user_to_game()

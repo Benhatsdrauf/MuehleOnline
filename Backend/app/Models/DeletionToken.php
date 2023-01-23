@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Move extends Model
+class DeletionToken extends Model
 {
-    protected $table = "move";
+    use HasFactory;
+
+    protected $table = "deletion_token";
 
     public $timestamps = false;
 
     protected $fillable = [
-        "position", "utg_id"
+        "token"
     ];
 
     public function user_to_game()

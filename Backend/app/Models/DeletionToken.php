@@ -19,6 +19,6 @@ class DeletionToken extends Model
 
     public function user_to_game()
     {
-        return $this->hasOne(UserToGame::class, "deletion_id", "id");
+        return $this->belongsTo(UserToGame::class, "utg_id", "id");
     }
 }

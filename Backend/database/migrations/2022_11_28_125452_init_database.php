@@ -48,24 +48,15 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create("deletion_token", function (Blueprint $table) {
-            $table->id();
-            $table->string("token");
-        });
-
         Schema::create("user_to_game", function (Blueprint $table) {
             $table->id();
             $table->boolean("is_white");
             $table->boolean("won");
             $table->integer("elo");
-            $table->unsignedBigInteger("deletion_id");
-            $table->unsignedBigInteger("move_history_id");
-            $table->unsignedBigInteger("move_id");
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id");
             $table->foreign("user_id")->references("id")->on("user")->onDelete("cascade");
             $table->foreign("game_id")->references("id")->on("game")->onDelete("cascade");
-            $table->foreign("deletion_id")->references("id")->on("deletion_token")->onDelete("cascade");
         });
 
         Schema::create("move", function (Blueprint $table) {
@@ -80,6 +71,13 @@ return new class extends Migration
             $table->integer("old_position");
             $table->integer("new_position");
             $table->datetime("created_at");
+            $table->unsignedBigInteger("utg_id");
+            $table->foreign("utg_id")->references("id")->on("user_to_game")->onDelete("cascade");
+        });
+
+        Schema::create("deletion_token", function (Blueprint $table) {
+            $table->id();
+            $table->string("token");
             $table->unsignedBigInteger("utg_id");
             $table->foreign("utg_id")->references("id")->on("user_to_game")->onDelete("cascade");
         });

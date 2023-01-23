@@ -27,7 +27,7 @@ class UserToGame extends Model
 
     public function deletion_tokens()
     {
-        return $this->belongsTo(DeletionToken::class, "deletion_id", "id");
+        return $this->hasMany(DeletionToken::class, "utg_id", "id");
     }
 
     public function move_histories()

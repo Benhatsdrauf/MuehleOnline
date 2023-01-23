@@ -14,6 +14,6 @@
     }
 
     .possible {
-        fill: var(--color-leaf);
+        fill: green;
     }
 </style>

@@ -12,7 +12,10 @@
   import PlayerInfo from "../lib/PlayerInfo.svelte";
   import { echo, leaveChannel } from "../../scripts/echo";
   import Modal from "../lib/Modal.svelte";
-  import { getPossibleMoves } from "../../scripts/gameLogic";
+  import { getPossibleMoves, getAllMoves } from "../../scripts/gameLogic";
+  import GameField from "../lib/GameField.svelte";
+  import { draw, fade } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
 
   const navigate = useNavigate();
 
@@ -21,7 +24,9 @@
 
   let playerStones = [null, null, null, null, null, null, null, null, null];
   let opponentStones = [null, null, null, null, null, null, null, null, null];
+  let allMoves = [];
   let possibleMoves = [];
+  let allMoveLines = [];
 
   let isWhite = false;
   let yourTurn = false;
@@ -85,16 +90,31 @@
       playerStones[playerStones.indexOf(null)] = pos;
       console.log(playerStones);
     } else {
+      console.log("i get called");
+      // clear possible moves and lines for now
+      allMoves = [];
+      possibleMoves = [];
+      allMoveLines = [];
+
       possibleMoves = getPossibleMoves(
         pos,
         playerStones.concat(opponentStones)
       );
+
+      allMoves = getAllMoves(pos);
+
+      for (let i = 0; i < allMoves.length; i++) {
+        allMoveLines.push([pos, allMoves[i]]);
+      }
+
       console.log("position", pos);
       console.log("possible moves", possibleMoves);
       console.log(
         "occupied positions moves",
         playerStones.concat(opponentStones)
       );
+
+      console.log("allMoveLines", allMoveLines);
     }
 
     AuthorizedGetRequest("game/stone/set/" + pos)
@@ -147,67 +167,21 @@
     </div>
     <div class="col d-flex justify-content-center">
       <svg class="game-field">
-        <rect
-          x="5%"
-          y="5%"
-          width="90%"
-          height="90%"
-          fill="none"
-          stroke="black"
-          stroke-width="5"
-        />
-        <rect
-          x="20%"
-          y="20%"
-          width="60%"
-          height="60%"
-          fill="none"
-          stroke="black"
-          stroke-width="5"
-        />
-        <rect
-          x="35%"
-          y="35%"
-          width="30%"
-          height="30%"
-          fill="none"
-          stroke="black"
-          stroke-width="5"
-        />
-        <line
-          x1="5%"
-          y1="50%"
-          x2="35%"
-          y2="50%"
-          stroke="black"
-          stroke-width="5"
-        />
-        <line
-          x1="65%"
-          y1="50%"
-          x2="95%"
-          y2="50%"
-          stroke="black"
-          stroke-width="5"
-        />
-        <line
-          x1="50%"
-          y1="5%"
-          x2="50%"
-          y2="35%"
-          stroke="black"
-          stroke-width="5"
-        />
-        <line
-          x1="50%"
-          y1="65%"
-          x2="50%"
-          y2="95%"
-          stroke="black"
-          stroke-width="5"
-        />
+        <GameField />
 
-        {#each positions as position, i}
+        {#each allMoveLines as line (line)}
+          <line
+            x1="{positions[line[0]][0]}%"
+            y1="{positions[line[0]][1]}%"
+            x2="{positions[line[1]][0]}%"
+            y2="{positions[line[1]][1]}%"
+            stroke={possibleMoves.includes(line[1]) ? "green" : "red"}
+            stroke-width="5"
+            in:draw={{ duration: 1500, easing: quintOut }}
+          />
+        {/each}
+
+        {#each positions as position, i (i)}
           <Circle
             status={gameState}
             x={position[0]}

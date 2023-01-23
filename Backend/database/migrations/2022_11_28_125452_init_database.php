@@ -48,23 +48,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create("move", function (Blueprint $table) {
-            $table->id();
-            $table->integer("position");
-        });
-
-        Schema::create("move_history", function (Blueprint $table) {
-            $table->id();
-            $table->integer("old_position");
-            $table->integer("new_position");
-            $table->datetime("created_at");
-        });
-
         Schema::create("deletion_token", function (Blueprint $table) {
             $table->id();
             $table->string("token");
         });
-
 
         Schema::create("user_to_game", function (Blueprint $table) {
             $table->id();
@@ -79,8 +66,22 @@ return new class extends Migration
             $table->foreign("user_id")->references("id")->on("user")->onDelete("cascade");
             $table->foreign("game_id")->references("id")->on("game")->onDelete("cascade");
             $table->foreign("deletion_id")->references("id")->on("deletion_token")->onDelete("cascade");
-            $table->foreign("move_history_id")->references("id")->on("move_history")->onDelete("cascade");
-            $table->foreign("move_id")->references("id")->on("move")->onDelete("cascade");
+        });
+
+        Schema::create("move", function (Blueprint $table) {
+            $table->id();
+            $table->integer("position");
+            $table->unsignedBigInteger("utg_id");
+            $table->foreign("utg_id")->references("id")->on("user_to_game")->onDelete("cascade");
+        });
+
+        Schema::create("move_history", function (Blueprint $table) {
+            $table->id();
+            $table->integer("old_position");
+            $table->integer("new_position");
+            $table->datetime("created_at");
+            $table->unsignedBigInteger("utg_id");
+            $table->foreign("utg_id")->references("id")->on("user_to_game")->onDelete("cascade");
         });
     }
 
@@ -91,10 +92,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists("user_to_game");
-        Schema::dropIfExists("deletion_token");
         Schema::dropIfExists("move_history");
         Schema::dropIfExists("move");
+        Schema::dropIfExists("user_to_game");
+        Schema::dropIfExists("deletion_token");
         Schema::dropIfExists("game");
         Schema::dropIfExists("user");
         Schema::dropIfExists("shadow");

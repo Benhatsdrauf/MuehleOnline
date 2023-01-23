@@ -14,11 +14,11 @@ class MoveHistory extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "old_position", "new_position", "created_at"
+        "old_position", "new_position", "created_at", "utg_id"
     ];
 
     public function user_to_game()
     {
-        return $this->belongsTo(UserToGame::class, "move_history_id", "id");
+        return $this->belongsTo(UserToGame::class, "utg_id", "id");
     }
 }

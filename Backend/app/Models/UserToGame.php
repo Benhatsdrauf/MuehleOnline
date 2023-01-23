@@ -27,16 +27,16 @@ class UserToGame extends Model
 
     public function deletion_tokens()
     {
-        return $this->hasMany(DeletionToken::class, "deletion_id", "id");
+        return $this->belongsTo(DeletionToken::class, "deletion_id", "id");
     }
 
     public function move_histories()
     {
-        return $this->hasMany(MoveHistory::class, "move_history_id", "id");
+        return $this->hasMany(MoveHistory::class, "utg_id", "id");
     }
 
     public function moves()
     {
-        return $this->hasMany(Move::class, "move_id", "id");
+        return $this->hasMany(Move::class, "utg_id", "id");
     }
 }

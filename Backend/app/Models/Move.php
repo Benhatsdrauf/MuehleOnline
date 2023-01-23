@@ -12,11 +12,11 @@ class Move extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "user_id", "position", "game_id"
+        "position", "utg_id"
     ];
 
     public function user_to_game()
     {
-        return $this->belongsTo(UserToGame::class, "move_id", "id");
+        return $this->belongsTo(UserToGame::class, "utg_id", "id");
     }
 }

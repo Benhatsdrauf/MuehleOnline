@@ -129,8 +129,8 @@ class GameController extends Controller
         $WhiteMoves  = [];
         $BlackMoves = [];
 
-        $userMoves = $user->moves()->where("game_id", $game->id)->pluck("position")->toArray();
-        $opponentMoves = $opponent->moves()->where("game_id", $game->id)->pluck("position")->toArray();
+        $userMoves = helper::GetUserToGame($user, $game)->moves()->pluck("position")->toArray();
+        $opponentMoves = helper::GetUserToGame($opponent, $game)->moves()->pluck("position")->toArray();
         $userIsWhite = boolval($game->users()->find($user->id)->pivot->is_white);
 
         if($userIsWhite)

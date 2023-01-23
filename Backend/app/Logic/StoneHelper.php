@@ -7,8 +7,8 @@ use App\Http\Controllers\StatisticController as Stat;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Game;
-use App\Models\Move;
 
+use App\Logic\DatabaseHelper as dbHelper;
 use App\Http\Controllers\UserController;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -39,7 +39,7 @@ class StoneHelper
     //Has to be call befor writing new Pos to database
     public static function UserHasMill(Game $game, User $user, $newPos)
     {
-        $moves = $game->moves()->where("user_id", $user->id)->pluck("position");
+        $moves = dbHelper::GetUserToGame($user, $game)->moves()->pluck("position");
 
         foreach(StoneHelper::GetPossibleMills() as $mill)
         {

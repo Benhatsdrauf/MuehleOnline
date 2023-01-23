@@ -12,7 +12,7 @@ class UserToGame extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "user_id", "game_id", "isWhite", "won", "elo"
+        "user_id", "game_id", "isWhite", "won", "elo", "delete_token"
     ];
 
     public function user()

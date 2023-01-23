@@ -28,9 +28,22 @@ class Kernel extends ConsoleKernel
                 $white = $game->user_to_game()->where("is_white", true)->first()->user()->first();
                 $black = $game->user_to_game()->where("is_white", false)->first()->user()->first();
 
-                //find who won
+                $whites_turn = $game->whites_turn;
+
                 $winner = "";
                 $loser = "";
+
+                if($whites_turn)
+                {
+                    $winner = $black;
+                    $loser = $white;
+                }
+                else
+                {
+                    $winner = $white;
+                    $loser = $black;
+                }
+
                 helper::GameEnded($game, $winner, $loser);
             }
 

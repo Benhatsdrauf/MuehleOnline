@@ -62,6 +62,7 @@ return new class extends Migration
             $table->boolean("is_white");
             $table->boolean("won");
             $table->integer("elo");
+            $table->string("delete_token");
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id");
             $table->foreign("user_id")->references("id")->on("user")->onDelete("cascade");

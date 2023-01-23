@@ -7,6 +7,9 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoneController;
 
+use App\Models\User;
+use App\Logic\StoneHelper as helper;
+
 use App\Events\PlayerReady;
 
 /*
@@ -25,6 +28,12 @@ Route::get('/', function () {
 });
 
 Route::get("/test", function () {
+
+    $user = User::find(1);
+
+    $game = $user->games()->where("is_active", true)->first();
+
+    return response()->json(helper::UserHasMill($game, $user, 1));
 });
 
 Route::prefix("auth")->group(function() {

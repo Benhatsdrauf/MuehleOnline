@@ -27,7 +27,9 @@
   let allMoves = [];
   let possibleMoves = [];
   let allMoveLines = [];
+  let selectedStone = null;
 
+  let canSet = true;
   let isWhite = false;
   let yourTurn = false;
   let me = {};
@@ -85,41 +87,48 @@
       .catch();
   });
 
-  function playerAction(pos) {
-    if (playerStones.includes(null)) {
-      playerStones[playerStones.indexOf(null)] = pos;
-      console.log(playerStones);
-    } else {
-      console.log("i get called");
-      // clear possible moves and lines for now
-      allMoves = [];
-      possibleMoves = [];
-      allMoveLines = [];
+  function clearVariables() {
+    // clear possible moves and lines for now
+    allMoves = [];
+    possibleMoves = [];
+    allMoveLines = [];
+  }
 
-      possibleMoves = getPossibleMoves(
-        pos,
-        playerStones.concat(opponentStones)
-      );
+  function selectStone(pos) {
+    clearVariables();
 
-      allMoves = getAllMoves(pos);
+    let allStones = playerStones.concat(opponentStones);
+    possibleMoves = getPossibleMoves(pos, allStones);
+    allMoves = getAllMoves(pos);
 
-      for (let i = 0; i < allMoves.length; i++) {
-        allMoveLines.push([pos, allMoves[i]]);
-      }
-
-      console.log("position", pos);
-      console.log("possible moves", possibleMoves);
-      console.log(
-        "occupied positions moves",
-        playerStones.concat(opponentStones)
-      );
-
-      console.log("allMoveLines", allMoveLines);
+    for (let i = 0; i < allMoves.length; i++) {
+      allMoveLines.push([pos, allMoves[i]]);
     }
+
+    selectedStone = pos;
+  }
+
+  function setStone(pos) {
+    playerStones[playerStones.indexOf(null)] = pos;
+    if (!playerStones.includes(null)) canSet = false;
+
+    console.log("canSet setStone", canSet);
 
     AuthorizedGetRequest("game/stone/set/" + pos)
       .then()
       .catch();
+  }
+
+  function moveStone(pos) {
+    if (selectedStone == null) return;
+    console.log("canSet playerAction", canSet);
+
+    let oldPos = selectedStone;
+    playerStones = playerStones.filter((x) => x != oldPos);
+    playerStones.push(pos);
+
+    clearVariables();
+    selectedStone = null;
   }
 
   async function quitGame() {
@@ -168,7 +177,7 @@
     <div class="col d-flex justify-content-center">
       <svg class="game-field">
         <GameField />
-
+        <!-- Line's for showing possible moves -->
         {#each allMoveLines as line (line)}
           <line
             x1="{positions[line[0]][0]}%"
@@ -181,6 +190,7 @@
           />
         {/each}
 
+        <!-- Game positino circles -->
         {#each positions as position, i (i)}
           <Circle
             status={gameState}
@@ -188,20 +198,25 @@
             y={position[1]}
             index={i}
             isPossible={possibleMoves.includes(i)}
-            on:click={() => playerAction(i)}
+            isDisabled={(!possibleMoves.includes(i) && !canSet) ||
+              playerStones.includes(i)}
+            on:click={canSet ? () => setStone(i) : () => moveStone(i)}
           />
         {/each}
 
-        <!-- onclick noch fallsch muss nicht den inddx sondern den index der position übergeben -->
-        {#each playerStones.filter((x) => x != null && x != -1) as stone, i}
+        <!-- player circles -->
+        {#each playerStones.filter((x) => x != null && x != -1) as stone (stone)}
           <Stone
             x={positions[stone][0]}
             y={positions[stone][1]}
             {isWhite}
-            on:click={() => playerAction(stone)}
+            isSelected={stone == selectedStone}
+            isDisabled={canSet}
+            on:click={() => selectStone(stone)}
           />
         {/each}
 
+        <!-- opponent circles -->
         {#each opponentStones.filter((x) => x != null && x != -1) as stone}
           <Stone
             x={positions[stone][0]}

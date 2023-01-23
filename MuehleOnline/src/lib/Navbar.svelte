@@ -5,7 +5,7 @@
 
 <nav class="navbar bgc-secondary">
   <div class="container-fluid">
-    <a class="navbar-brand c-text me-auto" href="*">
+    <a class="navbar-brand c-text me-auto" href="home">
       <Fa icon={faCat} color="#ffffff" size="1.6x" />
       MühleOnline
     </a>

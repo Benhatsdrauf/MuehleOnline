@@ -20,13 +20,8 @@ class Game extends Model
         return $this->hasMany(UserToGame::class, "game_id", "id");
     }
 
-    public function moves()
-    {
-        return $this->hasMany(Move::class, "game_id" , "id");
-    }
-
     public function users()
     {
-        return $this->belongsToMany(User::class, "user_to_game", "game_id", "user_id")->withPivot("is_white", "won", "elo", "delete_token");
+        return $this->belongsToMany(User::class, "user_to_game", "game_id", "user_id")->withPivot("is_white", "won", "elo");
     }
 }

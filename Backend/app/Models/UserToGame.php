@@ -12,7 +12,7 @@ class UserToGame extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "user_id", "game_id", "isWhite", "won", "elo", "delete_token"
+        "user_id", "game_id", "isWhite", "won", "elo"
     ];
 
     public function user()
@@ -23,5 +23,20 @@ class UserToGame extends Model
     public function game()
     {
         return $this->belongsTo(Game::class, "game_to_move_id", "id");
+    }
+
+    public function deletion_tokens()
+    {
+        return $this->hasMany(DeletionToken::class, "deletion_id", "id");
+    }
+
+    public function move_histories()
+    {
+        return $this->hasMany(MoveHistory::class, "move_history_id", "id");
+    }
+
+    public function moves()
+    {
+        return $this->hasMany(Move::class, "move_id", "id");
     }
 }

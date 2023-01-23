@@ -49,6 +49,7 @@ Route::prefix("game")->group(function() {
     Route::get("/data", [GameController::class, "getCurrentState"])->middleware("auth:sanctum");
     Route::prefix("/stone")->group(function() {
         Route::get("/set/{position}", [StoneController::class, "set"])->middleware("auth:sanctum");
+        Route::get("/delete/{position}", [StoneController::class, "delete"])->middleware("auth:sanctum");
     });
 
 });

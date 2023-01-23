@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 use App\Http\Controllers\StatisticController as Stat;
+use App\Http\Controllers\HistoryController as history;
 use App\Models\Move;
 use App\Events\MoveEvent;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -62,6 +63,7 @@ class StoneController extends Controller
             event(new MoveEvent($opponent, null, $position));
         }
         
+        history::SetEntry(null, $position, dbHelper::GetUserToGame($user, $game));
 
         $move = new Move;
         $move->position = $position;
@@ -87,6 +89,7 @@ class StoneController extends Controller
             Error::throw(["game" => "It is not your turn."], 400);
         }
 
+        history::SetEntry($position, -1, dbHelper::GetUserToGame($opponent, $game));
 
         $move = dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", $position)->first();
         $move->position = -1;

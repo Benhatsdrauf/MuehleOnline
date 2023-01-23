@@ -68,7 +68,7 @@ return new class extends Migration
 
         Schema::create("move_history", function (Blueprint $table) {
             $table->id();
-            $table->integer("old_position");
+            $table->integer("old_position")->nullable();
             $table->integer("new_position");
             $table->datetime("created_at");
             $table->unsignedBigInteger("utg_id");
@@ -92,8 +92,8 @@ return new class extends Migration
     {
         Schema::dropIfExists("move_history");
         Schema::dropIfExists("move");
-        Schema::dropIfExists("user_to_game");
         Schema::dropIfExists("deletion_token");
+        Schema::dropIfExists("user_to_game");
         Schema::dropIfExists("game");
         Schema::dropIfExists("user");
         Schema::dropIfExists("shadow");

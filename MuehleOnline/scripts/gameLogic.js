@@ -53,6 +53,10 @@ export function isPositionOccupied(newPos, allOccupiedPositions) // allCurrentPo
     return allOccupiedPositions.includes(newPos);
 }
 
+export function getAllMoves(pos) {
+    return possibleMoves[pos]
+}
+
 export function getPossibleMoves(pos, allOccupiedPositions) {
     let allPossibleMoves = possibleMoves[pos]
     let moves = allPossibleMoves.filter(x => !allOccupiedPositions.includes(x));

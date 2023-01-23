@@ -8,7 +8,7 @@ let possibleMoves = [
     [5, 7],           // 6
     [0, 6, 15],       // 7
     [9, 15],          // 8
-    [8, 10, 17],      // 9
+    [1, 8, 10, 17],      // 9
     [9, 11],         // 10
     [3, 10, 12, 19], // 11
     [11, 13],        // 12
@@ -52,7 +52,16 @@ export function isPositionOccupied(newPos, allOccupiedPositions) // allCurrentPo
 {
     return allOccupiedPositions.includes(newPos);
 }
-/**
+
+export function getPossibleMoves(pos, allOccupiedPositions) {
+    let allPossibleMoves = possibleMoves[pos]
+    let moves = allPossibleMoves.filter(x => !allOccupiedPositions.includes(x));
+    return moves
+}
+
+
+
+/*
  * @param {Array} currentPositions 
  * @returns {Boolean}
  */

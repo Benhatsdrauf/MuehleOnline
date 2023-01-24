@@ -111,6 +111,9 @@ class StoneController extends Controller
 
         deletion::clearTokens(dbHelper::GetUserToGame($user, $game));
 
+        Stat::addKill($user);
+        Stat::addDeath($opponent);
+
         $game->whites_turn = !$game->whites_turn;
         $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
         $game->save();
@@ -133,12 +136,13 @@ class StoneController extends Controller
             Error::throw(["game" => "You do not have any active games."], 400);
         }
         
-        if(dbHelper::GetUserToGame($user, $game)->moves()->count() > 8)
+        if(dbHelper::GetUserToGame($user, $game)->moves()->count() < 9)
         {
-            Error::throw(["game" => "You have already set 9 stones."], 400);
+            Error::throw(["game" => "You have not set all 9 Stones yet."], 400);
         }
 
-        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", $newPos)->exists())
+        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", $newPos)->exists() ||
+        dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", $newPos)->exists())
         {
             Error::throw(["game" => "This position is already set."], 400);
         }

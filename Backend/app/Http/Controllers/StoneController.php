@@ -18,7 +18,7 @@ use App\Logic\StoneHelper as helper;
 use App\Logic\DatabaseHelper as dbHelper;
 
 use App\Http\Requests\StoneDeleteRequest;
-
+use App\Http\Requests\StoneMoveRequest;
 
 class StoneController extends Controller
 {
@@ -52,13 +52,12 @@ class StoneController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-        if(helper::UserHasMill($game, $user, $position))
+        if(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $position))
         {
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
             $game->save();
 
             $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
-
         }
         else
         {
@@ -117,5 +116,67 @@ class StoneController extends Controller
         $game->save();
 
         event(new MoveEvent($opponent, $position, -1));
+    }
+
+    public function move(StoneMoveRequest $request)
+    {
+        $user = $request->user();
+        $oldPos = $request->old_position;
+        $newPos = $request->new_position;
+
+        $game = $user->games()->where("is_active", true)->first();
+
+        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
+
+        if($game == null)
+        {
+            Error::throw(["game" => "You do not have any active games."], 400);
+        }
+        
+        if(dbHelper::GetUserToGame($user, $game)->moves()->count() > 8)
+        {
+            Error::throw(["game" => "You have already set 9 stones."], 400);
+        }
+
+        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", $newPos)->exists())
+        {
+            Error::throw(["game" => "This position is already set."], 400);
+        }
+  
+        if(helper::UserHasTurn($game, $user))
+        {
+            Error::throw(["game" => "It is not your turn."], 400);
+        }
+
+        Stat::addMove($user);
+
+        $oldMove = dbHelper::GetUserToGame($user, $game)->moves()->where("position", $oldPos)->first();
+        $oldMove->position = -1;
+        $oldMove->save();
+
+
+        if(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $newPos))
+        {
+            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+            $game->save();
+
+            $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+
+        }
+        else
+        {
+            $game->whites_turn = !$game->whites_turn;
+            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+            $game->save();
+    
+            event(new MoveEvent($opponent, $oldPos, $newPos));
+        }
+        
+        $oldMove->position = $newPos;
+        $oldMove->save();
+
+        history::SetEntry($oldPos, $newPos, dbHelper::GetUserToGame($user, $game));
+
+        return response()->josn($deletion_token);
     }
 }

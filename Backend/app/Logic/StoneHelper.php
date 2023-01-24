@@ -10,6 +10,7 @@ use App\Models\Game;
 
 use App\Logic\DatabaseHelper as dbHelper;
 use App\Http\Controllers\UserController;
+use App\Models\UserToGame;
 use Illuminate\Database\Eloquent\Collection;
 
 class StoneHelper
@@ -37,9 +38,9 @@ class StoneHelper
     }
 
     //Has to be call befor writing new Pos to database
-    public static function UserHasMill(Game $game, User $user, $newPos)
+    public static function UserHasMill(UserToGame $utg, $newPos)
     {
-        $moves = dbHelper::GetUserToGame($user, $game)->moves()->pluck("position");
+        $moves = $utg->moves()->pluck("position");
 
         foreach(StoneHelper::GetPossibleMills() as $mill)
         {

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -24,7 +25,7 @@ class Quit implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($opponent)
+    public function __construct(User $opponent)
     {
         $this->token = helper::getHashedToken($opponent);
     }

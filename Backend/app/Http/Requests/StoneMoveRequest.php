@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoneDeleteRequest extends JsonRequest
+class StoneMoveRequest extends JsonRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class StoneDeleteRequest extends JsonRequest
     public function rules()
     {
         return [
-            "deletion_token" => "bail|required|min:1",
-            "position" => "bail|required"
+            "old_position" => "bail|required",
+            "new_position" => "bail|required"
         ];
     }
 }

@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\UserToGame;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Http\Controllers\StatisticController as Stat;
+use App\Http\Controllers\DeletionTokenController as deletion;
+use App\Logic\DatabaseHelper as dbHelper;
 use Carbon\Carbon;
 use App\Http\Controllers\UserController;
 
@@ -26,6 +28,9 @@ class DatabaseHelper
         $winner->games()->updateExistingPivot($game->id, ["won" => true]);
         Stat::addWin($winner);
 
+
+        deletion::clearTokens(dbHelper::GetUserToGame($winner, $game));
+        deletion::clearTokens(dbHelper::GetUserToGame($loser, $game));
 
         $game->is_active = false;
         $game->end_time = Carbon::now();

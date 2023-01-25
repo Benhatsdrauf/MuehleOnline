@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -20,13 +21,12 @@ class MoveEvent implements ShouldBroadcast
     public $newPos = 0;
     private $token = "";
 
-    public function __construct($opponent, $oldPos, $newPos)
+    public function __construct(User $opponent, $oldPos, $newPos)
     {
         $this->token = helper::getHashedToken($opponent);
         $this->oldPos = $oldPos;
         $this->newPos = $newPos;
     }
-
 
     public function broadcastOn()
     {

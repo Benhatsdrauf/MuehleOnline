@@ -17,7 +17,7 @@ class StoneHelper
 {
     public static function GetPossibleMills()
     {
-        return $possibleMills = collect([
+        return collect([
             collect([0, 1, 2]),
             collect([8, 9, 10]),
             collect([16, 17, 18]),
@@ -45,8 +45,11 @@ class StoneHelper
         foreach(StoneHelper::GetPossibleMills() as $mill)
         {
             if($mill->contains($newPos))
-            {          
-                $mill = $mill->forget($newPos)->values();
+            {
+ 
+                $mill = $mill->filter(function ($value, $key) use ($newPos) {
+                    return $value != $newPos;
+                })->values();
 
                 if($moves->contains($mill[0]) && $moves->contains($mill[1]))
                 {

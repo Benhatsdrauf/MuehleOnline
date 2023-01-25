@@ -9,6 +9,7 @@ use App\Http\Controllers\StoneController;
 
 use App\Models\User;
 use App\Logic\StoneHelper as helper;
+use App\Logic\DatabaseHelper as dbHelper;
 
 use App\Events\PlayerReady;
 
@@ -33,7 +34,7 @@ Route::get("/test", function () {
 
     $game = $user->games()->where("is_active", true)->first();
 
-    return response()->json(helper::UserHasMill($game, $user, 1));
+    return response()->json(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), 3));
 });
 
 Route::prefix("auth")->group(function() {
@@ -51,7 +52,6 @@ Route::prefix("game")->group(function() {
         Route::get("/set/{position}", [StoneController::class, "set"])->middleware("auth:sanctum");
         Route::post("/delete", [StoneController::class, "delete"])->middleware("auth:sanctum");
     });
-
 });
 
 Route::prefix("user")->group(function() {

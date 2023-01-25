@@ -13,7 +13,7 @@ class StoneMoveRequest extends JsonRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**

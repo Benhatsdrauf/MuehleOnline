@@ -32,13 +32,16 @@ class StoneController extends Controller
         {
             Error::throw(["game" => "You do not have any active games."], 400);
         }
+
+        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
         
         if(dbHelper::GetUserToGame($user, $game)->moves()->count() > 8)
         {
             Error::throw(["game" => "You have already set 9 stones."], 400);
         }
 
-        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", $position)->exists())
+        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", $position)->exists() ||
+        dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", $position)->exists())
         {
             Error::throw(["game" => "This position is already set."], 400);
         }
@@ -50,7 +53,8 @@ class StoneController extends Controller
         
         Stat::addMove($user);        
 
-        $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
+
+        $deletion_token = null;
 
         if(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $position))
         {
@@ -75,13 +79,13 @@ class StoneController extends Controller
         $move->utg_id = $user->games()->find($game->id)->pivot->id;
         $move->save();
 
-        return response()->josn($deletion_token);
+        return response()->json($deletion_token);
     }
 
     public function delete(StoneDeleteRequest $request)
     {
         $user = $request->user();
-        $deletion_token = $request->token;
+        $deletion_token = $request->deletion_token;
         $position = $request->position;
 
         $game = $user->games()->where("is_active", true)->first();
@@ -100,8 +104,10 @@ class StoneController extends Controller
 
         if(!deletion::isTokenCorrect(dbHelper::GetUserToGame($user, $game), $deletion_token))
         {
-            Error::throw(["game" => "You are not allowed to delete a stone."], 400);
+            Error::throw(["game" => "Deletion token is wrong."], 400);
         }
+
+        //check if stone is in mill
 
         history::SetEntry($position, -1, dbHelper::GetUserToGame($opponent, $game));
 

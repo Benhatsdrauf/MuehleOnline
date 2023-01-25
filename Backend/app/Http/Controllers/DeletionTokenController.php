@@ -17,7 +17,7 @@ class DeletionTokenController extends Controller
 
         $deletion = new DeletionToken();
         $deletion->token = bin2hex(openssl_random_pseudo_bytes(16));
-        $deletion->utg = $utg->id;
+        $deletion->utg_id = $utg->id;
         $deletion->save();
 
         return $deletion->token;

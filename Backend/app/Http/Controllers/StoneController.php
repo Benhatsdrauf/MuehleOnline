@@ -46,7 +46,7 @@ class StoneController extends Controller
             Error::throw(["game" => "This position is already set."], 400);
         }
   
-        if(helper::UserHasTurn($game, $user))
+        if(!helper::UserHasTurn($game, $user))
         {
             Error::throw(["game" => "It is not your turn."], 400);
         }
@@ -97,7 +97,7 @@ class StoneController extends Controller
             Error::throw(["game" => "There is no stone at this position."], 400);
         }
 
-        if(helper::UserHasTurn($game, $user))
+        if(!helper::UserHasTurn($game, $user))
         {
             Error::throw(["game" => "It is not your turn."], 400);
         }
@@ -153,7 +153,7 @@ class StoneController extends Controller
             Error::throw(["game" => "This position is already set."], 400);
         }
   
-        if(helper::UserHasTurn($game, $user))
+        if(!helper::UserHasTurn($game, $user))
         {
             Error::throw(["game" => "It is not your turn."], 400);
         }

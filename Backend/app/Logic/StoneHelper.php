@@ -64,11 +64,6 @@ class StoneHelper
     {
         $userIsWhite = boolval($game->users()->find($user->id)->pivot->is_white);
 
-        if($game->whites_turn != $userIsWhite)
-        {
-           return false;
-        }
-
-        return true;
+        return $game->whites_turn == $userIsWhite;
     }
 }

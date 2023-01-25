@@ -51,6 +51,7 @@ Route::prefix("game")->group(function() {
     Route::prefix("/stone")->group(function() {
         Route::get("/set/{position}", [StoneController::class, "set"])->middleware("auth:sanctum");
         Route::post("/delete", [StoneController::class, "delete"])->middleware("auth:sanctum");
+        Route::post("/move", [StoneController::class, "move"])->middleware("auth:sanctum");
     });
 });
 

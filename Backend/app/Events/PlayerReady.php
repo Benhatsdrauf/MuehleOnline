@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\User;
 
 use App\Logic\DatabaseHelper as helper;
 
@@ -23,7 +24,7 @@ class PlayerReady implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(string $opponent)
+    public function __construct(User $opponent)
     {
         $this->token = helper::getHashedToken($opponent);
     }

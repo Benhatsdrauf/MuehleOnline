@@ -122,11 +122,20 @@ class StoneController extends Controller
         Stat::addKill($user);
         Stat::addDeath($opponent);
 
-        $game->whites_turn = !$game->whites_turn;
-        $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
-        $game->save();
+        // if sender won game (opponent has less than 3 stones)
+        if(dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", -1)->count() > 6)
+        {
+            dbHelper::EndGame($game, $user, $opponent);
+            return response()->json("You just won");
+        }
+        else
+        {
+            $game->whites_turn = !$game->whites_turn;
+            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+            $game->save();
 
-        event(new MoveEvent($opponent, $position, -1));
+            event(new MoveEvent($opponent, $position, -1));
+        }
     }
 
     public function move(StoneMoveRequest $request)

@@ -102,7 +102,7 @@ class GameController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-       helper::GameEnded($game, $opponent, $user);
+       helper::EndGame($game, $opponent, $user);
 
         event(new Quit($opponent));
 

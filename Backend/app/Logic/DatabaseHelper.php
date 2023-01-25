@@ -20,14 +20,13 @@ class DatabaseHelper
         return PersonalAccessToken::where("tokenable_id", $user->id)->first()->token;
     }
 
-    public static function GameEnded($game, $winner, $loser)
+    public static function EndGame($game, $winner, $loser)
     {
         $loser->games()->updateExistingPivot($game->id, ["won" => false]);
         Stat::addLos($loser);
 
         $winner->games()->updateExistingPivot($game->id, ["won" => true]);
         Stat::addWin($winner);
-
 
         deletion::clearTokens(dbHelper::GetUserToGame($winner, $game));
         deletion::clearTokens(dbHelper::GetUserToGame($loser, $game));

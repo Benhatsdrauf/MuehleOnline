@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
                     $loser = $black;
                 }
 
-                helper::GameEnded($game, $winner, $loser);
+                helper::EndGame($game, $winner, $loser);
             }
 
         })->everyMinute();

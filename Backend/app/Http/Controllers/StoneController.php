@@ -34,6 +34,11 @@ class StoneController extends Controller
         }
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
+
+        if(!helper::UserHasTurn($game, $user))
+        {
+            Error::throw(["game" => "It is not your turn."], 400);
+        }
         
         if(dbHelper::GetUserToGame($user, $game)->moves()->count() > 8)
         {
@@ -45,14 +50,8 @@ class StoneController extends Controller
         {
             Error::throw(["game" => "This position is already set."], 400);
         }
-  
-        if(!helper::UserHasTurn($game, $user))
-        {
-            Error::throw(["game" => "It is not your turn."], 400);
-        }
         
-        Stat::addMove($user);        
-
+        Stat::addMove($user);
 
         $deletion_token = null;
 
@@ -107,7 +106,10 @@ class StoneController extends Controller
             Error::throw(["game" => "Deletion token is wrong."], 400);
         }
 
-        //check if stone is in mill
+        if(!helper::CanDeleteStone(dbHelper::GetUserToGame($user, $game), $position))
+        {
+            Error::throw(["game" => "Can not delete stone, because its in a mill."]);
+        }
 
         history::SetEntry($position, -1, dbHelper::GetUserToGame($opponent, $game));
 
@@ -141,6 +143,11 @@ class StoneController extends Controller
         {
             Error::throw(["game" => "You do not have any active games."], 400);
         }
+
+        if(!helper::UserHasTurn($game, $user))
+        {
+            Error::throw(["game" => "It is not your turn."], 400);
+        }
         
         if(dbHelper::GetUserToGame($user, $game)->moves()->count() < 9)
         {
@@ -150,12 +157,12 @@ class StoneController extends Controller
         if(helper::IsPositionSet(dbHelper::GetUserToGame($user, $game), $newPos) ||
         helper::IsPositionSet(dbHelper::GetUserToGame($opponent, $game), $newPos))
         {
-            Error::throw(["game" => "This position is already set."], 400);
+            Error::throw(["new_position" => "This position is already set."], 400);
         }
   
-        if(!helper::UserHasTurn($game, $user))
+        if(!helper::IsPossibleMove($oldPos, $newPos, dbHelper::GetUserToGame($user, $game)->moves()->count))
         {
-            Error::throw(["game" => "It is not your turn."], 400);
+            Error::throw(["new_position" => "Stone can not be moved there."], 400);
         }
 
         Stat::addMove($user);

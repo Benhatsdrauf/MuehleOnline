@@ -66,4 +66,9 @@ class StoneHelper
 
         return $game->whites_turn == $userIsWhite;
     }
+
+    public static function IsPositionSet(UserToGame $utg, $position)
+    {
+        return $utg->moves()->where("position", $position)->first() != null;
+    }
 }

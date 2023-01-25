@@ -40,8 +40,8 @@ class StoneController extends Controller
             Error::throw(["game" => "You have already set 9 stones."], 400);
         }
 
-        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", $position)->exists() ||
-        dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", $position)->exists())
+        if(helper::IsPositionSet(dbHelper::GetUserToGame($user, $game), $position) ||
+        helper::IsPositionSet(dbHelper::GetUserToGame($opponent, $game), $position))
         {
             Error::throw(["game" => "This position is already set."], 400);
         }
@@ -92,7 +92,7 @@ class StoneController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-        if(!dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", $position)->exists())
+        if(!helper::IsPositionSet(dbHelper::GetUserToGame($opponent, $game), $position))
         {
             Error::throw(["game" => "There is no stone at this position."], 400);
         }
@@ -147,8 +147,8 @@ class StoneController extends Controller
             Error::throw(["game" => "You have not set all 9 Stones yet."], 400);
         }
 
-        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", $newPos)->exists() ||
-        dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", $newPos)->exists())
+        if(helper::IsPositionSet(dbHelper::GetUserToGame($user, $game), $newPos) ||
+        helper::IsPositionSet(dbHelper::GetUserToGame($opponent, $game), $newPos))
         {
             Error::throw(["game" => "This position is already set."], 400);
         }
@@ -164,7 +164,7 @@ class StoneController extends Controller
         $oldMove->position = -1;
         $oldMove->save();
 
-
+        $deletion_token = null;
         if(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $newPos))
         {
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));

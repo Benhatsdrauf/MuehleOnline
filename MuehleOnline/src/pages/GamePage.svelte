@@ -224,6 +224,7 @@
             x={positions[stone][0]}
             y={positions[stone][1]}
             isWhite={!isWhite}
+            isDisabled={true}
           />
         {/each}
       </svg>

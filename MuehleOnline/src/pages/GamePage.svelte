@@ -85,6 +85,8 @@
         }
       })
       .catch();
+
+    playerStones.includes(null) ? (canSet = true) : (canSet = false);
   });
 
   function clearVariables() {

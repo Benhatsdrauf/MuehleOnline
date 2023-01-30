@@ -10,8 +10,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Logic\StoneHelper as helper;
 
-use App\Logic\DatabaseHelper as helper;
+use App\Logic\DatabaseHelper as dbHelper;
 
 class MoveEvent implements ShouldBroadcast
 {
@@ -19,13 +20,18 @@ class MoveEvent implements ShouldBroadcast
 
     public $oldPos = 0;
     public $newPos = 0;
+    public $waitForDelete = false;
     private $token = "";
 
     public function __construct(User $opponent, $oldPos, $newPos)
     {
-        $this->token = helper::getHashedToken($opponent);
+        $this->token = dbHelper::getHashedToken($opponent);
         $this->oldPos = $oldPos;
         $this->newPos = $newPos;
+
+        $game = dbHelper::GetActiveGameOrNull($opponent);
+
+        $this->waitForDelete = dbHelper::GetUserToGame($opponent, $game)->deletion_tokens()->first()->exists();
     }
 
     public function broadcastOn()

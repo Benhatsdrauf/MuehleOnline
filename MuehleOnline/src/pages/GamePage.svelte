@@ -263,7 +263,9 @@
             isPossible={possibleMoves.includes(i)}
             isDisabled={(!possibleMoves.includes(i) && !canSet) ||
               playerStones.includes(i) ||
-              opponentStones.includes(i)}
+              opponentStones.includes(i) ||
+              !yourTurn
+              }
             on:click={canSet ? () => setStone(i) : () => moveStone(i)}
           />
         {/each}

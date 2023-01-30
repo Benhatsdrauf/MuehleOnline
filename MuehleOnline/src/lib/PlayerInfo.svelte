@@ -30,6 +30,6 @@
 
 <style>
     .highlight {
-        border: 5px green solid;
+        border: 5px var(--color-success-light) solid;
     }
 </style>

@@ -87,8 +87,7 @@
         blackMoves = data.black_moves;
         deletionToken = data.user.deletion_token;
 
-        if(deletionToken != "")
-        {
+        if (deletionToken != "") {
           canDelete = true;
           selectedStone = null;
         }
@@ -273,8 +272,7 @@
             isDisabled={(!possibleMoves.includes(i) && !canSet) ||
               playerStones.includes(i) ||
               opponentStones.includes(i) ||
-              !yourTurn
-              }
+              !yourTurn}
             on:click={canSet ? () => setStone(i) : () => moveStone(i)}
           />
         {/each}
@@ -298,7 +296,7 @@
             y={positions[stone][1]}
             isWhite={!isWhite}
             isDisabled={!canDelete}
-            isDeletable={canDelete && opponentStonesInMill.includes(stone)}
+            isDeletable={canDelete && !opponentStonesInMill.includes(stone)}
             on:click={() => RemoveStone(stone)}
           />
         {/each}

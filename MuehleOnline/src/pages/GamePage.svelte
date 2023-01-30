@@ -121,16 +121,31 @@
 
   function selectStone(pos) {
     clearVariables();
-
     let allStones = playerStones.concat(opponentStones);
-    possibleMoves = getPossibleMoves(pos, allStones);
-    allMoves = getAllMoves(pos);
 
-    for (let i = 0; i < allMoves.length; i++) {
-      allMoveLines.push([pos, allMoves[i]]);
+    if (playerStones.filter((x) => x != -1).length > 3) {
+      possibleMoves = getPossibleMoves(pos, allStones);
+      allMoves = getAllMoves(pos);
+
+      for (let i = 0; i < allMoves.length; i++) {
+        allMoveLines.push([pos, allMoves[i]]);
+      }
+
+      selectedStone = pos;
     }
+    else
+    {
+      for(let i = 0; i < 24; i++)
+      {
+        if(!allStones.includes(i))
+        {
+          possibleMoves.push(i);
+        }
+      }
 
-    selectedStone = pos;
+      selectedStone = pos;
+
+    }
   }
 
   function setStone(pos) {
@@ -154,6 +169,7 @@
 
   async function moveStone(pos) {
     if (selectedStone == null) return;
+    console.log("Move method");
 
     let oldPos = selectedStone;
     playerStones = playerStones.filter((x) => x != oldPos);

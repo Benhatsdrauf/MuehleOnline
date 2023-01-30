@@ -16,6 +16,7 @@ use App\Events\Turn;
 use App\Logic\Error;
 use App\Logic\StoneHelper as helper;
 use App\Logic\DatabaseHelper as dbHelper;
+use App\Events\GameOverEvent;
 
 use App\Http\Requests\StoneDeleteRequest;
 use App\Http\Requests\StoneMoveRequest;
@@ -126,6 +127,13 @@ class StoneController extends Controller
         $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
         $game->save();
 
+        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", "!=", -1)->count() < 3)
+        {
+            dbHelper::GameEnded($game, $user, $opponent);
+            event(new GameOverEvent($user, true, "Congratulations you won."));
+            event(new GameOverEvent($opponent, false, "U Suc"));
+        }
+
         event(new MoveEvent($opponent, $position, -1));
         return response()->json("success");
     }
@@ -161,7 +169,7 @@ class StoneController extends Controller
             Error::throw(["new_position" => "This position is already set."], 400);
         }
   
-        if(!helper::IsPossibleMove($oldPos, $newPos, dbHelper::GetUserToGame($user, $game)->moves()->count()))
+        if(!helper::IsPossibleMove($oldPos, $newPos, dbHelper::GetUserToGame($user, $game)->moves()->where("position", "!=", -1)->count()))
         {
             Error::throw(["new_position" => "Stone can not be moved there."], 400);
         }

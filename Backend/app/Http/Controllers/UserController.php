@@ -61,7 +61,7 @@ class UserController extends Controller
 
             $timeToMove = Carbon::parse($activeGame->time_to_move);
 
-            if($userIsWhite == $activeGame->whites_turn)
+            if($userIsWhite != $activeGame->whites_turn)
             {
                 $timeToMove->addMinute();
             }

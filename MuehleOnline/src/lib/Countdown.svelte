@@ -24,7 +24,7 @@ let x = setInterval(function() {
   result = minutes + "m " + seconds + "s ";
     
   // If the count down is over, write some text 
-  if (distance < 1) {
+  if (distance < 1000) {
     clearInterval(x);
   }
 }, 1000);

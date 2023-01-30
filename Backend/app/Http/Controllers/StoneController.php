@@ -53,7 +53,7 @@ class StoneController extends Controller
         
         Stat::addMove($user);
 
-        $deletion_token = null;
+        $deletion_token = "";
 
         if(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $position))
         {
@@ -68,9 +68,9 @@ class StoneController extends Controller
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
             $game->save();
     
-            event(new MoveEvent($opponent, null, $position));
         }
         
+        event(new MoveEvent($opponent, null, $position));
         history::SetEntry(null, $position, dbHelper::GetUserToGame($user, $game));
 
         $move = new Move;
@@ -127,6 +127,7 @@ class StoneController extends Controller
         $game->save();
 
         event(new MoveEvent($opponent, $position, -1));
+        return response()->json("success");
     }
 
     public function move(StoneMoveRequest $request)
@@ -171,7 +172,7 @@ class StoneController extends Controller
         $oldMove->position = -1;
         $oldMove->save();
 
-        $deletion_token = null;
+        $deletion_token = "";
         if(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $newPos))
         {
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
@@ -186,9 +187,9 @@ class StoneController extends Controller
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
             $game->save();
     
-            event(new MoveEvent($opponent, $oldPos, $newPos));
         }
         
+        event(new MoveEvent($opponent, $oldPos, $newPos));
         $oldMove->position = $newPos;
         $oldMove->save();
 

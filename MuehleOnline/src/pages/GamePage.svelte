@@ -16,6 +16,7 @@
   import GameField from "../lib/GameField.svelte";
   import { draw, fade } from "svelte/transition";
   import { quintOut } from "svelte/easing";
+  import { empty } from "svelte/internal";
 
   const navigate = useNavigate();
 
@@ -50,17 +51,25 @@
     });
 
   echo
-    .channel(".move." + localStorage.getItem("hashedToken"))
+    .channel("move." + localStorage.getItem("hashedToken"))
     .listen("MoveEvent", (e) => {
       console.log("move event", e);
+      let oldPos = e.oldPos == null ? null : Number(e.oldPos);
+      let newPos = Number(e.newPos);
 
-      opponentStones = opponent.filter((x) => x != e.oldPos);
-      opponentStones.push(e.newPos);
+      if (newPos == -1) {
+        let index = playerStones.indexOf(oldPos);
+        playerStones[index] = Number(e.newPos);
+
+      } else {
+        let index = opponentStones.indexOf(oldPos);
+        opponentStones[index] = Number(e.newPos);
+      }
 
       // its only my turn if i dont have to wait for a deletion
       yourTurn = !e.waitForDelete;
 
-      leaveChannel("move");
+      //leaveChannel("move");
     });
 
   onMount(() => {
@@ -122,8 +131,17 @@
     console.log("canSet setStone", canSet);
 
     AuthorizedGetRequest("game/stone/set/" + pos)
-      .then()
-      .catch();
+      .then((response) => {
+        if (response != "") {
+          canDelete = true;
+          deletionToken = response;
+        } else {
+          yourTurn = false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   async function moveStone(pos) {
@@ -138,21 +156,17 @@
       new_position: pos,
     })
       .then((response) => {
-        console.log(response);
-        response.data != null
-          ? (deletionToken = response.data)
-          : (yourTurn = false);
+        if (response) {
+          canDelete = true;
+          deletionToken = response;
+          selectedStone = null;
+        } else {
+          yourTurn = false;
+        }
       })
       .catch((err) => {
         console.log(err);
       });
-
-    if (deletionToken) {
-      canDelete = true;
-    }
-
-    clearVariables();
-    selectedStone = null;
   }
 
   async function RemoveStone(pos) {
@@ -162,15 +176,15 @@
       deletion_token: deletionToken,
     })
       .then((response) => {
-        console.log(response);
-        if ((response.status = "200")) return;
+        let index = opponentStones.indexOf(pos);
+        opponentStones[index] = -1;
+        deletionToken = "";
+        yourTurn = false;
+        canDelete = false;
       })
       .catch((err) => {
         console.log(err);
-      });
-
-    deletionToken = "";
-    yourTurn = false;
+      });    
   }
 
   async function quitGame() {
@@ -247,7 +261,7 @@
           />
         {/each}
 
-        <!-- player circles -->
+        <!-- player stones -->
         {#each playerStones.filter((x) => x != null && x != -1) as stone (stone)}
           <Stone
             x={positions[stone][0]}
@@ -259,13 +273,14 @@
           />
         {/each}
 
-        <!-- opponent circles -->
+        <!-- opponent stones -->
         {#each opponentStones.filter((x) => x != null && x != -1) as stone}
           <Stone
             x={positions[stone][0]}
             y={positions[stone][1]}
             isWhite={!isWhite}
             isDisabled={!canDelete}
+            isDeletable={canDelete}
             on:click={() => RemoveStone(stone)}
           />
         {/each}

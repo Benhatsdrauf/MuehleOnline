@@ -7,6 +7,7 @@
     export let isWhite = false;
     export let isSelected = false;
     export let isDisabled = false;
+    export let isDeletable = false;
 </script>
 
 <circle
@@ -18,6 +19,7 @@
     class:white={isWhite}
     class:black={!isWhite}
     class:disabled={isDisabled}
+    class:deletable={isDeletable}
     in:draw={{ duration: 1000, easing: quintOut }}
     out:draw={{ duration: 1000, easing: quintOut }}
 />
@@ -44,5 +46,11 @@
         stroke-width: 3px;
         filter: drop-shadow(0px 0px 2px var(--color-steel-200));
         cursor: pointer;
+    }
+
+    .deletable {
+        stroke: var(--color-success);
+        stroke-width: 3px;
+        filter: drop-shadow(0px 0px 2px var(--color-success-light));
     }
 </style>

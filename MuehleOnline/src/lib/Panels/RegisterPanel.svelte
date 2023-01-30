@@ -26,8 +26,6 @@
 
         localStorage.setItem("token", response.token);
         navigate("home");
-
-        console.log(localStorage.getItem("token"));
     }
 </script>
 

@@ -24,7 +24,6 @@
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
     .listen("PlayerReady", (e) => {
-      console.log(e);
       if (e.ready) {
         leaveChannel("player_ready");
         navigate("/gamePage");
@@ -50,8 +49,8 @@
         activeGame = false;
         LoadUserData();
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((err) => {
+        console.log(err);
       });
   }
 

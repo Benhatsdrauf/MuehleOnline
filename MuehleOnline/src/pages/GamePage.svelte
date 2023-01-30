@@ -48,7 +48,6 @@
   echo
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
     .listen("Quit", (e) => {
-      console.log(e);
       if (e.quit) {
         leaveChannel("opponent_quit");
         showModal = true;
@@ -58,7 +57,6 @@
   echo
     .channel("move." + localStorage.getItem("hashedToken"))
     .listen("MoveEvent", (e) => {
-      console.log("move event", e);
       let oldPos = e.oldPos == null ? null : Number(e.oldPos);
       let newPos = Number(e.newPos);
 
@@ -87,11 +85,6 @@
         blackMoves = data.black_moves;
         deletionToken = data.user.deletion_token;
 
-        if (deletionToken != "") {
-          canDelete = true;
-          selectedStone = null;
-        }
-
         if (isWhite == true) {
           playerStones = whiteMoves;
           opponentStones = blackMoves;
@@ -106,6 +99,12 @@
 
         while (opponentStones.length < 9) {
           opponentStones.push(null);
+        }
+
+        if (deletionToken != "") {
+          canDelete = true;
+          selectedStone = null;
+          opponentStonesInMill = GetStonesInMill(opponentStones);
         }
       })
       .catch();
@@ -137,8 +136,6 @@
   function setStone(pos) {
     playerStones[playerStones.indexOf(null)] = pos;
     if (!playerStones.includes(null)) canSet = false;
-
-    console.log("canSet setStone", canSet);
 
     AuthorizedGetRequest("game/stone/set/" + pos)
       .then((response) => {
@@ -207,8 +204,8 @@
       .then(() => {
         navigate("/home");
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((err) => {
+        console.log(err);
       });
   }
 </script>

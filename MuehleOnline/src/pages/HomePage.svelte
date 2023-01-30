@@ -19,6 +19,7 @@
     faRotateLeft,
   } from "@fortawesome/free-solid-svg-icons";
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
+  import Countdown from "../lib/Countdown.svelte";
 
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
@@ -37,6 +38,7 @@
   let username = "";
   let elo = 1000;
   let gameHistory = [];
+  let ttm = new Date();
 
   onMount(() => {
     LoadUserData();
@@ -60,6 +62,7 @@
         elo = response.user.elo;
         activeGame = response.game.active;
         gameHistory = response.history;
+        ttm = new Date(response.game.time_to_move);
       })
       .catch((err) => {
         console.log(err);
@@ -174,7 +177,8 @@
           </div>
           <div class="row">
             <div class="col-auto">
-              <p>You have 2 min to join left.</p>
+             
+              <p>You have <Countdown date={ttm}/> to join left.</p>
             </div>
             <div class="col-auto">
               <button

@@ -106,7 +106,7 @@ class StoneController extends Controller
             Error::throw(["game" => "Deletion token is wrong."], 400);
         }
 
-        if(!helper::CanDeleteStone(dbHelper::GetUserToGame($user, $game), $position))
+        if(!helper::CanDeleteStone(dbHelper::GetUserToGame($opponent, $game), $position))
         {
             Error::throw(["game" => "Can not delete stone, because its in a mill."]);
         }

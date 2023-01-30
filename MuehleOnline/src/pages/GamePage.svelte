@@ -201,7 +201,8 @@
             index={i}
             isPossible={possibleMoves.includes(i)}
             isDisabled={(!possibleMoves.includes(i) && !canSet) ||
-              playerStones.includes(i)}
+              playerStones.includes(i) ||
+              opponentStones.includes(i)}
             on:click={canSet ? () => setStone(i) : () => moveStone(i)}
           />
         {/each}
@@ -235,9 +236,9 @@
         {#each opponentStones.filter((x) => x === null) as stone, i}
           <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />
         {/each}
-        <text class="unplayed-number" x="50%" y="90%"
-          >{opponentStones.filter((x) => x === null).length}</text
-        >
+        <text class="unplayed-number" x="50%" y="90%">
+          {opponentStones.filter((x) => x === null).length}
+        </text>
       </svg>
     </div>
   </div>

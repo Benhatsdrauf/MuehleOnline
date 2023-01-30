@@ -81,6 +81,13 @@
         opponent = data.opponent;
         whiteMoves = data.white_moves;
         blackMoves = data.black_moves;
+        deletionToken = data.user.deletion_token;
+
+        if(deletionToken != "")
+        {
+          canDelete = true;
+          selectedStone = null;
+        }
 
         if (isWhite == true) {
           playerStones = whiteMoves;

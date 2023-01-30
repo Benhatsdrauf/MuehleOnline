@@ -43,4 +43,9 @@ class DatabaseHelper
     {
         return UserToGame::where("user_id", $user->id)->where("game_id", $game->id)->first();
     }
+
+    public static function GetActiveGameOrNull(User $user)
+    {
+        return $user->games()->where("is_active", true)->first();
+    }
 }

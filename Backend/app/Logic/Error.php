@@ -6,7 +6,7 @@ use Ramsey\Uuid\Type\Integer;
 
 class Error
 {
-    public static function throw($messages, int $code = 422)
+    public static function throw($messages, int $code = 400)
     {
         throw new HttpResponseException(response()->json([
             "errors" => $messages,

@@ -160,7 +160,7 @@ class StoneController extends Controller
             Error::throw(["new_position" => "This position is already set."], 400);
         }
   
-        if(!helper::IsPossibleMove($oldPos, $newPos, dbHelper::GetUserToGame($user, $game)->moves()->count))
+        if(!helper::IsPossibleMove($oldPos, $newPos, dbHelper::GetUserToGame($user, $game)->moves()->count()))
         {
             Error::throw(["new_position" => "Stone can not be moved there."], 400);
         }
@@ -194,6 +194,6 @@ class StoneController extends Controller
 
         history::SetEntry($oldPos, $newPos, dbHelper::GetUserToGame($user, $game));
 
-        return response()->josn($deletion_token);
+        return response()->json($deletion_token);
     }
 }

@@ -31,7 +31,7 @@ class MoveEvent implements ShouldBroadcast
 
         $game = dbHelper::GetActiveGameOrNull($opponent);
 
-        $this->waitForDelete = dbHelper::GetUserToGame($opponent, $game)->deletion_tokens()->first()->exists();
+        $this->waitForDelete = dbHelper::GetUserToGame($opponent, $game)->deletion_tokens()->exists();
     }
 
     public function broadcastOn()

@@ -12,7 +12,11 @@
   import PlayerInfo from "../lib/PlayerInfo.svelte";
   import { echo, leaveChannel } from "../../scripts/echo";
   import Modal from "../lib/Modal.svelte";
-  import { getPossibleMoves, getAllMoves } from "../../scripts/gameLogic";
+  import {
+    getPossibleMoves,
+    getAllMoves,
+    GetStonesInMill,
+  } from "../../scripts/gameLogic";
   import GameField from "../lib/GameField.svelte";
   import { draw, fade } from "svelte/transition";
   import { quintOut } from "svelte/easing";
@@ -25,6 +29,7 @@
 
   let playerStones = [null, null, null, null, null, null, null, null, null];
   let opponentStones = [null, null, null, null, null, null, null, null, null];
+  let opponentStonesInMill = [];
   let allMoves = [];
   let possibleMoves = [];
   let allMoveLines = [];
@@ -43,7 +48,6 @@
   echo
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
     .listen("Quit", (e) => {
-      console.log(e);
       if (e.quit) {
         leaveChannel("opponent_quit");
         showModal = true;
@@ -53,14 +57,12 @@
   echo
     .channel("move." + localStorage.getItem("hashedToken"))
     .listen("MoveEvent", (e) => {
-      console.log("move event", e);
       let oldPos = e.oldPos == null ? null : Number(e.oldPos);
       let newPos = Number(e.newPos);
 
       if (newPos == -1) {
         let index = playerStones.indexOf(oldPos);
         playerStones[index] = Number(e.newPos);
-
       } else {
         let index = opponentStones.indexOf(oldPos);
         opponentStones[index] = Number(e.newPos);
@@ -83,12 +85,6 @@
         blackMoves = data.black_moves;
         deletionToken = data.user.deletion_token;
 
-        if(deletionToken != "")
-        {
-          canDelete = true;
-          selectedStone = null;
-        }
-
         if (isWhite == true) {
           playerStones = whiteMoves;
           opponentStones = blackMoves;
@@ -103,6 +99,12 @@
 
         while (opponentStones.length < 9) {
           opponentStones.push(null);
+        }
+
+        if (deletionToken != "") {
+          canDelete = true;
+          selectedStone = null;
+          opponentStonesInMill = GetStonesInMill(opponentStones);
         }
       })
       .catch();
@@ -135,13 +137,12 @@
     playerStones[playerStones.indexOf(null)] = pos;
     if (!playerStones.includes(null)) canSet = false;
 
-    console.log("canSet setStone", canSet);
-
     AuthorizedGetRequest("game/stone/set/" + pos)
       .then((response) => {
         if (response != "") {
           canDelete = true;
           deletionToken = response;
+          opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {
           yourTurn = false;
         }
@@ -167,6 +168,7 @@
           canDelete = true;
           deletionToken = response;
           selectedStone = null;
+          opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {
           yourTurn = false;
         }
@@ -174,6 +176,8 @@
       .catch((err) => {
         console.log(err);
       });
+
+    clearVariables();
   }
 
   async function RemoveStone(pos) {
@@ -191,7 +195,8 @@
       })
       .catch((err) => {
         console.log(err);
-      });    
+      });
+    opponentStonesInMill = [];
   }
 
   async function quitGame() {
@@ -199,8 +204,8 @@
       .then(() => {
         navigate("/home");
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((err) => {
+        console.log(err);
       });
   }
 </script>
@@ -264,8 +269,7 @@
             isDisabled={(!possibleMoves.includes(i) && !canSet) ||
               playerStones.includes(i) ||
               opponentStones.includes(i) ||
-              !yourTurn
-              }
+              !yourTurn}
             on:click={canSet ? () => setStone(i) : () => moveStone(i)}
           />
         {/each}
@@ -289,7 +293,7 @@
             y={positions[stone][1]}
             isWhite={!isWhite}
             isDisabled={!canDelete}
-            isDeletable={canDelete}
+            isDeletable={canDelete && !opponentStonesInMill.includes(stone)}
             on:click={() => RemoveStone(stone)}
           />
         {/each}

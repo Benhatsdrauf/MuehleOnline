@@ -1,28 +1,28 @@
 let possibleMoves = [
-    [1, 7],            // 0
-    [0, 2, 9],        // 1
-    [1, 3],           // 2
-    [2, 4, 11],       // 3
-    [3, 5],           // 4
-    [4, 6, 13],       // 5
-    [5, 7],           // 6
-    [0, 6, 15],       // 7
-    [9, 15],          // 8
-    [1, 8, 10, 17],      // 9
-    [9, 11],         // 10
+    [1, 7], // 0
+    [0, 2, 9], // 1
+    [1, 3], // 2
+    [2, 4, 11], // 3
+    [3, 5], // 4
+    [4, 6, 13], // 5
+    [5, 7], // 6
+    [0, 6, 15], // 7
+    [9, 15], // 8
+    [1, 8, 10, 17], // 9
+    [9, 11], // 10
     [3, 10, 12, 19], // 11
-    [11, 13],        // 12
+    [11, 13], // 12
     [5, 12, 14, 21], // 13
-    [13, 15],        // 14
-    [7, 8, 14, 23],  // 15
-    [17, 23],        // 16
-    [9, 16, 18],     // 17
-    [17, 19],        // 18
-    [11, 18, 20],    // 19
-    [19, 21],        // 20
-    [13, 20, 22],    // 21
-    [21, 23],        // 22
-    [15, 16, 22]     // 23
+    [13, 15], // 14
+    [7, 8, 14, 23], // 15
+    [17, 23], // 16
+    [9, 16, 18], // 17
+    [17, 19], // 18
+    [11, 18, 20], // 19
+    [19, 21], // 20
+    [13, 20, 22], // 21
+    [21, 23], // 22
+    [15, 16, 22] // 23
 ]
 
 let allPossibleMills = [
@@ -74,10 +74,21 @@ export function CheckForMill(playerOccupiedPositions) // CurrentPositions = arra
     return allPossibleMills.some(mills => mills.every(stone => playerOccupiedPositions.includes(stone)));
 }
 
+export function GetStonesInMill(playerStones) {
+    let stones = [];
+
+    allPossibleMills.forEach(mill => {
+        if (mill.every(stone => playerStones.includes(stone))) {
+            mill.forEach(stone => {
+                let index = playerStones.indexOf(stone);
+                stones.push(playerStones[index])
+            })
+        }
+    })
+    return stones;
+}
+
 export function Move(newPos, oldPos, playerOccupiedPositions) {
     playerOccupiedPositions.remove(oldPos);
     playerOccupiedPositions.add(newPos);
 }
-
-
-

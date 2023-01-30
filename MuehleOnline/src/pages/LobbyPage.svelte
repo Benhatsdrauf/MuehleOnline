@@ -20,7 +20,6 @@
 
         AuthorizedGetRequest("game/join/"+path.split("/")[3])
         .then(function (response) {
-            console.log(response);
         })
         .catch((err) => {
             console.log(err);

@@ -12,7 +12,11 @@
   import PlayerInfo from "../lib/PlayerInfo.svelte";
   import { echo, leaveChannel } from "../../scripts/echo";
   import Modal from "../lib/Modal.svelte";
-  import { getPossibleMoves, getAllMoves } from "../../scripts/gameLogic";
+  import {
+    getPossibleMoves,
+    getAllMoves,
+    GetStonesInMill,
+  } from "../../scripts/gameLogic";
   import GameField from "../lib/GameField.svelte";
   import { draw, fade } from "svelte/transition";
   import { quintOut } from "svelte/easing";
@@ -25,6 +29,7 @@
 
   let playerStones = [null, null, null, null, null, null, null, null, null];
   let opponentStones = [null, null, null, null, null, null, null, null, null];
+  let opponentStonesInMill = [];
   let allMoves = [];
   let possibleMoves = [];
   let allMoveLines = [];
@@ -60,7 +65,6 @@
       if (newPos == -1) {
         let index = playerStones.indexOf(oldPos);
         playerStones[index] = Number(e.newPos);
-
       } else {
         let index = opponentStones.indexOf(oldPos);
         opponentStones[index] = Number(e.newPos);
@@ -135,6 +139,7 @@
         if (response != "") {
           canDelete = true;
           deletionToken = response;
+          opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {
           yourTurn = false;
         }
@@ -160,6 +165,7 @@
           canDelete = true;
           deletionToken = response;
           selectedStone = null;
+          opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {
           yourTurn = false;
         }
@@ -167,6 +173,8 @@
       .catch((err) => {
         console.log(err);
       });
+
+    clearVariables();
   }
 
   async function RemoveStone(pos) {
@@ -184,7 +192,8 @@
       })
       .catch((err) => {
         console.log(err);
-      });    
+      });
+    opponentStonesInMill = [];
   }
 
   async function quitGame() {
@@ -280,7 +289,7 @@
             y={positions[stone][1]}
             isWhite={!isWhite}
             isDisabled={!canDelete}
-            isDeletable={canDelete}
+            isDeletable={canDelete && opponentStonesInMill.includes(stone)}
             on:click={() => RemoveStone(stone)}
           />
         {/each}

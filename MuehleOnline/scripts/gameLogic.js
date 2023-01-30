@@ -74,6 +74,19 @@ export function CheckForMill(playerOccupiedPositions) // CurrentPositions = arra
     return allPossibleMills.some(mills => mills.every(stone => playerOccupiedPositions.includes(stone)));
 }
 
+export function GetStonesInMill(playerStones) {
+    let stones = [];
+    allPossibleMills.forEach(mill => {
+        if (mill.every(stone => playerStones.includes(stone))) {
+            mill.forEach(stone => {
+                let stoneInMill = playerStones.filter(playerStone => playerStone == stone);
+                stones.push(stoneInMill)
+            })
+        }
+    })
+    return stones;
+}
+
 export function Move(newPos, oldPos, playerOccupiedPositions) {
     playerOccupiedPositions.remove(oldPos);
     playerOccupiedPositions.add(newPos);

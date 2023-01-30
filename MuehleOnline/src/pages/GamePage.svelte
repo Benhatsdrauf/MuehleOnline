@@ -30,8 +30,10 @@
   let selectedStone = null;
 
   let canSet = true;
+  let canDelete = false;
   let isWhite = false;
   let yourTurn = false;
+  let deletionToken;
   let me = {};
   let opponent = {};
   let whiteMoves;
@@ -47,22 +49,25 @@
       }
     });
 
-  // echo
-  //   .channel("move." + localStorage.getItem("hashedToken"))
-  //   .listen("Move", (e) => {
-  //     console.log(e);
-  //     // check new position and override in array
-  //     //e.newPos,
-  //     //e.oldPos,
+  echo
+    .channel(".move." + localStorage.getItem("hashedToken"))
+    .listen("MoveEvent", (e) => {
+      console.log("move event", e);
 
-  //     leaveChannel("move");
-  //   });
+      opponentStones = opponent.filter((x) => x != e.oldPos);
+      opponentStones.push(e.newPos);
+
+      // its only my turn if i dont have to wait for a deletion
+      yourTurn = !e.waitForDelete;
+
+      leaveChannel("move");
+    });
 
   onMount(() => {
     AuthorizedGetRequest("game/data")
       .then((data) => {
         isWhite = data.user.is_white;
-        yourTurn = data.user.yourTurn;
+        yourTurn = data.user.has_turn;
         me = data.user;
         opponent = data.opponent;
         whiteMoves = data.white_moves;
@@ -121,16 +126,51 @@
       .catch();
   }
 
-  function moveStone(pos) {
+  async function moveStone(pos) {
     if (selectedStone == null) return;
-    console.log("canSet playerAction", canSet);
 
     let oldPos = selectedStone;
     playerStones = playerStones.filter((x) => x != oldPos);
     playerStones.push(pos);
 
+    await AuthorizedRequest("game/stone/move", {
+      old_position: oldPos,
+      new_position: pos,
+    })
+      .then((response) => {
+        console.log(response);
+        response.data != null
+          ? (deletionToken = response.data)
+          : (yourTurn = false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    if (deletionToken) {
+      canDelete = true;
+    }
+
     clearVariables();
     selectedStone = null;
+  }
+
+  async function RemoveStone(pos) {
+    // implement deletion logic
+    await AuthorizedRequest("game/stone/delete", {
+      position: pos,
+      deletion_token: deletionToken,
+    })
+      .then((response) => {
+        console.log(response);
+        if ((response.status = "200")) return;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    deletionToken = "";
+    yourTurn = false;
   }
 
   async function quitGame() {
@@ -166,7 +206,7 @@
 <div class="container-fluid bgc-primary">
   <div class="row pt-4">
     <div class="col-auto">
-      <PlayerInfo user={me} />
+      <PlayerInfo user={me} hasTurn={yourTurn} />
       <svg class="none-played mt-2">
         {#each playerStones.filter((x) => x === null) as stone, i}
           <Stone x={50} y={20 + 5 * i} {isWhite} />
@@ -214,7 +254,7 @@
             y={positions[stone][1]}
             {isWhite}
             isSelected={stone == selectedStone}
-            isDisabled={canSet}
+            isDisabled={canSet || !yourTurn}
             on:click={() => selectStone(stone)}
           />
         {/each}
@@ -225,13 +265,14 @@
             x={positions[stone][0]}
             y={positions[stone][1]}
             isWhite={!isWhite}
-            isDisabled={true}
+            isDisabled={!canDelete}
+            on:click={() => RemoveStone(stone)}
           />
         {/each}
       </svg>
     </div>
     <div class="col-auto">
-      <PlayerInfo user={opponent} />
+      <PlayerInfo user={opponent} hasTurn={!yourTurn} />
       <svg class="none-played mt-2">
         {#each opponentStones.filter((x) => x === null) as stone, i}
           <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />

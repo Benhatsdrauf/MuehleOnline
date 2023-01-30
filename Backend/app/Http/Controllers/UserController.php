@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Game;
 use Carbon\Carbon;
+use App\Logic\DatabaseHelper as dbHelper;
 
 class UserController extends Controller
 {
@@ -41,6 +42,7 @@ class UserController extends Controller
                 array_push($history, $entry);
             }  
         }
+
         
         $response->user->name = $user->name;
         $response->user->elo = $user->elo;
@@ -50,9 +52,21 @@ class UserController extends Controller
         {
             $activeGame = $user->games()->where("is_active", true)->first();
             $activeGame->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first()->name;
+            
+            $userIsWhite = dbHelper::GetUserToGame($user, $activeGame)->first()->is_white;
 
             $response->game->active = true;
             $response->game->opponent = $activeGame->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first()->name;
+
+
+            $timeToMove = Carbon::parse($activeGame->time_to_move);
+
+            if($userIsWhite == $activeGame->whites_turn)
+            {
+                $timeToMove->addMinute();
+            }
+
+            $response->game->time_to_move  = $timeToMove;
         }
         else
         {
@@ -62,9 +76,12 @@ class UserController extends Controller
 
         $response->statistic->won = $user->user_to_game()->where("won", true)->count();
         $response->statistic->lost = $user->user_to_game()->where("won", false)->count();
-        $response->statistic->moves = 0;
-        $response->statistic->kills = 0;
-        $response->statistic->deaths = 0;
+
+        $stats = $user->statistic()->first();
+
+        $response->statistic->moves = $stats->moveCount;
+        $response->statistic->kills = $stats->kills;
+        $response->statistic->deaths = $stats->deaths;
 
 
         return response()->json($response);

@@ -127,14 +127,15 @@ class StoneController extends Controller
         $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
         $game->save();
 
-        if(dbHelper::GetUserToGame($user, $game)->moves()->where("position", "!=", -1)->count() < 3)
+        event(new MoveEvent($opponent, $position, -1));
+
+        if(dbHelper::GetUserToGame($opponent, $game)->moves()->where("position", "!=", -1)->count() < 3)
         {
             dbHelper::GameEnded($game, $user, $opponent);
             event(new GameOverEvent($user, true, "Congratulations you won."));
-            event(new GameOverEvent($opponent, false, "U Suc"));
+            event(new GameOverEvent($opponent, false, "!!!U Suck!!!"));
         }
 
-        event(new MoveEvent($opponent, $position, -1));
         return response()->json("success");
     }
 

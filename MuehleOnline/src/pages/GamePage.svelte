@@ -44,6 +44,8 @@
   let opponent = {};
   let whiteMoves;
   let blackMoves;
+  let showGameOverModal = false;
+  let gameOverMessage = "";
 
   echo
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
@@ -52,6 +54,13 @@
         leaveChannel("opponent_quit");
         showModal = true;
       }
+    });
+
+    echo
+    .channel("gameover." + localStorage.getItem("hashedToken"))
+    .listen("GameOverEvent", (e) => {
+      showGameOverModal = true;
+      gameOverMessage = e.message;
     });
 
   echo
@@ -237,6 +246,18 @@
 {#if showModal}
   <Modal on:close={() => (showModal = false)}>
     <h3>Your opponent left the game</h3>
+    <button
+      on:click={() => {
+        navigate("/home");
+      }}>Ok</button
+    >
+  </Modal>
+{/if}
+
+{#if showGameOverModal}
+  <Modal on:close={() => (showModal = false)}>
+    <h3>Game Over</h3>
+    <p>{gameOverMessage}</p>
     <button
       on:click={() => {
         navigate("/home");

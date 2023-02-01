@@ -33,7 +33,9 @@ Route::get("/test", function () {
 
     $user = User::find(1);
 
-    event(new GameOverEvent($user, true, "AAAAAAAa"));
+    $game = $user->games()->where("is_active", true)->first();
+
+    return response()->json(dbHelper::GetUserToGame($user, $game)->deletion_tokens()->first() == null);
 });
 
 Route::prefix("auth")->group(function() {

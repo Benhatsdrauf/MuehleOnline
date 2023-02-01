@@ -65,7 +65,7 @@ class StoneController extends Controller
             $game->save();
         }
 
-        event(new MoveEvent($opponent, null, $position));
+        event(new MoveEvent($opponent, null, $position, $deletion_token != ""));
         history::SetEntry(null, $position, dbHelper::GetUserToGame($user, $game));
 
         $move = new Move;
@@ -181,7 +181,7 @@ class StoneController extends Controller
             $game->save();
         }
 
-        event(new MoveEvent($opponent, $oldPos, $newPos));
+        event(new MoveEvent($opponent, $oldPos, $newPos, $deletion_token != ""));
         $oldMove->position = $newPos;
         $oldMove->save();
 

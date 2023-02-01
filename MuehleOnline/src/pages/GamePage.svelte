@@ -116,10 +116,11 @@
           selectedStone = null;
           opponentStonesInMill = GetStonesInMill(opponentStones);
         }
+
+        playerStones.includes(null) ? (canSet = true) : (canSet = false);
       })
       .catch();
 
-    playerStones.includes(null) ? (canSet = true) : (canSet = false);
   });
 
   function clearVariables() {

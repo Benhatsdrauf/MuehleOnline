@@ -105,6 +105,11 @@ class StoneHelper
      */
     public static function CanDeleteStone(UserToGame $utg, int $position): bool
     {
+        if($utg->stones()->where("position", "!=", -1)->count() <= 3)
+        {
+            return true;
+        }
+
         return !StoneHelper::UserHasMill($utg, $position);
     }
 

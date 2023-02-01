@@ -75,6 +75,11 @@ export function CheckForMill(playerOccupiedPositions) // CurrentPositions = arra
 }
 
 export function GetStonesInMill(playerStones) {
+
+    if (playerStones.filter(x => x != -1).length <= 3) {
+        return [];
+    }
+
     let stones = [];
 
     allPossibleMills.forEach(mill => {

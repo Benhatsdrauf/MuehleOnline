@@ -25,7 +25,7 @@
     .channel("player_ready." + localStorage.getItem("hashedToken"))
     .listen("PlayerReady", (e) => {
       if (e.ready) {
-        leaveChannel("player_ready");
+        leaveChannel("player_ready." + localStorage.getItem("hashedToken"));
         navigate("/gamePage");
       }
     });

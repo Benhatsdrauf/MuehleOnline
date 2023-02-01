@@ -51,7 +51,7 @@
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
     .listen("Quit", (e) => {
       if (e.quit) {
-        leaveChannel("opponent_quit");
+        leaveChannel("opponent_quit." + localStorage.getItem("hashedToken"));
         showModal = true;
       }
     });
@@ -59,9 +59,9 @@
     echo
     .channel("gameover." + localStorage.getItem("hashedToken"))
     .listen("GameOverEvent", (e) => {
-      console.log("game over event: " + e);
       showGameOverModal = true;
       gameOverMessage = e.message;
+      leaveChannel("gameover." + localStorage.getItem("hashedToken"));
     });
 
   echo
@@ -81,7 +81,7 @@
       // its only my turn if i dont have to wait for a deletion
       yourTurn = !e.waitForDelete;
 
-      //leaveChannel("move");
+      leaveChannel("move." + localStorage.getItem("hashedToken"));
     });
 
   onMount(() => {

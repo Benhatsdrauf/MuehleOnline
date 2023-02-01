@@ -13,18 +13,14 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 use App\Logic\DatabaseHelper as dbHelper;
 
-class GameOverEvent
+class GameOverEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     private $token = "";
     public $won = false;
     public $message = "";
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
+
     public function __construct(User $user, bool $won, string $message)
     {
         $this->token = dbHelper::getHashedToken($user);
@@ -32,13 +28,8 @@ class GameOverEvent
         $this->message = $message;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
-        return new Channel('gameover.' + $this->token);
+        return new Channel("gameover.".$this->token);
     }
 }

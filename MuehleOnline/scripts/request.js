@@ -1,7 +1,7 @@
     let host =
-        import.meta.env.SERVER_PROTOCOL +
-        import.meta.env.SERVER_HOST_NAME + ":" +
-        import.meta.env.SERVER_API_PORT + "/";
+        import.meta.env.VITE_SERVER_PROTOCOL + "://" +
+        import.meta.env.VITE_SERVER_HOST_NAME + ":" +
+        import.meta.env.VITE_SERVER_API_PORT + "/";
 
 
     export async function Request(url, data, method = "Post") {

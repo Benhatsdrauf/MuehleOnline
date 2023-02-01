@@ -97,6 +97,14 @@
   }
 </script>
 
+
+{#if showErrorModal}
+  <Modal on:close={() => (showErrorModal = false)}>
+    <h3>Please finish ongoing games first.</h3>
+    <button on:click={() => (showErrorModal = false)}>Ok</button>
+  </Modal>
+{/if}
+
 <Navbar>
   <span class="navbar-text c-text me-2">
     {elo}
@@ -116,14 +124,6 @@
     >Logout</button
   >
 </Navbar>
-
-{#if showErrorModal}
-  <Modal on:close={() => (showErrorModal = false)}>
-    <h3>Please finish ongoing games first.</h3>
-    <button on:click={() => (showErrorModal = false)}>Ok</button>
-  </Modal>
-{/if}
-
 <div class="container-fluid bgc-primary h-100">
   <div class="row">
     <div class="col">
@@ -264,7 +264,8 @@
     overflow-y: auto;
   }
 
-  .border-left {
-    border-left: solid var(--color-white) 2px;
+
+  .no-padding {
+    padding: 0;
   }
 </style>

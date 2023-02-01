@@ -59,6 +59,7 @@
     echo
     .channel("gameover." + localStorage.getItem("hashedToken"))
     .listen("GameOverEvent", (e) => {
+      console.log("game over event: " + e);
       showGameOverModal = true;
       gameOverMessage = e.message;
     });
@@ -266,7 +267,7 @@
   </Modal>
 {/if}
 
-<div class="container-fluid bgc-primary">
+<div class="container-fluid bgc-primary h-100">
   <div class="row pt-4">
     <div class="col-auto">
       <PlayerInfo user={me} hasTurn={yourTurn} />
@@ -369,4 +370,6 @@
     font-size: 20px;
     font-weight: bold;
   }
+
+
 </style>

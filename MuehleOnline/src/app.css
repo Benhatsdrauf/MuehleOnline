@@ -61,6 +61,19 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    height: 100vh;
+}
+
+html {
+    height: 100vh;
+}
+
+.app {
+    height: 100vh;
+}
+
+main {
+    height: 100vh;
 }
 
 button {

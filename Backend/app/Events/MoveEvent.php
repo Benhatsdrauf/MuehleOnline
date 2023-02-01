@@ -23,7 +23,7 @@ class MoveEvent implements ShouldBroadcast
     public $waitForDelete = false;
     private $token = "";
 
-    public function __construct(User $opponent, $oldPos, $newPos)
+    public function __construct(User $opponent, $oldPos, $newPos, bool $hasDeletionToken = false)
     {
         $this->token = dbHelper::getHashedToken($opponent);
         $this->oldPos = $oldPos;
@@ -31,7 +31,7 @@ class MoveEvent implements ShouldBroadcast
 
         $game = dbHelper::GetActiveGameOrNull($opponent);
 
-        $this->waitForDelete = dbHelper::GetUserToGame($opponent, $game)->deletion_tokens()->exists();
+        $this->waitForDelete = $hasDeletionToken;
     }
 
     public function broadcastOn()

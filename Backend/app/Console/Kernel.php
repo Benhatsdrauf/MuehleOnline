@@ -7,6 +7,7 @@ use App\Models\Game;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Logic\DatabaseHelper as helper;
+use App\Events\Quit;
 
 use Carbon\Carbon;
 
@@ -45,6 +46,7 @@ class Kernel extends ConsoleKernel
                 }
 
                 helper::GameEnded($game, $winner, $loser);
+                event(new Quit($winner));
             }
 
         })->everyMinute();

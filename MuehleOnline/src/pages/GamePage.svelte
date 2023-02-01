@@ -44,14 +44,24 @@
   let opponent = {};
   let whiteMoves;
   let blackMoves;
+  let showGameOverModal = false;
+  let gameOverMessage = "";
 
   echo
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
     .listen("Quit", (e) => {
       if (e.quit) {
-        leaveChannel("opponent_quit");
+        leaveChannel("opponent_quit." + localStorage.getItem("hashedToken"));
         showModal = true;
       }
+    });
+
+    echo
+    .channel("gameover." + localStorage.getItem("hashedToken"))
+    .listen("GameOverEvent", (e) => {
+      showGameOverModal = true;
+      gameOverMessage = e.message;
+      leaveChannel("gameover." + localStorage.getItem("hashedToken"));
     });
 
   echo
@@ -71,7 +81,7 @@
       // its only my turn if i dont have to wait for a deletion
       yourTurn = !e.waitForDelete;
 
-      //leaveChannel("move");
+      leaveChannel("move." + localStorage.getItem("hashedToken"));
     });
 
   onMount(() => {
@@ -106,10 +116,11 @@
           selectedStone = null;
           opponentStonesInMill = GetStonesInMill(opponentStones);
         }
+
+        playerStones.includes(null) ? (canSet = true) : (canSet = false);
       })
       .catch();
 
-    playerStones.includes(null) ? (canSet = true) : (canSet = false);
   });
 
   function clearVariables() {
@@ -121,16 +132,31 @@
 
   function selectStone(pos) {
     clearVariables();
-
     let allStones = playerStones.concat(opponentStones);
-    possibleMoves = getPossibleMoves(pos, allStones);
-    allMoves = getAllMoves(pos);
 
-    for (let i = 0; i < allMoves.length; i++) {
-      allMoveLines.push([pos, allMoves[i]]);
+    if (playerStones.filter((x) => x != -1).length > 3) {
+      possibleMoves = getPossibleMoves(pos, allStones);
+      allMoves = getAllMoves(pos);
+
+      for (let i = 0; i < allMoves.length; i++) {
+        allMoveLines.push([pos, allMoves[i]]);
+      }
+
+      selectedStone = pos;
     }
+    else
+    {
+      for(let i = 0; i < 24; i++)
+      {
+        if(!allStones.includes(i))
+        {
+          possibleMoves.push(i);
+        }
+      }
 
-    selectedStone = pos;
+      selectedStone = pos;
+
+    }
   }
 
   function setStone(pos) {
@@ -154,6 +180,7 @@
 
   async function moveStone(pos) {
     if (selectedStone == null) return;
+    console.log("Move method");
 
     let oldPos = selectedStone;
     playerStones = playerStones.filter((x) => x != oldPos);
@@ -229,7 +256,19 @@
   </Modal>
 {/if}
 
-<div class="container-fluid bgc-primary">
+{#if showGameOverModal}
+  <Modal on:close={() => (showModal = false)}>
+    <h3>Game Over</h3>
+    <p>{gameOverMessage}</p>
+    <button
+      on:click={() => {
+        navigate("/home");
+      }}>Ok</button
+    >
+  </Modal>
+{/if}
+
+<div class="container-fluid bgc-primary h-100">
   <div class="row pt-4">
     <div class="col-auto">
       <PlayerInfo user={me} hasTurn={yourTurn} />
@@ -332,4 +371,6 @@
     font-size: 20px;
     font-weight: bold;
   }
+
+
 </style>

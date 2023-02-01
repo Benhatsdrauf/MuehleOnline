@@ -15,7 +15,7 @@ use App\Http\Controllers\UserController;
 
 class DatabaseHelper
 {
-    public static function getHashedToken($user)
+    public static function getHashedToken(User $user)
     {
         return PersonalAccessToken::where("tokenable_id", $user->id)->first()->token;
     }

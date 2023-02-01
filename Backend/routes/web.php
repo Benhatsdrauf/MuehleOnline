@@ -12,6 +12,7 @@ use App\Logic\StoneHelper as helper;
 use App\Logic\DatabaseHelper as dbHelper;
 
 use App\Events\PlayerReady;
+use App\Events\GameOverEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,7 @@ Route::get("/test", function () {
 
     $game = $user->games()->where("is_active", true)->first();
 
-    return response()->json(helper::UserHasMill(dbHelper::GetUserToGame($user, $game), 3));
+    return response()->json(dbHelper::GetUserToGame($user, $game)->deletion_tokens()->first() == null);
 });
 
 Route::prefix("auth")->group(function() {

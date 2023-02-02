@@ -25,7 +25,8 @@
     navigate("home");
 
     let splitToken = response.token.split("|")[1];
-    localStorage.setItem("hashedToken", await hash(splitToken));
+    // @ts-ignore
+    localStorage.setItem("hashedToken", hash(splitToken));
   }
 </script>
 

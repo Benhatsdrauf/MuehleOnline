@@ -1,24 +1,26 @@
 {
-  "name": "muehleonline",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^1.1.0",
-    "svelte": "^3.52.0",
-    "vite": "^3.2.3"
-  },
-  "dependencies": {
-    "@fortawesome/free-regular-svg-icons": "^6.2.1",
-    "@fortawesome/free-solid-svg-icons": "^6.2.1",
-    "laravel-echo": "^1.14.2",
-    "pusher-js": "^7.6.0",
-    "svelte-fa": "^3.0.3",
-    "svelte-navigator": "^3.2.2"
-  }
+    "name": "muehleonline",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "host": "vite --host --port 5001"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^1.1.0",
+        "svelte": "^3.52.0",
+        "vite": "^3.2.3"
+    },
+    "dependencies": {
+        "@fortawesome/free-regular-svg-icons": "^6.2.1",
+        "@fortawesome/free-solid-svg-icons": "^6.2.1",
+        "js-sha256": "^0.9.0",
+        "laravel-echo": "^1.14.2",
+        "pusher-js": "^7.6.0",
+        "svelte-fa": "^3.0.3",
+        "svelte-navigator": "^3.2.2"
+    }
 }

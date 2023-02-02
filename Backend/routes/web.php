@@ -26,7 +26,16 @@ use App\Events\GameOverEvent;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('main');
+});
+Route::get('/home', function () {
+    return view('main');
+});
+Route::get('/gamePage', function () {
+    return view('main');
+});
+Route::get('/game/join/{id}', function () {
+    return view('main');
 });
 
 Route::get("/test", function () {

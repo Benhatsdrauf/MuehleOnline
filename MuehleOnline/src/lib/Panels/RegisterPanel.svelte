@@ -4,6 +4,7 @@
 
     import Fa from 'svelte-fa';
     import { faKey, faUser } from '@fortawesome/free-solid-svg-icons';
+  import { hash } from "../../../scripts/hash";
 
     const navigate = useNavigate();
 
@@ -25,6 +26,10 @@
         });
 
         localStorage.setItem("token", response.token);
+
+        let splitToken = response.token.split("|")[1];
+    // @ts-ignore
+    localStorage.setItem("hashedToken", hash(splitToken));
         navigate("home");
     }
 </script>

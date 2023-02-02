@@ -9,7 +9,7 @@
 <!-- background animation -->
 <div class="background">
     <div class="context">
-        <h1>MuehleOnline</h1>
+        <h1>MuehleOnline 3</h1>
         <button class="cta" on:click={() => (showModal = true)}>
             Login!
         </button>

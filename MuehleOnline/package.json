@@ -7,7 +7,8 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
-        "host": "vite --host --port 5001"
+        "host": "vite --host --port 5001",
+        "build-server": "vite build && @powershell -NoProfile -ExecutionPolicy Unrestricted -Command ../CopyScript.ps1"
     },
     "devDependencies": {
         "@sveltejs/vite-plugin-svelte": "^1.1.0",

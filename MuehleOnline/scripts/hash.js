@@ -1,6 +1,13 @@
-import { sha256 } from "js-sha256";
+
+
 
 export function hash(string) {
-    sha256(string);
-    return sha256.create();
+    const utf8 = new TextEncoder().encode(string);
+    return crypto.subtle.digest('SHA-256', utf8).then((hashBuffer) => {
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+            .map((bytes) => bytes.toString(16).padStart(2, '0'))
+            .join('');
+        return hashHex;
+    });
 }

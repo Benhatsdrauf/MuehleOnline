@@ -24,7 +24,7 @@ use App\Events\GameOverEvent;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('main');
 });
@@ -37,6 +37,7 @@ Route::get('/gamePage', function () {
 Route::get('/game/join/{id}', function () {
     return view('main');
 });
+*/
 
 Route::get("/test", function () {
 

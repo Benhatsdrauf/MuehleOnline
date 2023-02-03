@@ -3,8 +3,8 @@
   import { useNavigate } from "svelte-navigator";
   import { hash } from "../../../scripts/hash";
 
-  import Fa from 'svelte-fa';
-  import { faKey, faUser } from '@fortawesome/free-solid-svg-icons';
+  import Fa from "svelte-fa";
+  import { faKey, faUser } from "@fortawesome/free-solid-svg-icons";
 
   const navigate = useNavigate();
   let userName = "";
@@ -26,7 +26,7 @@
 
     let splitToken = response.token.split("|")[1];
     // @ts-ignore
-    localStorage.setItem("hashedToken", hash(splitToken));
+    localStorage.setItem("hashedToken", await hash(splitToken));
   }
 </script>
 
@@ -41,7 +41,7 @@
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text h-100">
-            <Fa icon={faUser}/>
+            <Fa icon={faUser} />
           </span>
         </div>
         <input
@@ -54,7 +54,7 @@
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text h-100">
-            <Fa icon={faKey}/>
+            <Fa icon={faKey} />
           </span>
         </div>
         <input

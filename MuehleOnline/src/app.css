@@ -17,6 +17,8 @@
 }
 
 :root {
+    --color-win: #73D95F;
+    --color-los: #E52828;
     --color-yellow: #FFD000;
     --color-yellow-light: #ffd00091;
     --color-blue: #4e54c8;

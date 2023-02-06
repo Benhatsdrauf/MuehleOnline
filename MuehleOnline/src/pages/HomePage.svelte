@@ -116,21 +116,25 @@
   >
 </Navbar>
 <div class="container-fluid bgc-primary h-100">
-  <div class="row mb-5"/>
-  <div class="row mb-3">
-    <div class="col-5">
-      <StartGameComponent bind:showModal={showModal} bind:inviteLink={inviteLink} bind:showErrorModal={showErrorModal}/>
-    </div>
-    <div class="col">
-      <Statistics dataObject={statistics} />
-    </div>
-  </div>
+  <div class="row mb-5" />
   <div class="row">
     <div class="col-5">
-      <ActiveGame on:click={quitGame} {ttm} visible={activeGame} />
+      <div class="mb-3">
+        {#if activeGame}
+          <ActiveGame on:click={quitGame} {ttm} visible={activeGame} />
+        {:else}
+          <StartGameComponent
+            bind:showModal
+            bind:inviteLink
+            bind:showErrorModal
+          />
+        {/if}
+      </div>
+
+      <Statistics dataObject={statistics} />
     </div>
     <div class="col">
-      <HistoryComponent gameHistory={gameHistory} username={username}/>
+      <HistoryComponent {gameHistory} {username} />
     </div>
   </div>
 </div>
@@ -163,5 +167,4 @@
 {/if}
 
 <style>
-
 </style>

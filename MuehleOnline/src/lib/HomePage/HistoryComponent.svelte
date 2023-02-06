@@ -43,7 +43,7 @@
 
 <style>
       .history {
-    height: 250px;
+    height: 56vh;
     overflow-y: auto;
   }
 </style>

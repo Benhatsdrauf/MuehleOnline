@@ -44,8 +44,8 @@
     <div class="col-auto">
       <!-- svelte-ignore a11y-autofocus -->
       <button type="button" class="btn btn-danger" autofocus on:click={close}>
-        <Fa icon={faX}/>
-    </button>
+        <Fa icon={faX} />
+      </button>
     </div>
   </div>
   <slot />

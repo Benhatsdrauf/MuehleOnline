@@ -18,13 +18,11 @@
     GetStonesInMill,
   } from "../../scripts/gameLogic";
   import GameField from "../lib/GameField.svelte";
-  import { draw, fade } from "svelte/transition";
-  import { quintOut } from "svelte/easing";
-  import { empty } from "svelte/internal";
+  import PossibleMoveLines from "../lib/PossibleMoveLines.svelte";
+  import GamePosition from "../lib/GamePosition.svelte";
 
   const navigate = useNavigate();
 
-  let gameState = "initial";
   let showModal = false;
 
   let playerStones = [null, null, null, null, null, null, null, null, null];
@@ -56,7 +54,7 @@
       }
     });
 
-    echo
+  echo
     .channel("gameover." + localStorage.getItem("hashedToken"))
     .listen("GameOverEvent", (e) => {
       showGameOverModal = true;
@@ -120,7 +118,6 @@
         playerStones.includes(null) ? (canSet = true) : (canSet = false);
       })
       .catch();
-
   });
 
   function clearVariables() {
@@ -143,19 +140,14 @@
       }
 
       selectedStone = pos;
-    }
-    else
-    {
-      for(let i = 0; i < 24; i++)
-      {
-        if(!allStones.includes(i))
-        {
+    } else {
+      for (let i = 0; i < 24; i++) {
+        if (!allStones.includes(i)) {
           possibleMoves.push(i);
         }
       }
 
       selectedStone = pos;
-
     }
   }
 
@@ -285,25 +277,12 @@
       <svg class="game-field">
         <GameField />
         <!-- Line's for showing possible moves -->
-        {#each allMoveLines as line (line)}
-          <line
-            x1="{positions[line[0]][0]}%"
-            y1="{positions[line[0]][1]}%"
-            x2="{positions[line[1]][0]}%"
-            y2="{positions[line[1]][1]}%"
-            stroke={possibleMoves.includes(line[1]) ? "green" : "red"}
-            stroke-width="5"
-            in:draw={{ duration: 1500, easing: quintOut }}
-          />
-        {/each}
+        <PossibleMoveLines {allMoveLines} {possibleMoves} />
 
         <!-- Game positino circles -->
         {#each positions as position, i (i)}
-          <Circle
-            status={gameState}
-            x={position[0]}
-            y={position[1]}
-            index={i}
+          <GamePosition
+            {position}
             isPossible={possibleMoves.includes(i)}
             isDisabled={(!possibleMoves.includes(i) && !canSet) ||
               playerStones.includes(i) ||
@@ -371,6 +350,4 @@
     font-size: 20px;
     font-weight: bold;
   }
-
-
 </style>

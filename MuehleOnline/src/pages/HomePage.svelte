@@ -104,7 +104,7 @@
     {username}
   </span>
   <div class="me-3">
-    <img
+    <img class="round-img"
       src="https://api.dicebear.com/5.x/initials/svg?seed={username}"
       alt="profile"
       width="30px"
@@ -115,6 +115,7 @@
     >Logout</button
   >
 </Navbar>
+
 <div class="container-fluid bgc-primary h-100">
   <div class="row mb-5" />
   <div class="row">

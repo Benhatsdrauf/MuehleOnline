@@ -131,3 +131,11 @@ img {
     white-space: nowrap;
     overflow: hidden;
 }
+
+.card-border {
+    border-color: var(--color-dark-grey);
+}
+
+.card-body {
+    padding-left: 10px;
+}

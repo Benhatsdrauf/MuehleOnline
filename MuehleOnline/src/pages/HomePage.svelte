@@ -22,6 +22,7 @@
   import Countdown from "../lib/Countdown.svelte";
   import Statistics from "../lib/HomePage/Statistics.svelte";
   import ActiveGame from "../lib/HomePage/ActiveGame.svelte";
+  import HistoryComponent from "../lib/HomePage/HistoryComponent.svelte";
 
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
@@ -101,7 +102,6 @@
   }
 </script>
 
-
 {#if showErrorModal}
   <Modal on:close={() => (showErrorModal = false)}>
     <h3>Please finish ongoing games first.</h3>
@@ -142,42 +142,15 @@
       <button on:click={StartGame}> Play Now! </button>
     </div>
     <div class="col">
-      <Statistics dataObject="{statistics}"/>
+      <Statistics dataObject={statistics} />
     </div>
   </div>
   <div class="row">
     <div class="col-5">
-      <ActiveGame on:click="{quitGame}" ttm={ttm} visible={activeGame}/>
+      <ActiveGame on:click={quitGame} {ttm} visible={activeGame} />
     </div>
     <div class="col">
-      <div class="card card-border">
-        <div class="card-header bgc-secondary">
-          <div class="row">
-            <div class="col-auto">
-              <Fa icon={faClockRotateLeft} color="#ffffff" size="2x" />
-            </div>
-            <div class="col c-text">
-              <h3>Game History</h3>
-            </div>
-          </div>
-        </div>
-        <div class="card-body" />
-        <div class="container history">
-          {#each gameHistory as game}
-            <div class="mb-2">
-              <GameHistory
-                {username}
-                count={gameHistory.indexOf(game) + 1}
-                won={game.won}
-                opponent={game.opponent}
-                playtime={game.play_time}
-                start_date={game.start_date}
-                elo={game.elo}
-              />
-            </div>
-          {/each}
-        </div>
-      </div>
+      <HistoryComponent gameHistory={gameHistory} username={username}/>
     </div>
   </div>
 </div>
@@ -203,21 +176,5 @@
 {/if}
 
 <style>
-  .card-border {
-    border-color: var(--color-dark-grey);
-  }
 
-  .card-body {
-    padding-left: 10px;
-  }
-
-  .history {
-    height: 300px;
-    overflow-y: auto;
-  }
-
-
-  .no-padding {
-    padding: 0;
-  }
 </style>

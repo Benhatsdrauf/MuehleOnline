@@ -21,27 +21,30 @@
     {#if dataObject == null}
       <Loading show="{true}"/>
     {:else}
-      <div class="row">
-        <div class="col">
-            <p>Won: {dataObject.won}</p>
-        </div>
-        <div class="col">
-            <p>Lost: {dataObject.lost}</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-auto">
-            <p>Moves: {dataObject.moves}</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <p>Kills: {dataObject.kills}</p>
-        </div>
-        <div class="col">
-            <p>Deaths: {dataObject.deaths}</p>
-        </div>
-    </div>
+    <table class="table">
+      <tbody>
+        <tr>
+          <th scope="row">Won</th>
+          <td>{dataObject.won}</td>
+        </tr>
+        <tr>
+          <th scope="row">Lost</th>
+          <td>{dataObject.lost}</td>
+        </tr>
+        <tr>
+          <th scope="row">Moves</th>
+          <td>{dataObject.moves}</td>
+        </tr>
+        <tr>
+          <th scope="row">Kills</th>
+          <td>{dataObject.kills}</td>
+        </tr>
+        <tr>
+          <th scope="row">Deaths</th>
+          <td>{dataObject.deaths}</td>
+        </tr>
+      </tbody>
+    </table>
     {/if}
   </div>
 </div>

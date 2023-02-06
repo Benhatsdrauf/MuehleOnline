@@ -11,6 +11,7 @@
         <div class="row">
             <div class="col-auto" style="padding-right: 4px;">
                 <img
+                    class="round-img"
                     src="https://api.dicebear.com/5.x/initials/svg?seed={user.name}"
                     alt="profile"
                     width="30px"

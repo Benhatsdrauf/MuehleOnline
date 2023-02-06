@@ -1,7 +1,7 @@
 <script>
   import Fa from "svelte-fa";
   import { faChartColumn } from "@fortawesome/free-solid-svg-icons";
-  import Loading from "./Loading.svelte";
+  import Loading from "../Loading.svelte";
 
   export let dataObject = null;
 </script>

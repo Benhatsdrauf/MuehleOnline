@@ -20,7 +20,8 @@
   } from "@fortawesome/free-solid-svg-icons";
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
   import Countdown from "../lib/Countdown.svelte";
-  import Statistics from "../lib/Statistics.svelte";
+  import Statistics from "../lib/HomePage/Statistics.svelte";
+  import ActiveGame from "../lib/HomePage/ActiveGame.svelte";
 
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
@@ -146,46 +147,7 @@
   </div>
   <div class="row">
     <div class="col-5">
-      {#if activeGame}
-        <div class="card card-border">
-          <div class="card-header bgc-secondary">
-            <div class="row">
-              <div class="col-auto">
-                <Fa icon={faGamepad} color="#ffffff" size="2x" />
-              </div>
-              <div class="col c-text">
-                <h3>Active Game</h3>
-              </div>
-            </div>
-          </div>
-          <div class="card-body" />
-          <div class="row">
-            <div class="col">
-              <p>You still have one active game.</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-auto">
-             
-              <p>You have <Countdown date={ttm}/> to join left.</p>
-            </div>
-            <div class="col-auto">
-              <button
-                type="button"
-                class="btn btn-success"
-                on:click={() => {
-                  navigate("/gamePage");
-                }}>Re-join</button
-              >
-            </div>
-            <div class="col-auto">
-              <button type="button" class="btn btn-danger" on:click={quitGame}
-                >Quit</button
-              >
-            </div>
-          </div>
-        </div>
-      {/if}
+      <ActiveGame on:click="{quitGame}" ttm={ttm} visible={activeGame}/>
     </div>
     <div class="col">
       <div class="card card-border">

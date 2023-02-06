@@ -4,7 +4,6 @@
     AuthorizedGetRequest,
   } from "../../scripts/request";
   import { onMount } from "svelte";
-  import Circle from "../lib/Circle.svelte";
   import { positions } from "../../scripts/circlePositions";
   import Stone from "../lib/Stone.svelte";
   import Navbar from "../lib/Navbar.svelte";

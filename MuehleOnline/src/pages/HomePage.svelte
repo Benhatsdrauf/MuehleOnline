@@ -11,18 +11,12 @@
   import { echo, leaveChannel } from "../../scripts/echo";
 
   import Fa from "svelte-fa";
-  import {
-    faCat,
-    faChartColumn,
-    faGamepad,
-    faClockRotateLeft,
-    faRotateLeft,
-  } from "@fortawesome/free-solid-svg-icons";
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
   import Countdown from "../lib/Countdown.svelte";
   import Statistics from "../lib/HomePage/Statistics.svelte";
   import ActiveGame from "../lib/HomePage/ActiveGame.svelte";
   import HistoryComponent from "../lib/HomePage/HistoryComponent.svelte";
+  import StartGameComponent from "../lib/HomePage/StartGameComponent.svelte";
 
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
@@ -75,10 +69,6 @@
 
   const navigate = useNavigate();
 
-  function CopyToClipBoard() {
-    navigator.clipboard.writeText(inviteLink);
-  }
-
   async function StartGame() {
     let response = await AuthorizedRequest("game/create").catch((err) => {
       showErrorModal = true;
@@ -100,14 +90,11 @@
 
     navigate("/");
   }
-</script>
 
-{#if showErrorModal}
-  <Modal on:close={() => (showErrorModal = false)}>
-    <h3>Please finish ongoing games first.</h3>
-    <button on:click={() => (showErrorModal = false)}>Ok</button>
-  </Modal>
-{/if}
+  function CopyToClipBoard() {
+    navigator.clipboard.writeText(inviteLink);
+  }
+</script>
 
 <Navbar>
   <span class="navbar-text c-text me-2">
@@ -129,17 +116,10 @@
   >
 </Navbar>
 <div class="container-fluid bgc-primary h-100">
-  <div class="row">
-    <div class="col">
-      <h3>Home</h3>
-    </div>
-  </div>
+  <div class="row mb-5"/>
   <div class="row mb-3">
     <div class="col-5">
-      <p>
-        This is gonna be the home/statistics page after the user is logged in
-      </p>
-      <button on:click={StartGame}> Play Now! </button>
+      <StartGameComponent bind:showModal={showModal} bind:inviteLink={inviteLink} bind:showErrorModal={showErrorModal}/>
     </div>
     <div class="col">
       <Statistics dataObject={statistics} />
@@ -172,6 +152,13 @@
         joins
       </p>
     </div>
+  </Modal>
+{/if}
+
+{#if showErrorModal}
+  <Modal on:close={() => (showErrorModal = false)}>
+    <h3>Please finish ongoing games first.</h3>
+    <button on:click={() => (showErrorModal = false)}>Ok</button>
   </Modal>
 {/if}
 

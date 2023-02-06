@@ -3,7 +3,6 @@
   import Fa from "svelte-fa";
   import { faGamepad } from "@fortawesome/free-solid-svg-icons";
   import { navigate } from "svelte-navigator";
-  import { AuthorizedGetRequest } from "../../../scripts/request";
 
   export let ttm;
   export let visible = false;
@@ -24,14 +23,11 @@
     <div class="card-body">
       <div class="row">
         <div class="col">
-          <p>You still have one active game.</p>
+          <p>You still have one active game. You have <Countdown date={ttm} /> to join left.</p>
         </div>
       </div>
       <div class="row">
-        <div class="col-auto">
-          <p>You have <Countdown date={ttm} /> to join left.</p>
-        </div>
-        <div class="col-auto">
+        <div class="col align-self-start">
           <button
             type="button"
             class="btn btn-success"
@@ -40,7 +36,7 @@
             }}>Re-join</button
           >
         </div>
-        <div class="col-auto">
+        <div class="col-auto align-self-end">
           <button type="button" class="btn btn-danger" on:click>Quit</button>
         </div>
       </div>

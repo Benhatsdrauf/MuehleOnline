@@ -304,7 +304,7 @@
         {/each}
 
         <!-- opponent stones -->
-        {#each opponentStones.filter((x) => x != null && x != -1) as stone}
+        {#each opponentStones.filter((x) => x != null && x != -1) as stone (stone)}
           <Stone
             x={positions[stone][0]}
             y={positions[stone][1]}

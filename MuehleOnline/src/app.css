@@ -17,6 +17,8 @@
 }
 
 :root {
+    --color-win: #73D95F;
+    --color-los: #E52828;
     --color-yellow: #FFD000;
     --color-yellow-light: #ffd00091;
     --color-blue: #4e54c8;
@@ -122,7 +124,7 @@ button:focus-visible {
     color: var(--color-white);
 }
 
-img {
+.round-img {
     border-radius: 50%;
 }
 
@@ -130,4 +132,12 @@ img {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.card-border {
+    border-color: var(--color-dark-grey);
+}
+
+.card-body {
+    padding-left: 10px;
 }

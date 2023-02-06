@@ -48,6 +48,3 @@
         </Tabs>
     </Modal>
 {/if}
-
-<style>
-</style>

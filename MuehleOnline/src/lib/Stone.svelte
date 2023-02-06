@@ -23,6 +23,30 @@
     in:draw={{ duration: 1000, easing: quintOut }}
     out:draw={{ duration: 1000, easing: quintOut }}
 />
+<circle
+    on:click
+    cx="{x}%"
+    cy="{y}%"
+    r="14"
+    class:selected={isSelected}
+    class:white={isWhite}
+    class:black={!isWhite}
+    class:disabled={isDisabled}
+    class:deletable={isDeletable}
+    class="innercircle"
+/>
+<circle
+    on:click
+    cx="{x}%"
+    cy="{y}%"
+    r="4"
+    class:selected={isSelected}
+    class:white={isWhite}
+    class:black={!isWhite}
+    class:disabled={isDisabled}
+    class:deletable={isDeletable}
+    class="innercircle"
+/>
 
 <style>
     .white {
@@ -45,6 +69,13 @@
         stroke: var(--color-black);
         stroke-width: 3px;
         filter: drop-shadow(0px 0px 2px var(--color-steel-200));
+        cursor: pointer;
+    }
+
+    .innercircle {
+        stroke: var(--color-black);
+        stroke-width: 3px;
+        filter: drop-shadow(0px 0px 2px var(--color-steel-900));
         cursor: pointer;
     }
 

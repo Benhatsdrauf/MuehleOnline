@@ -20,6 +20,7 @@
   } from "@fortawesome/free-solid-svg-icons";
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
   import Countdown from "../lib/Countdown.svelte";
+  import Statistics from "../lib/Statistics.svelte";
 
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
@@ -38,6 +39,7 @@
   let elo = 1000;
   let gameHistory = [];
   let ttm = new Date();
+  let statistics = null;
 
   onMount(() => {
     LoadUserData();
@@ -62,6 +64,7 @@
         activeGame = response.game.active;
         gameHistory = response.history;
         ttm = new Date(response.game.time_to_move);
+        statistics = response.statistic;
       })
       .catch((err) => {
         console.log(err);
@@ -138,20 +141,7 @@
       <button on:click={StartGame}> Play Now! </button>
     </div>
     <div class="col">
-      <div class="card card-border">
-        <div class="card-header bgc-secondary">
-          <div class="row">
-            <div class="col-auto">
-              <Fa icon={faChartColumn} color="#ffffff" size="2x" />
-            </div>
-            <div class="col c-text">
-              <h3>Statistics</h3>
-            </div>
-          </div>
-        </div>
-        <div class="card-body" />
-        <p>Here could be some game statistics</p>
-      </div>
+      <Statistics dataObject="{statistics}"/>
     </div>
   </div>
   <div class="row">

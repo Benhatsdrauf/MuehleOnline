@@ -1,8 +1,6 @@
 <script>
     export let x = 0;
     export let y = 0;
-    export let index = 0;
-    export let status = "initial";
     export let isPossible = false;
     export let isDisabled = false;
 </script>

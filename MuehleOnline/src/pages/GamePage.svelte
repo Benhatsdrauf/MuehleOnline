@@ -264,16 +264,16 @@
   <div class="row pt-4">
     <div class="col-auto">
       <div class="mb-2">
-        <ColorIndicator isWhite={isWhite}/>
+        <ColorIndicator isWhite={!isWhite} />
       </div>
-      <PlayerInfo user={me} hasTurn={yourTurn} />
+      <PlayerInfo user={opponent} hasTurn={!yourTurn} />
       <svg class="none-played mt-2">
-        {#each playerStones.filter((x) => x === null) as stone, i}
-          <Stone x={50} y={20 + 5 * i} {isWhite} />
+        {#each opponentStones.filter((x) => x === null) as stone, i}
+          <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />
         {/each}
-        <text class="unplayed-number" x="50%" y="90%"
-          >{playerStones.filter((x) => x === null).length}</text
-        >
+        <text class="unplayed-number" x="50%" y="90%">
+          {opponentStones.filter((x) => x === null).length}
+        </text>
       </svg>
     </div>
     <div class="col d-flex justify-content-center">
@@ -322,16 +322,16 @@
     </div>
     <div class="col-auto">
       <div class="mb-2">
-        <ColorIndicator isWhite={!isWhite}/>
+        <ColorIndicator {isWhite} />
       </div>
-      <PlayerInfo user={opponent} hasTurn={!yourTurn} />
+      <PlayerInfo user={me} hasTurn={yourTurn} />
       <svg class="none-played mt-2">
-        {#each opponentStones.filter((x) => x === null) as stone, i}
-          <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />
+        {#each playerStones.filter((x) => x === null) as stone, i}
+          <Stone x={50} y={20 + 5 * i} {isWhite} />
         {/each}
-        <text class="unplayed-number" x="50%" y="90%">
-          {opponentStones.filter((x) => x === null).length}
-        </text>
+        <text class="unplayed-number" x="50%" y="90%"
+          >{playerStones.filter((x) => x === null).length}</text
+        >
       </svg>
     </div>
   </div>

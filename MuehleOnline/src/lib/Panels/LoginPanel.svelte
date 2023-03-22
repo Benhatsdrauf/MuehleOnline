@@ -35,8 +35,6 @@
         }
 
       })
-
-      return;
     });
   }
 </script>
@@ -44,7 +42,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col">
-      <h1>Login Panel</h1>
+      <h1>Login</h1>
     </div>
   </div>
   <div class="row">
@@ -78,7 +76,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <button type="button" on:click={Login}>Login</button>
+        <button type="button" class="btn btn-outline-primary" on:click={Login}>Login</button>
       </div>
     </div>
   </div>

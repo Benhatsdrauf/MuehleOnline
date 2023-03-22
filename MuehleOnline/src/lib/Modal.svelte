@@ -36,7 +36,7 @@
 
 <div class="custom-modal-background" on:click={close} />
 
-<div class="custom-modal" role="dialog" aria-modal="true" bind:this={modal}>
+<div class="custom-modal card-border" role="dialog" aria-modal="true" bind:this={modal}>
   <div class="row">
     <div class="col">
       <slot name="header" />
@@ -65,7 +65,7 @@
     z-index: 10;
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 30%;
     width: calc(100vw - 4em);
     max-width: 45em;
     max-height: calc(100vh - 4em);
@@ -74,9 +74,6 @@
     padding: 1em;
     border-radius: 0.2em;
     background: white;
-  }
-
-  custom-button {
-    display: block;
+    border: 1px solid;
   }
 </style>

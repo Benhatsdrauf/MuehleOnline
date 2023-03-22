@@ -142,13 +142,13 @@
 
 {#if showModal}
   <Modal on:close={() => (showModal = false)}>
-    <h1>This is the start game modal</h1>
-    <div>
-      <div class="input-group mb-3">
+    <h1 slot="header">Here is your new game code</h1>
+    <div class="mt-4">
+      <div class="input-group mb-2">
         <input type="text" class="form-control" value={inviteLink} />
         <div class="input-group-append">
           <button class="btn btn-link" type="button" on:click={CopyToClipBoard}>
-            <Fa icon={faCopy} color="#000000" />
+            <Fa icon={faCopy} color="#000000"/>
           </button>
         </div>
       </div>

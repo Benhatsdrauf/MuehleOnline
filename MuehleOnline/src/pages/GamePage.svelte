@@ -19,6 +19,7 @@
   import GameField from "../lib/GameField.svelte";
   import PossibleMoveLines from "../lib/PossibleMoveLines.svelte";
   import GamePosition from "../lib/GamePosition.svelte";
+  import ColorIndicator from "../lib/ColorIndicator.svelte";
 
   const navigate = useNavigate();
 
@@ -262,6 +263,9 @@
 <div class="container-fluid bgc-primary h-100">
   <div class="row pt-4">
     <div class="col-auto">
+      <div class="mb-2">
+        <ColorIndicator isWhite={isWhite}/>
+      </div>
       <PlayerInfo user={me} hasTurn={yourTurn} />
       <svg class="none-played mt-2">
         {#each playerStones.filter((x) => x === null) as stone, i}
@@ -278,7 +282,7 @@
         <!-- Line's for showing possible moves -->
         <PossibleMoveLines {allMoveLines} {possibleMoves} />
 
-        <!-- Game positino circles -->
+        <!-- Game position circles -->
         {#each positions as position, i (i)}
           <GamePosition
             {position}
@@ -317,6 +321,9 @@
       </svg>
     </div>
     <div class="col-auto">
+      <div class="mb-2">
+        <ColorIndicator isWhite={!isWhite}/>
+      </div>
       <PlayerInfo user={opponent} hasTurn={!yourTurn} />
       <svg class="none-played mt-2">
         {#each opponentStones.filter((x) => x === null) as stone, i}
@@ -336,6 +343,7 @@
     width: 80vh;
     background: var(--color-board-background);
     border: solid 6px var(--color-black);
+    border-radius: 10px;
   }
 
   .none-played {
@@ -343,6 +351,7 @@
     width: 10vw;
     background: var(--color-board-background);
     border: solid 6px var(--color-black);
+    border-radius: 10px;
   }
 
   .unplayed-number {

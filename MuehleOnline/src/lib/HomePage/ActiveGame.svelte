@@ -26,8 +26,8 @@
           <p>You still have one active game. You have <Countdown date={ttm} /> to join left.</p>
         </div>
       </div>
-      <div class="row">
-        <div class="col align-self-start">
+      <div class="row justify-content-start">
+        <div class="col-auto">
           <button
             type="button"
             class="btn btn-success"
@@ -36,7 +36,7 @@
             }}>Re-join</button
           >
         </div>
-        <div class="col-auto align-self-end">
+        <div class="col-auto">
           <button type="button" class="btn btn-danger" on:click>Quit</button>
         </div>
       </div>

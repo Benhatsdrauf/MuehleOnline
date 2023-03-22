@@ -34,17 +34,16 @@
 
 <svelte:window on:keydown={handle_keydown} />
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="custom-modal-background" on:click={close} />
 
-<div class="custom-modal card-border" role="dialog" aria-modal="true" bind:this={modal}>
+<div class="custom-modal" role="dialog" aria-modal="true" bind:this={modal}>
   <div class="row">
     <div class="col">
       <slot name="header" />
     </div>
     <div class="col-auto">
-      <!-- svelte-ignore a11y-autofocus -->
-      <button type="button" class="btn btn-danger" autofocus on:click={close}>
-        <Fa icon={faX} />
+      <button type="button" class="btn btn-close" on:click={close}>
       </button>
     </div>
   </div>
@@ -74,6 +73,6 @@
     padding: 1em;
     border-radius: 0.2em;
     background: white;
-    border: 1px solid;
+    border: 1px solid  var(--color-dark-grey);
   }
 </style>

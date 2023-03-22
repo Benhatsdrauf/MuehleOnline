@@ -28,11 +28,9 @@
     cx="{x}%"
     cy="{y}%"
     r="14"
-    class:selected={isSelected}
     class:white={isWhite}
     class:black={!isWhite}
     class:disabled={isDisabled}
-    class:deletable={isDeletable}
     class="innercircle"
 />
 <circle
@@ -40,11 +38,9 @@
     cx="{x}%"
     cy="{y}%"
     r="4"
-    class:selected={isSelected}
     class:white={isWhite}
     class:black={!isWhite}
     class:disabled={isDisabled}
-    class:deletable={isDeletable}
     class="innercircle"
 />
 

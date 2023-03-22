@@ -6,13 +6,11 @@
   } from "../../scripts/request";
   import { onMount } from "svelte";
   import { useNavigate } from "svelte-navigator";
-  import GameHistory from "../lib/GameHistory.svelte";
   import Navbar from "../lib/Navbar.svelte";
   import { echo, leaveChannel } from "../../scripts/echo";
 
   import Fa from "svelte-fa";
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
-  import Countdown from "../lib/Countdown.svelte";
   import Statistics from "../lib/HomePage/Statistics.svelte";
   import ActiveGame from "../lib/HomePage/ActiveGame.svelte";
   import HistoryComponent from "../lib/HomePage/HistoryComponent.svelte";
@@ -104,16 +102,17 @@
     {username}
   </span>
   <div class="me-3">
-    <img class="round-img"
+    <img
+      class="round-img"
       src="https://api.dicebear.com/5.x/initials/svg?seed={username}"
       alt="profile"
       width="30px"
       height="30px"
     />
   </div>
-  <button class="btn btn-outline-danger" type="button" on:click={Logout}
-    >Logout</button
-  >
+  <button class="btn btn-outline-danger" type="button" on:click={Logout}>
+    Logout
+  </button>
 </Navbar>
 
 <div class="container-fluid bgc-primary h-100">
@@ -142,9 +141,9 @@
 
 {#if showModal}
   <Modal on:close={() => (showModal = false)}>
-    <h1>This is the start game modal</h1>
-    <div>
-      <div class="input-group mb-3">
+    <h1 slot="header">Here is your new game code</h1>
+    <div class="mt-4">
+      <div class="input-group mb-2">
         <input type="text" class="form-control" value={inviteLink} />
         <div class="input-group-append">
           <button class="btn btn-link" type="button" on:click={CopyToClipBoard}>
@@ -154,7 +153,7 @@
       </div>
       <p>
         Send the Link to a friend the game will start as soon as your friend
-        joins
+        joins.
       </p>
     </div>
   </Modal>

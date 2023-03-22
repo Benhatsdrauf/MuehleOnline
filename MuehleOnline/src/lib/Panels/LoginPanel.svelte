@@ -16,24 +16,33 @@
       pw: password,
     };
 
-    let response = await Request("auth/login", data).catch((err) => {
-      console.log(err);
-      return;
+    Request("auth/login", data)
+    .then((response) => {
+      localStorage.setItem("token", response.token);
+      navigate("home");
+
+      let splitToken = response.token.split("|")[1];
+      hash(splitToken).then((hash) => 
+      {
+        localStorage.setItem("hashedToken", hash);
+      })
+    })
+    .catch((err) => {
+      err.json().then((response) => {
+        for(const property in response.errors)
+        {
+          console.log(`${property}: ${response.errors[property]}`)
+        }
+
+      })
     });
-
-    localStorage.setItem("token", response.token);
-    navigate("home");
-
-    let splitToken = response.token.split("|")[1];
-    // @ts-ignore
-    localStorage.setItem("hashedToken", await hash(splitToken));
   }
 </script>
 
 <div class="container-fluid">
   <div class="row">
     <div class="col">
-      <h1>Login Panel</h1>
+      <h1>Login</h1>
     </div>
   </div>
   <div class="row">
@@ -67,7 +76,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <button type="button" on:click={Login}>Login</button>
+        <button type="button" class="btn btn-outline-primary" on:click={Login}>Login</button>
       </div>
     </div>
   </div>

@@ -19,6 +19,7 @@
   import GameField from "../lib/GameField.svelte";
   import PossibleMoveLines from "../lib/PossibleMoveLines.svelte";
   import GamePosition from "../lib/GamePosition.svelte";
+  import ColorIndicator from "../lib/ColorIndicator.svelte";
 
   const navigate = useNavigate();
 
@@ -199,7 +200,12 @@
   }
 
   async function RemoveStone(pos) {
-    // implement deletion logic
+
+    if(opponentStonesInMill.includes(pos))
+    {
+      return;
+    }
+
     await AuthorizedRequest("game/stone/delete", {
       position: pos,
       deletion_token: deletionToken,
@@ -210,11 +216,11 @@
         deletionToken = "";
         yourTurn = false;
         canDelete = false;
+        opponentStonesInMill = [];
       })
       .catch((err) => {
         console.log(err);
       });
-    opponentStonesInMill = [];
   }
 
   async function quitGame() {
@@ -262,14 +268,17 @@
 <div class="container-fluid bgc-primary h-100">
   <div class="row pt-4">
     <div class="col-auto">
-      <PlayerInfo user={me} hasTurn={yourTurn} />
+      <div class="mb-2">
+        <ColorIndicator isWhite={!isWhite} />
+      </div>
+      <PlayerInfo user={opponent} hasTurn={!yourTurn} />
       <svg class="none-played mt-2">
-        {#each playerStones.filter((x) => x === null) as stone, i}
-          <Stone x={50} y={20 + 5 * i} {isWhite} />
+        {#each opponentStones.filter((x) => x === null) as stone, i}
+          <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />
         {/each}
-        <text class="unplayed-number" x="50%" y="90%"
-          >{playerStones.filter((x) => x === null).length}</text
-        >
+        <text class="unplayed-number" x="50%" y="90%">
+          {opponentStones.filter((x) => x === null).length}
+        </text>
       </svg>
     </div>
     <div class="col d-flex justify-content-center">
@@ -278,7 +287,7 @@
         <!-- Line's for showing possible moves -->
         <PossibleMoveLines {allMoveLines} {possibleMoves} />
 
-        <!-- Game positino circles -->
+        <!-- Game position circles -->
         {#each positions as position, i (i)}
           <GamePosition
             {position}
@@ -317,14 +326,17 @@
       </svg>
     </div>
     <div class="col-auto">
-      <PlayerInfo user={opponent} hasTurn={!yourTurn} />
+      <div class="mb-2">
+        <ColorIndicator {isWhite} />
+      </div>
+      <PlayerInfo user={me} hasTurn={yourTurn} />
       <svg class="none-played mt-2">
-        {#each opponentStones.filter((x) => x === null) as stone, i}
-          <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />
+        {#each playerStones.filter((x) => x === null) as stone, i}
+          <Stone x={50} y={20 + 5 * i} {isWhite} />
         {/each}
-        <text class="unplayed-number" x="50%" y="90%">
-          {opponentStones.filter((x) => x === null).length}
-        </text>
+        <text class="unplayed-number" x="50%" y="90%"
+          >{playerStones.filter((x) => x === null).length}</text
+        >
       </svg>
     </div>
   </div>
@@ -336,6 +348,7 @@
     width: 80vh;
     background: var(--color-board-background);
     border: solid 6px var(--color-black);
+    border-radius: 10px;
   }
 
   .none-played {
@@ -343,6 +356,7 @@
     width: 10vw;
     background: var(--color-board-background);
     border: solid 6px var(--color-black);
+    border-radius: 10px;
   }
 
   .unplayed-number {

@@ -22,7 +22,7 @@ class LoginController extends Controller
         }
         else
         {
-            Error::throw(["pw" => "Password is not correct."], 402);
+            Error::throw(["pw" => "Password is not correct."], 400);
         }
     }
 

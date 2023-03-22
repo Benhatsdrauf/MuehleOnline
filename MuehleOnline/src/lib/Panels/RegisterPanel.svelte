@@ -1,82 +1,85 @@
 <script>
-    import {Request} from "../../../scripts/request";
-    import { useNavigate } from "svelte-navigator";
+  import { Request } from "../../../scripts/request";
+  import { useNavigate } from "svelte-navigator";
 
-    import Fa from 'svelte-fa';
-    import { faKey, faUser } from '@fortawesome/free-solid-svg-icons';
+  import Fa from "svelte-fa";
+  import { faKey, faUser } from "@fortawesome/free-solid-svg-icons";
   import { hash } from "../../../scripts/hash";
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    let userName = "";
-    let password = "";
+  let userName = "";
+  let password = "";
 
-    async function Register() {
-        const data = {
-            name: userName,
-            pw: password,
-        };
+  async function Register() {
+    const data = {
+      name: userName,
+      pw: password,
+    };
 
-        let response = await Request(
-            "auth/register",
-            data
-        ).catch((err) => {
-            console.log(err);
-            return;
-        });
-
+    Request("auth/register", data)
+      .then((response) => {
         localStorage.setItem("token", response.token);
 
         let splitToken = response.token.split("|")[1];
-    // @ts-ignore
-    localStorage.setItem("hashedToken", hash(splitToken));
+
+        hash(splitToken).then((hash) => {
+          localStorage.setItem("hashedToken", hash);
+        });
         navigate("home");
-    }
+      })
+      .catch((err) => {
+        err.json().then((response) => {
+          for (const property in response.errors) {
+            console.log(`${property}: ${response.errors[property]}`);
+          }
+        });
+      });
+  }
 </script>
 
-
 <div class="container-fluid">
-    <div class="row">
-      <div class="col">
-        <h1>Register Panel</h1>
+  <div class="row">
+    <div class="col">
+      <h1>Register</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text h-100">
+            <Fa icon={faUser} />
+          </span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Username"
+          bind:value={userName}
+        />
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text h-100">
+            <Fa icon={faKey} />
+          </span>
+        </div>
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          bind:value={password}
+        />
       </div>
     </div>
     <div class="row">
-        <div class="col">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text h-100">
-                  <Fa icon={faUser}/>
-                </span>
-              </div>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Username"
-                bind:value={userName}
-              />
-            </div>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text h-100">
-                  <Fa icon={faKey}/>
-                </span>
-              </div>
-              <input
-                type="password"
-                class="form-control"
-                placeholder="Password"
-                bind:value={password}
-              />
-            </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <button type="button" on:click={Register}>Login</button>
-        </div>
+      <div class="col">
+        <button type="button" class="btn btn-outline-primary" on:click={Register}>Register</button>
       </div>
     </div>
   </div>
+</div>
 
 <style>
 </style>

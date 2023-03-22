@@ -9,9 +9,9 @@
 <!-- background animation -->
 <div class="background">
     <div class="context">
-        <h1>MuehleOnline</h1>
-        <button class="cta" on:click={() => (showModal = true)}>
-            Login!
+        <h1 class="not-selectable">MuehleOnline</h1>
+        <button type="button" class="cta btn btn-dark" on:click={() => (showModal = true)}>
+            Login
         </button>
     </div>
     <ul class="circles">
@@ -35,6 +35,9 @@
 <!-- modal  -->
 {#if showModal}
     <Modal on:close={() => (showModal = false)}>
+        <h2 slot="header">
+            Login Or Register
+        </h2>
         <Tabs>
             <TabList>
                 <Tab>Login</Tab>
@@ -53,6 +56,7 @@
 {/if}
 
 <style>
+    
     * {
         margin: 0px;
         padding: 0px;

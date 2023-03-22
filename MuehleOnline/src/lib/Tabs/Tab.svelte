@@ -26,4 +26,5 @@
         border-bottom: 2px solid teal;
         color: #333;
     }
+    
 </style>

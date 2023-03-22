@@ -16,17 +16,28 @@
       pw: password,
     };
 
-    let response = await Request("auth/login", data).catch((err) => {
-      console.log(err);
+    Request("auth/login", data)
+    .then((response) => {
+      localStorage.setItem("token", response.token);
+      navigate("home");
+
+      let splitToken = response.token.split("|")[1];
+      hash(splitToken).then((hash) => 
+      {
+        localStorage.setItem("hashedToken", hash);
+      })
+    })
+    .catch((err) => {
+      err.json().then((response) => {
+        for(const property in response.errors)
+        {
+          console.log(`${property}: ${response.errors[property]}`)
+        }
+
+      })
+
       return;
     });
-
-    localStorage.setItem("token", response.token);
-    navigate("home");
-
-    let splitToken = response.token.split("|")[1];
-    // @ts-ignore
-    localStorage.setItem("hashedToken", await hash(splitToken));
   }
 </script>
 

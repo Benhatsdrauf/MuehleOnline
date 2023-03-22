@@ -200,6 +200,12 @@
   }
 
   async function RemoveStone(pos) {
+
+    if(opponentStonesInMill.includes(pos))
+    {
+      return;
+    }
+
     await AuthorizedRequest("game/stone/delete", {
       position: pos,
       deletion_token: deletionToken,

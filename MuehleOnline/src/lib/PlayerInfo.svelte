@@ -4,13 +4,11 @@
 </script>
 
 <div class="card" class:highlight={hasTurn} style="max-width: 10vw;">
-  <div
-    class="card-header bgc-secondary"
-    style="padding-left: 8px !important;"
-  >
+  <div class="card-header bgc-secondary" style="padding-left: 8px !important;">
     <div class="row">
       <div class="col-auto" style="padding-right: 4px;">
         <img
+          class="round-img"
           src="https://api.dicebear.com/5.x/initials/svg?seed={user.name}"
           alt="profile"
           width="30px"
@@ -24,8 +22,8 @@
   </div>
   <div class="card-body">
     <div>
-        <p>Elo: {user.elo}</p>
-        <p>Win rate: {user.wins}/{user.losses}</p>
+      <p>Elo: {user.elo}</p>
+      <p>Win rate: {user.wins}/{user.losses}</p>
     </div>
   </div>
 </div>

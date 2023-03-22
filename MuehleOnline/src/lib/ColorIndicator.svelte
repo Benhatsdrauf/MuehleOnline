@@ -1,13 +1,5 @@
 <script>
   export let isWhite;
-
-  let text = "";
-
-  if (isWhite) {
-    text = "White";
-  } else {
-    text = "Brown";
-  }
 </script>
 
 <div class="card">
@@ -17,7 +9,7 @@
     class:brown={!isWhite}
   >
     <h5 style="margin-bottom: 2px"
-    class:text-white={!isWhite}><b>{text}</b></h5>
+    class:text-white={!isWhite}><b>{(isWhite)? "White" : "Brown"}</b></h5>
   </div>
 </div>
 

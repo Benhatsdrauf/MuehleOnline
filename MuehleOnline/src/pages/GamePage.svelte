@@ -200,7 +200,6 @@
   }
 
   async function RemoveStone(pos) {
-    // implement deletion logic
     await AuthorizedRequest("game/stone/delete", {
       position: pos,
       deletion_token: deletionToken,
@@ -211,11 +210,11 @@
         deletionToken = "";
         yourTurn = false;
         canDelete = false;
+        opponentStonesInMill = [];
       })
       .catch((err) => {
         console.log(err);
       });
-    opponentStonesInMill = [];
   }
 
   async function quitGame() {

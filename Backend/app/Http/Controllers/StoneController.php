@@ -20,6 +20,7 @@ use App\Events\GameOverEvent;
 
 use App\Http\Requests\StoneDeleteRequest;
 use App\Http\Requests\StoneMoveRequest;
+use App\Models\DeletionToken;
 
 class StoneController extends Controller
 {
@@ -171,10 +172,16 @@ class StoneController extends Controller
 
         $deletion_token = "";
         if (helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $newPos)) {
-            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
-            $game->save();
-
-            $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            
+            //check if any opponent stones can be deleted
+            if(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($opponent, $game)))
+            {
+                $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+                $game->save();
+    
+                $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            }
+            
         } else {
             $game->whites_turn = !$game->whites_turn;
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));

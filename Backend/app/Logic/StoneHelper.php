@@ -79,6 +79,7 @@ class StoneHelper
         foreach (StoneHelper::GetPossibleMills() as $mill) {
             if ($mill->contains($newPos)) {
 
+                //Get mill without newPos
                 $mill = $mill->filter(function ($value, $key) use ($newPos) {
                     return $value != $newPos;
                 })->values();
@@ -138,5 +139,20 @@ class StoneHelper
 
             return false;
         }
+    }
+
+    public static function AnyStoneIsDeletable(UserToGame $utg)
+    {
+        $moves = $utg->moves()->where("position", "!=", -1)->pluck("position");
+
+        foreach($moves as $move)
+        {
+            if(StoneHelper::CanDeleteStone($utg, $move))
+            {
+               return true;
+            }
+        }
+
+        return false;
     }
 }

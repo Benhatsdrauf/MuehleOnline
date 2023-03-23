@@ -42,10 +42,11 @@ Route::get('/game/join/{id}', function () {
 Route::get("/test", function () {
 
     $user = User::find(1);
+    $opponent = User::find(2);
 
     $game = $user->games()->where("is_active", true)->first();
 
-    return response()->json(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($user, $game)));
+    return response()->json(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)));
 });
 
 Route::prefix("auth")->group(function() {

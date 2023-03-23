@@ -45,7 +45,7 @@ Route::get("/test", function () {
 
     $game = $user->games()->where("is_active", true)->first();
 
-    return response()->json(dbHelper::GetUserToGame($user, $game)->deletion_tokens()->first() == null);
+    return response()->json(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($user, $game)));
 });
 
 Route::prefix("auth")->group(function() {

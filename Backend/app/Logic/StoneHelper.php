@@ -141,9 +141,9 @@ class StoneHelper
         }
     }
 
-    public static function AnyStoneIsDeletable(UserToGame $utg): bool
+    public static function AnyStoneIsDeletable(UserToGame $utg)
     {
-        $moves = $utg->moves()->pluck("position");
+        $moves = $utg->moves()->where("position", "!=", -1)->pluck("position");
 
         foreach($moves as $move)
         {

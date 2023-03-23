@@ -128,6 +128,13 @@ class StoneController extends Controller
             dbHelper::GameEnded($game, $user, $opponent);
         }
 
+        if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
+        {
+            event(new GameOverEvent($user, true, "Congratulations you won."));
+            event(new GameOverEvent($opponent, false, "!!!U Suck!!!"));
+            dbHelper::GameEnded($game, $user, $opponent);
+        }
+
         return response()->json("success");
     }
 
@@ -187,13 +194,21 @@ class StoneController extends Controller
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
             $game->save();
         }
-
-        event(new MoveEvent($opponent, $oldPos, $newPos, $deletion_token != ""));
+        
         $oldMove->position = $newPos;
         $oldMove->save();
 
-        history::SetEntry($oldPos, $newPos, dbHelper::GetUserToGame($user, $game));
+        event(new MoveEvent($opponent, $oldPos, $newPos, $deletion_token != ""));
 
+        history::SetEntry($oldPos, $newPos, dbHelper::GetUserToGame($user, $game));
+        
+        if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
+        {
+            event(new GameOverEvent($user, true, "Congratulations you won."));
+            event(new GameOverEvent($opponent, false, "!!!U Suck!!!"));
+            dbHelper::GameEnded($game, $user, $opponent);
+        }
+        
         return response()->json($deletion_token);
     }
 }

@@ -141,7 +141,7 @@ class StoneHelper
         }
     }
 
-    public static function AnyStoneIsDeletable(UserToGame $utg)
+    public static function AnyStoneIsDeletable(UserToGame $utg): bool
     {
         $moves = $utg->moves()->where("position", "!=", -1)->pluck("position");
 
@@ -154,5 +154,33 @@ class StoneHelper
         }
 
         return false;
+    }
+
+    public static function IsOpponentStale(UserToGame $player, UserToGame $opponent): bool
+    {
+        $opponentPositions = $opponent->moves()->where("position", "!=", -1)->pluck("position");
+        $playerPositions = $player->moves()->where("position", "!=", -1)->pluck("position");
+
+        if($opponentPositions->count() <= 3)
+        {
+            return false;
+        }
+
+        $allPositions = $opponentPositions->merge($playerPositions);
+
+        foreach($opponentPositions as $position)
+        {
+            $possibleMoves = StoneHelper::GetPossibleMoves()[$position];
+
+            $diff = $allPositions->diff($possibleMoves);
+
+            //check if all possible moves are set by stones
+            if($diff->count() !== ($allPositions->count() - $possibleMoves->count()))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

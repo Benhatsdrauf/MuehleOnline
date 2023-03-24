@@ -123,15 +123,11 @@ class StoneController extends Controller
         $opponentMoves = dbHelper::GetUserToGame($opponent, $game)->moves()->get();
 
         if ($opponentMoves->where("position", "!=", -1)->count() < 3 && $opponentMoves->count() == 9) {
-            event(new GameOverEvent($user, true, "Congratulations you won."));
-            event(new GameOverEvent($opponent, false, "!!!U Suck!!!"));
             dbHelper::GameEnded($game, $user, $opponent);
         }
 
         if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
         {
-            event(new GameOverEvent($user, true, "Congratulations you won."));
-            event(new GameOverEvent($opponent, false, "!!!U Suck!!!"));
             dbHelper::GameEnded($game, $user, $opponent);
         }
 
@@ -204,8 +200,6 @@ class StoneController extends Controller
         
         if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
         {
-            event(new GameOverEvent($user, true, "Congratulations you won."));
-            event(new GameOverEvent($opponent, false, "!!!U Suck!!!"));
             dbHelper::GameEnded($game, $user, $opponent);
         }
         

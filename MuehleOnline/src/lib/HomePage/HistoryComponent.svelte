@@ -4,7 +4,7 @@
   import Loading from "../Loading.svelte";
   import GameHistory from "../GameHistory.svelte";
 
-  export let gameHistory = [];
+  export let gameHistory = null;
   export let username = "";
 </script>
 
@@ -20,15 +20,18 @@
     </div>
   </div>
   <div class="card-body" />
-  {#if gameHistory.length == 0}
+  {#if gameHistory == null}
+  <div class="mb-4">
     <Loading show={true} />
+  </div>
+  {:else if gameHistory.length === 0}
+  <h6 class="text-center mb-4">No games found.</h6>
   {:else}
     <div class="container history">
       {#each gameHistory as game}
         <div class="mb-2">
           <GameHistory
             {username}
-            count={gameHistory.indexOf(game) + 1}
             won={game.won}
             opponent={game.opponent}
             playtime={game.play_time}

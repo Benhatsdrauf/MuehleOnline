@@ -20,6 +20,9 @@
   import PossibleMoveLines from "../lib/PossibleMoveLines.svelte";
   import GamePosition from "../lib/GamePosition.svelte";
   import ColorIndicator from "../lib/ColorIndicator.svelte";
+  import Fa from "svelte-fa";
+    import { faCrown } from "@fortawesome/free-solid-svg-icons";
+
 
   const navigate = useNavigate();
 
@@ -255,7 +258,9 @@
 
 {#if showGameOverModal}
   <Modal on:close={() => (showModal = false)}>
-    <h3>Game Over</h3>
+    <div slot="header">
+      <Fa icon={faCrown} color="var(--color-win)" size="1.6x"/>
+    </div>
     <p>{gameOverMessage}</p>
     <button
       on:click={() => {

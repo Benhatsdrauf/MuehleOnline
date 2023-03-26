@@ -27,7 +27,6 @@
       {#each gameHistory as game}
         <div class="mb-2">
           <GameHistory
-            {username}
             count={gameHistory.indexOf(game) + 1}
             won={game.won}
             opponent={game.opponent}

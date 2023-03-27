@@ -23,6 +23,7 @@
   import Fa from "svelte-fa";
   import { faBolt, faCrown } from "@fortawesome/free-solid-svg-icons";
   import { confetti } from "@neoconfetti/svelte";
+  import MessageModal from "../lib/MessageModal.svelte";
 
   const navigate = useNavigate();
 
@@ -48,6 +49,10 @@
   let showGameOverModal = false;
   let gameOverMessage = "";
   let isWinner = false;
+
+  let messageModalmessage = "";
+  let messageModalShow = false;
+  let messageModalIsError = true;
 
   echo
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
@@ -122,7 +127,17 @@
 
         playerStones.includes(null) ? (canSet = true) : (canSet = false);
       })
-      .catch();
+      .catch((err) => {
+        try {
+          err.json().then((response) => {
+            if (response.message == "Unauthenticated.") {
+              navigate("/");
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
+      });
   });
 
   function clearVariables() {
@@ -171,13 +186,20 @@
         }
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              ShowMessageModal(response.errors.game);
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
   }
 
   async function moveStone(pos) {
     if (selectedStone == null) return;
-    console.log("Move method");
 
     let oldPos = selectedStone;
     playerStones = playerStones.filter((x) => x != oldPos);
@@ -198,18 +220,26 @@
         }
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              ShowMessageModal(response.errors.game);
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
 
     clearVariables();
   }
 
-  async function RemoveStone(pos) {
+  function RemoveStone(pos) {
     if (opponentStonesInMill.includes(pos)) {
       return;
     }
 
-    await AuthorizedRequest("game/stone/delete", {
+    AuthorizedRequest("game/stone/delete", {
       position: pos,
       deletion_token: deletionToken,
     })
@@ -222,7 +252,15 @@
         opponentStonesInMill = [];
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              ShowMessageModal(response.errors.game);
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
   }
 
@@ -232,8 +270,27 @@
         navigate("/home");
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              if (response.message == "Unauthenticated.") {
+                navigate("/");
+              }
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
+  }
+
+  function ShowMessageModal(
+    message = "Faild to connect to server, please try again later.",
+    IsError = true
+  ) {
+    messageModalmessage = message;
+    messageModalIsError = IsError;
+    messageModalShow = true;
   }
 </script>
 
@@ -257,10 +314,11 @@
 {/if}
 
 {#if showGameOverModal}
-<div
-  class="confetti-pos" stageWidth={600}
-  use:confetti={{ particleCount: 500, force: 0.7, duration: 10000 }}
-/>
+  <div
+    class="confetti-pos"
+    stageWidth={600}
+    use:confetti={{ particleCount: 500, force: 0.7, duration: 10000 }}
+  />
   <Modal on:close={() => (showModal = false)}>
     <div slot="header">
       <div class="row">
@@ -375,6 +433,12 @@
     </div>
   </div>
 </div>
+
+<MessageModal
+  bind:showModal={messageModalShow}
+  isError={messageModalIsError}
+  message={messageModalmessage}
+/>
 
 <style>
   .game-field {

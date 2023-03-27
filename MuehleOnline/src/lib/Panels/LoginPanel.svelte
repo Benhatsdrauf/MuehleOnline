@@ -6,6 +6,7 @@
   import Fa from "svelte-fa";
   import { faKey, faUser } from "@fortawesome/free-solid-svg-icons";
   import { each } from "svelte/internal";
+  import MessageModal from "../MessageModal.svelte";
 
   const navigate = useNavigate();
   let userName = "";
@@ -41,14 +42,20 @@
               {
                 field: property,
                 message: response.errors[property],
-              },
+              }
             ];
           }
         });
         }
         catch(exception)
         {
-          
+          errorMessages = [
+            ...errorMessages,
+            {
+              field: "server",
+              message: "Could not connect to the server, please try again later."
+            }
+          ];
         }
       });
   }
@@ -101,10 +108,13 @@
     </div>
   </div>
   <div class="row">
-    <div class="col">
+    <div class="col-auto">
       <button type="button" class="btn btn-outline-primary" on:click={Login}
         >Login</button
       >
+    </div>
+    <div class="col-auto text-danger">
+        {errorMessages.find((x) => x.field == "server")?.message ?? ""}
     </div>
   </div>
 </div>

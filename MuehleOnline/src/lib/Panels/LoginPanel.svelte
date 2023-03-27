@@ -40,17 +40,14 @@
                 message: response.errors[property],
               },
             ];
-            //console.log(`${property}: ${response.errors[property]}`)
           }
         });
-
-        console.log(errorMessages);
       });
   }
 </script>
 
 <div class="container-fluid">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col">
       <h1>Login</h1>
     </div>
@@ -71,7 +68,7 @@
         />
       </div>
       <div class="form-text text-danger">
-        {(errorMessages.find((x) => x.field == "name") != undefined)? errorMessages.find((x) => x.field == "name").message : ""}
+        {errorMessages.find((x) => x.field == "name")?.message ?? ""}
       </div>
     </div>
   </div>
@@ -91,7 +88,7 @@
         />
       </div>
       <div class="form-text text-danger">
-        {(errorMessages.find((x) => x.field == "pw") != undefined)? errorMessages.find((x) => x.field == "pw").message : ""}
+        {errorMessages.find((x) => x.field == "pw")?.message ?? ""}
       </div>
     </div>
   </div>

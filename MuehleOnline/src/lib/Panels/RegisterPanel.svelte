@@ -10,8 +10,11 @@
 
   let userName = "";
   let password = "";
+  let errorMessages = [];
 
   async function Register() {
+    errorMessages = [];
+
     const data = {
       name: userName,
       pw: password,
@@ -31,7 +34,13 @@
       .catch((err) => {
         err.json().then((response) => {
           for (const property in response.errors) {
-            console.log(`${property}: ${response.errors[property]}`);
+            errorMessages = [
+              ...errorMessages,
+              {
+                field: property,
+                message: response.errors[property],
+              },
+            ];
           }
         });
       });
@@ -39,14 +48,14 @@
 </script>
 
 <div class="container-fluid">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col">
       <h1>Register</h1>
     </div>
   </div>
-  <div class="row">
+  <div class="row mb-3">
     <div class="col">
-      <div class="input-group mb-3">
+      <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text h-100">
             <Fa icon={faUser} />
@@ -59,7 +68,14 @@
           bind:value={userName}
         />
       </div>
-      <div class="input-group mb-3">
+      <div class="form-text text-danger">
+        {errorMessages.find((x) => x.field == "name")?.message ?? ""}
+      </div>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col">
+      <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text h-100">
             <Fa icon={faKey} />
@@ -72,11 +88,16 @@
           bind:value={password}
         />
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <button type="button" class="btn btn-outline-primary" on:click={Register}>Register</button>
+      <div class="form-text text-danger">
+        {errorMessages.find((x) => x.field == "pw")?.message ?? ""}
       </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button type="button" class="btn btn-outline-primary" on:click={Register}
+        >Register</button
+      >
     </div>
   </div>
 </div>

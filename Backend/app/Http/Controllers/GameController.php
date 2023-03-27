@@ -144,7 +144,6 @@ class GameController extends Controller
             $BlackMoves = $userMoves;
         }
 
-
         $deletionToken = helper::GetUserToGame($user, $game)->deletion_tokens()->first();
 
         $data->user->is_white = $userIsWhite;

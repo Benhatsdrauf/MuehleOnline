@@ -12,6 +12,7 @@ use App\Http\Controllers\DeletionTokenController as deletion;
 use App\Logic\DatabaseHelper as dbHelper;
 use Carbon\Carbon;
 use App\Http\Controllers\UserController;
+use App\Events\GameOverEvent;
 
 class DatabaseHelper
 {
@@ -20,14 +21,13 @@ class DatabaseHelper
         return PersonalAccessToken::where("tokenable_id", $user->id)->first()->token;
     }
 
-    public static function GameEnded($game, $winner, $loser)
+    public static function GameEnded(Game $game, User $winner, User $loser, string $message)
     {
         $loser->games()->updateExistingPivot($game->id, ["won" => false]);
         Stat::addLos($loser);
 
         $winner->games()->updateExistingPivot($game->id, ["won" => true]);
         Stat::addWin($winner);
-
 
         deletion::clearTokens(dbHelper::GetUserToGame($winner, $game));
         deletion::clearTokens(dbHelper::GetUserToGame($loser, $game));
@@ -37,6 +37,9 @@ class DatabaseHelper
         $game->save();
 
         UserController::eloUpdate($winner, $loser, $game);
+
+        event(new GameOverEvent($winner, true, "Your opponent " . $message));
+        event(new GameOverEvent($loser, false, "You " . $message));
     }
 
     public static function GetUserToGame(User $user, Game $game)

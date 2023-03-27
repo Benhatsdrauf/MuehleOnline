@@ -5,7 +5,6 @@
     export let won = false;
     export let opponent = "";
     export let playtime = 0;
-    export let username = "";
     export let start_date = "";
     export let elo = 0;
 

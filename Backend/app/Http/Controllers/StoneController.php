@@ -123,12 +123,12 @@ class StoneController extends Controller
         $opponentMoves = dbHelper::GetUserToGame($opponent, $game)->moves()->get();
 
         if ($opponentMoves->where("position", "!=", -1)->count() < 3 && $opponentMoves->count() == 9) {
-            dbHelper::GameEnded($game, $user, $opponent);
+            dbHelper::GameEnded($game, $user, $opponent, "have no more stones left.");
         }
 
         if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
         {
-            dbHelper::GameEnded($game, $user, $opponent);
+            dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
         }
 
         return response()->json("success");
@@ -200,7 +200,7 @@ class StoneController extends Controller
         
         if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
         {
-            dbHelper::GameEnded($game, $user, $opponent);
+            dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
         }
         
         return response()->json($deletion_token);

@@ -21,14 +21,13 @@ class DatabaseHelper
         return PersonalAccessToken::where("tokenable_id", $user->id)->first()->token;
     }
 
-    public static function GameEnded(Game $game, User $winner, User $loser)
+    public static function GameEnded(Game $game, User $winner, User $loser, string $message)
     {
         $loser->games()->updateExistingPivot($game->id, ["won" => false]);
         Stat::addLos($loser);
 
         $winner->games()->updateExistingPivot($game->id, ["won" => true]);
         Stat::addWin($winner);
-
 
         deletion::clearTokens(dbHelper::GetUserToGame($winner, $game));
         deletion::clearTokens(dbHelper::GetUserToGame($loser, $game));
@@ -39,9 +38,8 @@ class DatabaseHelper
 
         UserController::eloUpdate($winner, $loser, $game);
 
-        event(new GameOverEvent($winner, false, "You won"));
-        event(new GameOverEvent($loser, false, "!!!U Suck!!!"));
-
+        event(new GameOverEvent($winner, true, "Your opponent " . $message));
+        event(new GameOverEvent($loser, false, "You " . $message));
     }
 
     public static function GetUserToGame(User $user, Game $game)

@@ -18,6 +18,7 @@
     "dependencies": {
         "@fortawesome/free-regular-svg-icons": "^6.2.1",
         "@fortawesome/free-solid-svg-icons": "^6.2.1",
+        "@neoconfetti/svelte": "^1.0.0",
         "laravel-echo": "^1.14.2",
         "pusher-js": "^7.6.0",
         "svelte-fa": "^3.0.3",

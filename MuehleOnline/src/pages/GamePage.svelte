@@ -21,8 +21,8 @@
   import GamePosition from "../lib/GamePosition.svelte";
   import ColorIndicator from "../lib/ColorIndicator.svelte";
   import Fa from "svelte-fa";
-    import { faCrown } from "@fortawesome/free-solid-svg-icons";
-
+  import { faBolt, faCrown } from "@fortawesome/free-solid-svg-icons";
+  import { confetti } from "@neoconfetti/svelte";
 
   const navigate = useNavigate();
 
@@ -47,6 +47,7 @@
   let blackMoves;
   let showGameOverModal = false;
   let gameOverMessage = "";
+  let isWinner = false;
 
   echo
     .channel("opponent_quit." + localStorage.getItem("hashedToken"))
@@ -62,6 +63,7 @@
     .listen("GameOverEvent", (e) => {
       showGameOverModal = true;
       gameOverMessage = e.message;
+      isWinner = e.won;
       leaveChannel("gameover." + localStorage.getItem("hashedToken"));
     });
 
@@ -203,9 +205,7 @@
   }
 
   async function RemoveStone(pos) {
-
-    if(opponentStonesInMill.includes(pos))
-    {
+    if (opponentStonesInMill.includes(pos)) {
       return;
     }
 
@@ -251,22 +251,48 @@
     <button
       on:click={() => {
         navigate("/home");
-      }}>Ok</button
+      }}>OK</button
     >
   </Modal>
 {/if}
 
 {#if showGameOverModal}
+<div class="confetti-pos" use:confetti={{ particleCount: 500, force: 0.7, duration: 10000 }} />
   <Modal on:close={() => (showModal = false)}>
     <div slot="header">
-      <Fa icon={faCrown} color="var(--color-win)" size="1.6x"/>
+      <div class="row">
+        {#if isWinner}
+          <div class="col-auto">
+            <Fa icon={faCrown} color="var(--color-win)" size="1.6x" />
+          </div>
+          <div class="col">
+            <h4><b>Victory</b></h4>
+          </div>
+        {:else}
+          <div class="col-auto">
+            <Fa icon={faBolt} color="var(--color-los)" size="2x" />
+          </div>
+          <div class="col">
+            <h4><b>Loss</b></h4>
+          </div>
+        {/if}
+      </div>
     </div>
-    <p>{gameOverMessage}</p>
-    <button
-      on:click={() => {
-        navigate("/home");
-      }}>Ok</button
-    >
+    <div class="row mt-3">
+      <div class="col">
+        <h6>{gameOverMessage}</h6>
+      </div>
+    </div>
+    <div class="row justify-content-end">
+      <div class="col-auto">
+        <button
+          class="btn btn-outline-primary"
+          on:click={() => {
+            navigate("/home");
+          }}>OK</button
+        >
+      </div>
+    </div>
   </Modal>
 {/if}
 
@@ -367,5 +393,11 @@
   .unplayed-number {
     font-size: 20px;
     font-weight: bold;
+  }
+  .confetti-pos {
+    z-index: 10;
+    position: absolute;
+    left: 50%;
+    top: 20%;
   }
 </style>

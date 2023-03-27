@@ -87,6 +87,7 @@ class GameController extends Controller
         $game->save();
         
         event(new playerReady($opponent));
+        return response()->json();
     }
 
     public function quit(Request $request)

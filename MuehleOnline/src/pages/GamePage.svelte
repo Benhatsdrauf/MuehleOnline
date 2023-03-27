@@ -226,7 +226,7 @@
       });
   }
 
-  async function quitGame() {
+  function quitGame() {
     AuthorizedGetRequest("game/quit")
       .then(() => {
         navigate("/home");
@@ -257,7 +257,10 @@
 {/if}
 
 {#if showGameOverModal}
-<div class="confetti-pos" use:confetti={{ particleCount: 500, force: 0.7, duration: 10000 }} />
+<div
+  class="confetti-pos" stageWidth={600}
+  use:confetti={{ particleCount: 500, force: 0.7, duration: 10000 }}
+/>
   <Modal on:close={() => (showModal = false)}>
     <div slot="header">
       <div class="row">

@@ -5,8 +5,6 @@
 
   import Fa from "svelte-fa";
   import { faKey, faUser } from "@fortawesome/free-solid-svg-icons";
-  import { each } from "svelte/internal";
-  import MessageModal from "../MessageModal.svelte";
 
   const navigate = useNavigate();
   let userName = "";
@@ -24,7 +22,7 @@
     Request("auth/login", data)
       .then((response) => {
         localStorage.setItem("token", response.token);
-        navigate("home");
+        navigate("/home");
 
         let splitToken = response.token.split("|")[1];
         hash(splitToken).then((hash) => {

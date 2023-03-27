@@ -29,7 +29,7 @@
         hash(splitToken).then((hash) => {
           localStorage.setItem("hashedToken", hash);
         });
-        navigate("home");
+        navigate("/home");
       })
       .catch((err) => {
         try {

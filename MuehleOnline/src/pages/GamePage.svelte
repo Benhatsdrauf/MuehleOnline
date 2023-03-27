@@ -5,10 +5,10 @@
   } from "../../scripts/request";
   import { onMount } from "svelte";
   import { positions } from "../../scripts/circlePositions";
-  import Stone from "../lib/Stone.svelte";
+  import Stone from "../lib/GamePage/Stone.svelte";
   import Navbar from "../lib/Navbar.svelte";
   import { useNavigate } from "svelte-navigator";
-  import PlayerInfo from "../lib/PlayerInfo.svelte";
+  import PlayerInfo from "../lib/GamePage/PlayerInfo.svelte";
   import { echo, leaveChannel } from "../../scripts/echo";
   import Modal from "../lib/Modal.svelte";
   import {
@@ -16,10 +16,10 @@
     getAllMoves,
     GetStonesInMill,
   } from "../../scripts/gameLogic";
-  import GameField from "../lib/GameField.svelte";
-  import PossibleMoveLines from "../lib/PossibleMoveLines.svelte";
-  import GamePosition from "../lib/GamePosition.svelte";
-  import ColorIndicator from "../lib/ColorIndicator.svelte";
+  import GameField from "../lib/GamePage/GameField.svelte";
+  import PossibleMoveLines from "../lib/GamePage/PossibleMoveLines.svelte";
+  import GamePosition from "../lib/GamePage/GamePosition.svelte";
+  import ColorIndicator from "../lib/GamePage/ColorIndicator.svelte";
   import Fa from "svelte-fa";
   import { faBolt, faCrown } from "@fortawesome/free-solid-svg-icons";
   import { confetti } from "@neoconfetti/svelte";

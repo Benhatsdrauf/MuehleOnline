@@ -1,5 +1,5 @@
 <script>
-    import { positions } from "../../scripts/circlePositions";
+    import { positions } from "../../../scripts/circlePositions";
     import { quintOut } from "svelte/easing";
     import { draw } from "svelte/transition";
 

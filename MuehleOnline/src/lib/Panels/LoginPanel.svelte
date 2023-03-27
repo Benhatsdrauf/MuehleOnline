@@ -31,7 +31,10 @@
         });
       })
       .catch((err) => {
-        err.json().then((response) => {
+
+        try
+        {
+          err.json().then((response) => {
           for (const property in response.errors) {
             errorMessages = [
               ...errorMessages,
@@ -42,6 +45,11 @@
             ];
           }
         });
+        }
+        catch(exception)
+        {
+          
+        }
       });
   }
 </script>

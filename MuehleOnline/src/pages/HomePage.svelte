@@ -31,7 +31,7 @@
   let activeGame = false;
   let username = "";
   let elo = 1000;
-  let gameHistory = [];
+  let gameHistory = null;
   let ttm = new Date();
   let statistics = null;
 

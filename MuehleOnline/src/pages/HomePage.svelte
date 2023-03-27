@@ -14,7 +14,8 @@
   import Statistics from "../lib/HomePage/Statistics.svelte";
   import ActiveGame from "../lib/HomePage/ActiveGame.svelte";
   import HistoryComponent from "../lib/HomePage/HistoryComponent.svelte";
-  import StartGameComponent from "../lib/HomePage/StartGameComponent.svelte";
+  import MessageModal from "../lib/MessageModal.svelte";
+  import { faPlay } from "@fortawesome/free-solid-svg-icons";
 
   echo
     .channel("player_ready." + localStorage.getItem("hashedToken"))
@@ -25,8 +26,7 @@
       }
     });
 
-  let showModal = false;
-  let showErrorModal = false;
+  let showGameCodeModal = false;
   let inviteLink = "";
   let activeGame = false;
   let username = "";
@@ -34,6 +34,11 @@
   let gameHistory = null;
   let ttm = new Date();
   let statistics = null;
+  let navigate = useNavigate();
+
+  let showMessageModal = false;
+  let modalMessage = "";
+  let messageModalError = true;
 
   onMount(() => {
     LoadUserData();
@@ -46,12 +51,25 @@
         LoadUserData();
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((e) => {
+            if(e.errors.game)
+            {
+              modalMessage = e.errors.game;
+              messageModalError = true;
+              showMessageModal = true;
+            }
+          });
+        } catch (exception) {
+          modalMessage = "Faild to connect to server, please try again later.";
+          messageModalError = true;
+          showMessageModal = true;
+        }
       });
   }
 
-  async function LoadUserData() {
-    await AuthorizedGetRequest("user/info")
+  function LoadUserData() {
+    AuthorizedGetRequest("user/info")
       .then((response) => {
         username = response.user.name;
         elo = response.user.elo;
@@ -61,36 +79,62 @@
         statistics = response.statistic;
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((e) => {
+            console.log(e);
+          });
+        } catch (exception) {
+          modalMessage = "Faild to connect to server, please try again later.";
+          messageModalError = true;
+          showMessageModal = true;
+        }
       });
   }
 
-  const navigate = useNavigate();
-
-  async function StartGame() {
-    let response = await AuthorizedRequest("game/create").catch((err) => {
-      showErrorModal = true;
-      console.log(err);
-      return;
-    });
-
-    if (response) {
-      inviteLink = response.invite_link;
-      showModal = true;
-    }
-  }
-
-  async function Logout() {
-    let response = await AuthorizedRequest("auth/logout").catch((err) => {
-      console.log(err);
-      return;
-    });
-
-    navigate("/");
+  function Logout() {
+    AuthorizedRequest("auth/logout")
+      .then((response) => {
+        navigate("/");
+      })
+      .catch((err) => {
+        try {
+          err.json().then((e) => {
+            console.log(e);
+          });
+        } catch (exception) {
+          modalMessage = "Faild to connect to server, please try again later.";
+          messageModalError = true;
+          showMessageModal = true;
+        }
+      });
   }
 
   function CopyToClipBoard() {
     navigator.clipboard.writeText(inviteLink);
+  }
+
+  function StartGame() {
+    AuthorizedRequest("game/create")
+      .then((response) => {
+        inviteLink = response.invite_link;
+        showGameCodeModal = true;
+      })
+      .catch((err) => {
+        try {
+          err.json().then((e) => {
+            if(e.errors.game)
+            {
+              modalMessage = e.errors.game;
+              messageModalError = true;
+              showMessageModal = true;
+            }
+          });
+        } catch (exception) {
+          modalMessage = "Faild to connect to server, please try again later.";
+          messageModalError = true;
+          showMessageModal = true;
+        }
+      });
   }
 </script>
 
@@ -123,11 +167,24 @@
         {#if activeGame}
           <ActiveGame on:click={quitGame} {ttm} visible={activeGame} />
         {:else}
-          <StartGameComponent
-            bind:showModal
-            bind:inviteLink
-            bind:showErrorModal
-          />
+          <div class="card card-border">
+            <div class="card-header bgc-secondary">
+              <div class="row">
+                <div class="col-auto">
+                  <Fa icon={faPlay} color="#ffffff" size="2x" />
+                </div>
+                <div class="col c-text">
+                  <h3>Start Game</h3>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <p>Click here to get a invite link for your friends.</p>
+              <button class="btn btn-outline-primary" on:click={StartGame}
+                >Play Now!</button
+              >
+            </div>
+          </div>
         {/if}
       </div>
 
@@ -139,9 +196,9 @@
   </div>
 </div>
 
-{#if showModal}
-  <Modal on:close={() => (showModal = false)}>
-    <h1 slot="header">Here is your new game code</h1>
+{#if showGameCodeModal}
+  <Modal on:close={() => (showGameCodeModal = false)}>
+    <h1 slot="header">Here is your new game code:</h1>
     <div class="mt-4">
       <div class="input-group mb-2">
         <input type="text" class="form-control" value={inviteLink} />
@@ -159,12 +216,11 @@
   </Modal>
 {/if}
 
-{#if showErrorModal}
-  <Modal on:close={() => (showErrorModal = false)}>
-    <h3>Please finish ongoing games first.</h3>
-    <button on:click={() => (showErrorModal = false)}>Ok</button>
-  </Modal>
-{/if}
+<MessageModal
+  isError={messageModalError}
+  message={modalMessage}
+  bind:showModal={showMessageModal}
+/>
 
 <style>
 </style>

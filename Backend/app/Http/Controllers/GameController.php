@@ -102,9 +102,9 @@ class GameController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-       helper::GameEnded($game, $opponent, $user);
+       helper::GameEnded($game, $opponent, $user, " quit the game.");
 
-        event(new Quit($opponent));
+        //event(new Quit($opponent));
 
         return response()->json();
     }

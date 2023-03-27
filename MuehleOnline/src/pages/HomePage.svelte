@@ -191,7 +191,7 @@
       <Statistics dataObject={statistics} />
     </div>
     <div class="col">
-      <HistoryComponent {gameHistory} {username} />
+      <HistoryComponent {gameHistory}/>
     </div>
   </div>
 </div>

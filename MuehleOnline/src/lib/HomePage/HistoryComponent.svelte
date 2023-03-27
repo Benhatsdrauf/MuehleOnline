@@ -2,10 +2,9 @@
   import Fa from "svelte-fa";
   import { faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
   import Loading from "../Loading.svelte";
-  import GameHistory from "../GameHistory.svelte";
+  import GameHistory from "./GameHistory.svelte";
 
   export let gameHistory = null;
-  export let username = "";
 </script>
 
 <div class="card card-border">

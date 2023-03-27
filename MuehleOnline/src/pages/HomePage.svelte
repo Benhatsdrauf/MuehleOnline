@@ -53,8 +53,7 @@
       .catch((err) => {
         try {
           err.json().then((e) => {
-            if(e.errors.game)
-            {
+            if (e.errors.game) {
               modalMessage = e.errors.game;
               messageModalError = true;
               showMessageModal = true;
@@ -81,7 +80,9 @@
       .catch((err) => {
         try {
           err.json().then((e) => {
-            console.log(e);
+            if (e.message == "Unauthenticated.") {
+              navigate("/");
+            }
           });
         } catch (exception) {
           modalMessage = "Faild to connect to server, please try again later.";
@@ -122,8 +123,7 @@
       .catch((err) => {
         try {
           err.json().then((e) => {
-            if(e.errors.game)
-            {
+            if (e.errors.game) {
               modalMessage = e.errors.game;
               messageModalError = true;
               showMessageModal = true;
@@ -191,7 +191,7 @@
       <Statistics dataObject={statistics} />
     </div>
     <div class="col">
-      <HistoryComponent {gameHistory}/>
+      <HistoryComponent {gameHistory} />
     </div>
   </div>
 </div>

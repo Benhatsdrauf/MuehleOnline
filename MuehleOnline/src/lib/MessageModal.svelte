@@ -1,5 +1,5 @@
 <script>
-  import { faCircleExclamation, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+  import { faCircleExclamation, faCircleInfo, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import Modal from "./Modal.svelte";
 
@@ -12,27 +12,28 @@
 {#if showModal}
 <Modal on:close={() => (showModal = false)}>
     <div slot="header">
-      <div class="row">
+      <div class="row align-center">
         {#if isError}
           <div class="col-auto">
-            <Fa icon={faCircleExclamation} color="var(--color-error)" size="1.6x" />
+            <Fa icon={faTriangleExclamation} color="var(--color-error)" size="2.7x" />
           </div>
           <div class="col">
-            <h4><b>Error</b></h4>
+            <h3><b>Error</b></h3>
           </div>
         {:else}
           <div class="col-auto">
-            <Fa icon={faCircleInfo} color="var(--color-info)" size="2x" />
+            <Fa icon={faCircleInfo} color="var(--color-info)" size="2.7x" />
           </div>
           <div class="col">
-            <h4><b>Info</b></h4>
+            <h3><b>Info</b></h3>
           </div>
         {/if}
       </div>
+      <hr>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-2">
       <div class="col">
-        <h6>{message}</h6>
+        <h5>{message}</h5>
       </div>
     </div>
     <div class="row justify-content-end">

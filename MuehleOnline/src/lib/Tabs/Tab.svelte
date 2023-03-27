@@ -8,7 +8,7 @@
     registerTab(tab);
 </script>
 
-<button class:selected={$selectedTab === tab} on:click={() => selectTab(tab)}>
+<button class:selected={$selectedTab === tab} on:click={() => selectTab(tab)} class="me-3">
     <slot />
 </button>
 

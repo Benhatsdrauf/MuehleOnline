@@ -137,6 +137,7 @@ button:focus-visible {
 
 .card-border {
     border-color: var(--color-dark-grey);
+    border-radius: 7px;
 }
 
 .card-body {

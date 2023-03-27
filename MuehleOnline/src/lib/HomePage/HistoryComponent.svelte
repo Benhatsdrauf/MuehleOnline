@@ -31,7 +31,6 @@
       {#each gameHistory as game}
         <div class="mb-2">
           <GameHistory
-            {username}
             won={game.won}
             opponent={game.opponent}
             playtime={game.play_time}

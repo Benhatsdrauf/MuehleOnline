@@ -7,11 +7,5 @@ export let show = false;
 {#if show}
 <div class="d-flex justify-content-center">
   <SpinningIcon/>
-
-  <!--
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  -->
 </div>
 {/if}

@@ -20,7 +20,7 @@
                 <Fa icon={faBolt} color="var(--color-los)" size="2x" />
                 {/if}
             </div>
-            <div class="col-auto">
+            <div class="col-2">
                 <b>{opponent}</b>
             </div>
             <div class="col text-center" class:text-win="{won}" class:text-los="{!won}">

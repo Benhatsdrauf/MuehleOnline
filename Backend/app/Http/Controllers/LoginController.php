@@ -31,5 +31,7 @@ class LoginController extends Controller
         $user = $request->user();
 
         $user->tokens()->delete();
+
+        return response()->json();
     }
 }

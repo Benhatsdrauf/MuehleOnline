@@ -35,13 +35,13 @@
 <!-- modal  -->
 {#if showModal}
     <Modal on:close={() => (showModal = false)}>
-        <h2 slot="header">
+        <h2 slot="header" class="mb-3">
             Login Or Register
         </h2>
         <Tabs>
             <TabList>
-                <Tab>Login</Tab>
-                <Tab>Register</Tab>
+                <Tab><h5>Login</h5></Tab>
+                <Tab><h5>Register</h5></Tab>
             </TabList>
 
             <TabPanel>

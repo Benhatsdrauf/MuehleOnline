@@ -9,45 +9,65 @@
   const navigate = useNavigate();
   let userName = "";
   let password = "";
+  let errorMessages = [];
 
   async function Login() {
+    errorMessages = [];
+
     const data = {
       name: userName,
       pw: password,
     };
 
     Request("auth/login", data)
-    .then((response) => {
-      localStorage.setItem("token", response.token);
-      navigate("home");
+      .then((response) => {
+        localStorage.setItem("token", response.token);
+        navigate("/home");
 
-      let splitToken = response.token.split("|")[1];
-      hash(splitToken).then((hash) => 
-      {
-        localStorage.setItem("hashedToken", hash);
+        let splitToken = response.token.split("|")[1];
+        hash(splitToken).then((hash) => {
+          localStorage.setItem("hashedToken", hash);
+        });
       })
-    })
-    .catch((err) => {
-      err.json().then((response) => {
-        for(const property in response.errors)
+      .catch((err) => {
+
+        try
         {
-          console.log(`${property}: ${response.errors[property]}`)
+          err.json().then((response) => {
+          for (const property in response.errors) {
+            errorMessages = [
+              ...errorMessages,
+              {
+                field: property,
+                message: response.errors[property],
+              }
+            ];
+          }
+        });
         }
-
-      })
-    });
+        catch(exception)
+        {
+          errorMessages = [
+            ...errorMessages,
+            {
+              field: "server",
+              message: "Could not connect to the server, please try again later."
+            }
+          ];
+        }
+      });
   }
 </script>
 
 <div class="container-fluid">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col">
       <h1>Login</h1>
     </div>
   </div>
-  <div class="row">
+  <div class="row mb-3">
     <div class="col">
-      <div class="input-group mb-3">
+      <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text h-100">
             <Fa icon={faUser} />
@@ -60,7 +80,14 @@
           bind:value={userName}
         />
       </div>
-      <div class="input-group mb-3">
+      <div class="form-text text-danger">
+        {errorMessages.find((x) => x.field == "name")?.message ?? ""}
+      </div>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col">
+      <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text h-100">
             <Fa icon={faKey} />
@@ -73,11 +100,19 @@
           bind:value={password}
         />
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <button type="button" class="btn btn-outline-primary" on:click={Login}>Login</button>
+      <div class="form-text text-danger">
+        {errorMessages.find((x) => x.field == "pw")?.message ?? ""}
       </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-auto">
+      <button type="button" class="btn btn-outline-primary" on:click={Login}
+        >Login</button
+      >
+    </div>
+    <div class="col-auto text-danger">
+        {errorMessages.find((x) => x.field == "server")?.message ?? ""}
     </div>
   </div>
 </div>

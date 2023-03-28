@@ -5,10 +5,10 @@
   } from "../../scripts/request";
   import { onMount } from "svelte";
   import { positions } from "../../scripts/circlePositions";
-  import Stone from "../lib/Stone.svelte";
+  import Stone from "../lib/GamePage/Stone.svelte";
   import Navbar from "../lib/Navbar.svelte";
   import { useNavigate } from "svelte-navigator";
-  import PlayerInfo from "../lib/PlayerInfo.svelte";
+  import PlayerInfo from "../lib/GamePage/PlayerInfo.svelte";
   import { echo, leaveChannel } from "../../scripts/echo";
   import Modal from "../lib/Modal.svelte";
   import {
@@ -16,13 +16,14 @@
     getAllMoves,
     GetStonesInMill,
   } from "../../scripts/gameLogic";
-  import GameField from "../lib/GameField.svelte";
-  import PossibleMoveLines from "../lib/PossibleMoveLines.svelte";
-  import GamePosition from "../lib/GamePosition.svelte";
-  import ColorIndicator from "../lib/ColorIndicator.svelte";
+  import GameField from "../lib/GamePage/GameField.svelte";
+  import PossibleMoveLines from "../lib/GamePage/PossibleMoveLines.svelte";
+  import GamePosition from "../lib/GamePage/GamePosition.svelte";
+  import ColorIndicator from "../lib/GamePage/ColorIndicator.svelte";
   import Fa from "svelte-fa";
   import { faBolt, faCrown } from "@fortawesome/free-solid-svg-icons";
   import { confetti } from "@neoconfetti/svelte";
+  import MessageModal from "../lib/MessageModal.svelte";
 
   const navigate = useNavigate();
 
@@ -49,14 +50,9 @@
   let gameOverMessage = "";
   let isWinner = false;
 
-  echo
-    .channel("opponent_quit." + localStorage.getItem("hashedToken"))
-    .listen("Quit", (e) => {
-      if (e.quit) {
-        leaveChannel("opponent_quit." + localStorage.getItem("hashedToken"));
-        showModal = true;
-      }
-    });
+  let messageModalmessage = "";
+  let messageModalShow = false;
+  let messageModalIsError = true;
 
   echo
     .channel("gameover." + localStorage.getItem("hashedToken"))
@@ -122,7 +118,17 @@
 
         playerStones.includes(null) ? (canSet = true) : (canSet = false);
       })
-      .catch();
+      .catch((err) => {
+        try {
+          err.json().then((response) => {
+            if (response.message == "Unauthenticated.") {
+              navigate("/");
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
+      });
   });
 
   function clearVariables() {
@@ -171,19 +177,26 @@
         }
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              ShowMessageModal(response.errors.game);
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
   }
 
-  async function moveStone(pos) {
+  function moveStone(pos) {
     if (selectedStone == null) return;
-    console.log("Move method");
 
     let oldPos = selectedStone;
     playerStones = playerStones.filter((x) => x != oldPos);
     playerStones.push(pos);
 
-    await AuthorizedRequest("game/stone/move", {
+    AuthorizedRequest("game/stone/move", {
       old_position: oldPos,
       new_position: pos,
     })
@@ -198,18 +211,26 @@
         }
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              ShowMessageModal(response.errors.game);
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
 
     clearVariables();
   }
 
-  async function RemoveStone(pos) {
+  function RemoveStone(pos) {
     if (opponentStonesInMill.includes(pos)) {
       return;
     }
 
-    await AuthorizedRequest("game/stone/delete", {
+    AuthorizedRequest("game/stone/delete", {
       position: pos,
       deletion_token: deletionToken,
     })
@@ -222,18 +243,45 @@
         opponentStonesInMill = [];
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              ShowMessageModal(response.errors.game);
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
   }
 
-  async function quitGame() {
+  function quitGame() {
     AuthorizedGetRequest("game/quit")
       .then(() => {
         navigate("/home");
       })
       .catch((err) => {
-        console.log(err);
+        try {
+          err.json().then((response) => {
+            if (response.errors.game) {
+              if (response.message == "Unauthenticated.") {
+                navigate("/");
+              }
+            }
+          });
+        } catch (exception) {
+          ShowMessageModal();
+        }
       });
+  }
+
+  function ShowMessageModal(
+    message = "Faild to connect to server, please try again later.",
+    IsError = true
+  ) {
+    messageModalmessage = message;
+    messageModalIsError = IsError;
+    messageModalShow = true;
   }
 </script>
 
@@ -257,7 +305,11 @@
 {/if}
 
 {#if showGameOverModal}
-<div class="confetti-pos" use:confetti={{ particleCount: 500, force: 0.7, duration: 10000 }} />
+  <div
+    class="confetti-pos"
+    stageWidth={600}
+    use:confetti={{ particleCount: 500, force: 0.7, duration: 10000 }}
+  />
   <Modal on:close={() => (showModal = false)}>
     <div slot="header">
       <div class="row">
@@ -372,6 +424,12 @@
     </div>
   </div>
 </div>
+
+<MessageModal
+  bind:showModal={messageModalShow}
+  isError={messageModalIsError}
+  message={messageModalmessage}
+/>
 
 <style>
   .game-field {

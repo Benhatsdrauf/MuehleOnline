@@ -24,6 +24,7 @@
   import { faBolt, faCrown } from "@fortawesome/free-solid-svg-icons";
   import { confetti } from "@neoconfetti/svelte";
   import MessageModal from "../lib/MessageModal.svelte";
+  import GameStatus from "../lib/GamePage/GameStatus.svelte";
 
   const navigate = useNavigate();
 
@@ -46,6 +47,7 @@
   let opponent = {};
   let whiteMoves;
   let blackMoves;
+
   let showGameOverModal = false;
   let gameOverMessage = "";
   let isWinner = false;
@@ -79,6 +81,7 @@
 
       // its only my turn if i dont have to wait for a deletion
       yourTurn = !e.waitForDelete;
+
 
       leaveChannel("move." + localStorage.getItem("hashedToken"));
     });
@@ -221,7 +224,6 @@
           ShowMessageModal();
         }
       });
-
     clearVariables();
   }
 
@@ -364,8 +366,12 @@
         </text>
       </svg>
     </div>
-    <div class="col d-flex justify-content-center">
-      <svg class="game-field">
+    <div class="col flex-column d-flex">
+      <div class="align-self-center mb-2 status-box">
+        <GameStatus yourTurn={yourTurn} isWhite={isWhite}/>
+      </div>
+
+      <svg class="game-field align-self-center">
         <GameField />
         <!-- Line's for showing possible moves -->
         <PossibleMoveLines {allMoveLines} {possibleMoves} />
@@ -433,11 +439,16 @@
 
 <style>
   .game-field {
-    height: 80vh;
-    width: 80vh;
+    height: 38vw;
+    width: 38vw;
     background: var(--color-board-background);
     border: solid 6px var(--color-black);
     border-radius: 10px;
+  }
+
+  .status-box
+  {
+    width: 38vw;
   }
 
   .none-played {

@@ -14,7 +14,7 @@
         <Fa icon={faClockRotateLeft} color="#ffffff" size="2x" />
       </div>
       <div class="col c-text">
-        <h3>Game History ({gameHistory.length})</h3>
+        <h3>Game History ({gameHistory?.length ?? ""})</h3>
       </div>
     </div>
   </div>

@@ -148,7 +148,7 @@
   <div class="me-3">
     <img
       class="round-img"
-      src="https://api.dicebear.com/5.x/initials/svg?seed={username}"
+      src="https://api.dicebear.com/5.x/initials/svg?backgroundType=gradientLinear&backgroundType=gradientLinear&seed={username}"
       alt="profile"
       width="30px"
       height="30px"

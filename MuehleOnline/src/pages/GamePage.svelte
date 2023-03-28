@@ -55,15 +55,6 @@
   let messageModalIsError = true;
 
   echo
-    .channel("opponent_quit." + localStorage.getItem("hashedToken"))
-    .listen("Quit", (e) => {
-      if (e.quit) {
-        leaveChannel("opponent_quit." + localStorage.getItem("hashedToken"));
-        showModal = true;
-      }
-    });
-
-  echo
     .channel("gameover." + localStorage.getItem("hashedToken"))
     .listen("GameOverEvent", (e) => {
       showGameOverModal = true;
@@ -198,14 +189,14 @@
       });
   }
 
-  async function moveStone(pos) {
+  function moveStone(pos) {
     if (selectedStone == null) return;
 
     let oldPos = selectedStone;
     playerStones = playerStones.filter((x) => x != oldPos);
     playerStones.push(pos);
 
-    await AuthorizedRequest("game/stone/move", {
+    AuthorizedRequest("game/stone/move", {
       old_position: oldPos,
       new_position: pos,
     })

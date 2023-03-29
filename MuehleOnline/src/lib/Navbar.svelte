@@ -1,7 +1,5 @@
 <script>
-  import Fa from "svelte-fa";
-  import { faCat } from "@fortawesome/free-solid-svg-icons";
-  import logo from "../assets/Mühle2.png";
+  import logo from "../assets/MühleIcon.png";
 </script>
 
 <nav class="navbar bgc-secondary">

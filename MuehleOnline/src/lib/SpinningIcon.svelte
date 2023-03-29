@@ -1,5 +1,4 @@
 <script>
-import logo from "../assets/Mühle2.png";
 import pizza from "../assets/Pizza_Pepperoni.png";
 import blades from "../assets/BladesTransparent.png";
 import mill from "../assets/BackgroundTransparent.png";

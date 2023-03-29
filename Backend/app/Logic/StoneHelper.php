@@ -2,16 +2,10 @@
 
 namespace App\Logic;
 
-use Laravel\Sanctum\PersonalAccessToken;
-use App\Http\Controllers\StatisticController as Stat;
-use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Game;
 
-use App\Logic\DatabaseHelper as dbHelper;
-use App\Http\Controllers\UserController;
 use App\Models\UserToGame;
-use Illuminate\Database\Eloquent\Collection;
 
 class StoneHelper
 {

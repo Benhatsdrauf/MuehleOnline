@@ -31,5 +31,9 @@
       border-radius: 10px;
       background-color: var(--color-dark-grey);
     }
+
+    .left-border {
+      border-left: 6px var(--color-black) solid;
+    }
   </style>
   

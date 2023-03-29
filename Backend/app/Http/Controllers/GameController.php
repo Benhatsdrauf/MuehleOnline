@@ -4,17 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Game;
-use App\Models\UserToGame;
 use App\Models\User;
-use App\Models\Move;
 use App\Logic\Error;
 use App\Events\PlayerReady;
-use App\Http\Controllers\StatisticController as Stat;
-use App\Events\Turn;
-use App\Events\Quit;
-use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
-use App\Http\Controllers\UserController;
 use App\Logic\DatabaseHelper as helper;
 
 

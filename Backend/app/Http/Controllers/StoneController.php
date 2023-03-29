@@ -11,16 +11,12 @@ use App\Http\Controllers\HistoryController as history;
 use App\Http\Controllers\DeletionTokenController as deletion;
 use App\Models\Move;
 use App\Events\MoveEvent;
-use Laravel\Sanctum\PersonalAccessToken;
-use App\Events\Turn;
 use App\Logic\Error;
 use App\Logic\StoneHelper as helper;
 use App\Logic\DatabaseHelper as dbHelper;
-use App\Events\GameOverEvent;
 
 use App\Http\Requests\StoneDeleteRequest;
 use App\Http\Requests\StoneMoveRequest;
-use App\Models\DeletionToken;
 
 class StoneController extends Controller
 {

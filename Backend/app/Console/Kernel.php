@@ -7,9 +7,9 @@ use App\Models\Game;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Logic\DatabaseHelper as helper;
-use App\Events\Quit;
 
 use Carbon\Carbon;
+use Spatie\ShortSchedule\ShortSchedule;
 
 class Kernel extends ConsoleKernel
 {
@@ -49,6 +49,11 @@ class Kernel extends ConsoleKernel
             }
 
         })->everyMinute();
+    }
+
+    protected function shortSchedule(ShortSchedule $schedule)
+    {
+        $schedule->command("endGame")->everySeconds(5);
     }
 
     /**

@@ -153,6 +153,15 @@ class GameController extends Controller
         $data->white_moves = $WhiteMoves;
         $data->black_moves = $BlackMoves;
 
+        $timeToMove = Carbon::parse($game->time_to_move);
+
+        if($userIsWhite != $game->whites_turn)
+        {
+            $timeToMove->addMinute();
+        }
+
+        $data->ttm = $timeToMove;
+
 
         $userStatistic = $user->statistic()->first();
         $opponentStatistic = $opponent->statistic()->first();

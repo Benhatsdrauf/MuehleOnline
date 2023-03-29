@@ -45,8 +45,8 @@ class Kernel extends ConsoleKernel
                     $loser = $black;
                 }
 
-                helper::GameEnded($game, $winner, $loser);
-                event(new Quit($winner));
+                helper::GameEnded($game, $winner, $loser, "have not moved in time.");
+                //event(new Quit($winner));
             }
 
         })->everyMinute();

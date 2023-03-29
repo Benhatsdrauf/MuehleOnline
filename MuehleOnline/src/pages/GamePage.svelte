@@ -38,6 +38,7 @@
   let allMoveLines = [];
   let selectedStone = null;
 
+  let ttm = new Date();
   let canSet = true;
   let canDelete = false;
   let isWhite = false;
@@ -82,7 +83,6 @@
       // its only my turn if i dont have to wait for a deletion
       yourTurn = !e.waitForDelete;
 
-
       leaveChannel("move." + localStorage.getItem("hashedToken"));
     });
 
@@ -96,6 +96,7 @@
         whiteMoves = data.white_moves;
         blackMoves = data.black_moves;
         deletionToken = data.user.deletion_token;
+        ttm = new Date(data.ttm);
 
         if (isWhite == true) {
           playerStones = whiteMoves;
@@ -368,7 +369,7 @@
     </div>
     <div class="col flex-column d-flex">
       <div class="align-self-center mb-2 status-box">
-        <GameStatus yourTurn={yourTurn} isWhite={isWhite}/>
+        <GameStatus {ttm} {yourTurn} {isWhite} />
       </div>
 
       <svg class="game-field align-self-center">
@@ -446,8 +447,7 @@
     border-radius: 10px;
   }
 
-  .status-box
-  {
+  .status-box {
     width: 38vw;
   }
 

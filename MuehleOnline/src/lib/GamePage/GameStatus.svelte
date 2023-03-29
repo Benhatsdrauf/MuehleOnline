@@ -1,9 +1,11 @@
 <script>
+  import { faBell } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
   import Countdown from "../Countdown.svelte";
-
 
     export let yourTurn = true;
     export let isWhite = true;
+    export let ttm = null;
   </script>
   
   <div class="card">
@@ -16,7 +18,7 @@
 
       </div>
       <div class="col">
-        <h5><Countdown date={new Date(new Date().getTime() + 0.5*60000)} useTextFormat={false}/></h5>
+        <h5><Fa icon={faBell}/> <Countdown date={ttm} useTextFormat={false}/></h5>
       </div>
     </div>
     </div>

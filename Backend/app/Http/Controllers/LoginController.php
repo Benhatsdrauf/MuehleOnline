@@ -14,7 +14,9 @@ class LoginController extends Controller
     {
         $user = User::where("name", $request->name)->first();
 
-        if($user->shadow()->first()->pw == hash("sha256", $request->pw))
+        $salt = $user->shadow()->first()->salt;
+
+        if(password_verify("$request->pw:$salt", $user->shadow()->first()->pw ))
         {
             $user->tokens()->delete();
 

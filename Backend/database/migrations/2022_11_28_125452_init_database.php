@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create("shadow", function (Blueprint $table) {
             $table->id();
             $table->string("pw");
+            $table->string("salt");
         });
     
         Schema::create("statistic", function (Blueprint $table) {

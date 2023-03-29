@@ -13,8 +13,11 @@ class RegisterController extends Controller
 {
     public function register(RegisterRequest $request)
     {
+        $salt = bin2hex(random_bytes(32));
+
         $shadow = new Shadow;
-        $shadow->pw = hash("sha256", $request->pw);
+        $shadow->salt = $salt;
+        $shadow->pw = password_hash("$request->pw:$salt", PASSWORD_ARGON2I);
         $shadow->save();
 
         $stat = new Statistic;

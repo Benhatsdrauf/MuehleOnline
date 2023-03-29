@@ -56,10 +56,21 @@ class StoneController extends Controller
         $deletion_token = "";
 
         if (helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $position)) {
-            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
-            $game->save();
 
-            $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            if(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($opponent, $game)))
+            {
+                $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+                $game->save();
+
+                $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            }
+            else
+            {
+                $game->whites_turn = !$game->whites_turn;
+                $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+                $game->save();
+            }
+
         } else {
             $game->whites_turn = !$game->whites_turn;
             $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
@@ -183,6 +194,12 @@ class StoneController extends Controller
                 $game->save();
     
                 $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            }
+            else
+            {
+                $game->whites_turn = !$game->whites_turn;
+                $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+                $game->save();
             }
             
         } else {

@@ -46,8 +46,8 @@ Route::get("/test", function () {
 
     $game = $user->games()->where("is_active", true)->first();
 
-    dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
-    //return response()->json(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)));
+    //dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
+    return response()->json(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($opponent, $game)));
 });
 
 Route::prefix("auth")->group(function() {

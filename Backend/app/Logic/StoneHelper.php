@@ -106,7 +106,7 @@ class StoneHelper
      */
     public static function CanDeleteStone(UserToGame $utg, int $position): bool
     {
-        if($utg->moves()->where("position", "!=", -1)->count() <= 3)
+        if($utg->moves()->where("position", "!=", -1)->count() <= 3 && $utg->moves()->where("position", "=", -1)->count() >= 6)
         {
             return true;
         }

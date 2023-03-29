@@ -22,9 +22,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            $timedOutGames = Game::all()->where("is_active", true)->where("time_to_move", "<", Carbon::now());
+            $activeGames = Game::all()->where("is_active", true)->where("time_to_move", "<", Carbon::now());
             
-            foreach($timedOutGames as $game)
+            foreach($activeGames as $game)
             {
                 $white = $game->user_to_game()->where("is_white", true)->first()->user()->first();
                 $black = $game->user_to_game()->where("is_white", false)->first()->user()->first();
@@ -46,7 +46,6 @@ class Kernel extends ConsoleKernel
                 }
 
                 helper::GameEnded($game, $winner, $loser, "have not moved in time.");
-                //event(new Quit($winner));
             }
 
         })->everyMinute();

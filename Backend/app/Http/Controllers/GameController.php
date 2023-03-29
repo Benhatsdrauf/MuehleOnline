@@ -35,7 +35,7 @@ class GameController extends Controller
         $game->is_active = false;
         $game->end_time = null;
         $game->whites_turn = true;
-        $game->time_to_move = Carbon::now()->addMinutes(env('MOVE_TIMEOUT'));
+        $game->time_to_move = null;
         $game->invite_id = bin2hex(openssl_random_pseudo_bytes(16));
         $game->save();
 
@@ -84,6 +84,7 @@ class GameController extends Controller
 
         $user->games()->attach($game->id, ["is_white" => $isWhite, "won" => false, "elo" => 0]);
         $game->is_active = true;
+        $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
         $game->save();
         
         event(new playerReady($opponent));
@@ -104,8 +105,6 @@ class GameController extends Controller
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
        helper::GameEnded($game, $opponent, $user, " quit the game.");
-
-        //event(new Quit($opponent));
 
         return response()->json();
     }
@@ -153,14 +152,7 @@ class GameController extends Controller
         $data->white_moves = $WhiteMoves;
         $data->black_moves = $BlackMoves;
 
-        $timeToMove = Carbon::parse($game->time_to_move);
-
-        if($userIsWhite != $game->whites_turn)
-        {
-            $timeToMove->addMinute();
-        }
-
-        $data->ttm = $timeToMove;
+        $data->ttm = Carbon::parse($game->time_to_move);
 
 
         $userStatistic = $user->statistic()->first();

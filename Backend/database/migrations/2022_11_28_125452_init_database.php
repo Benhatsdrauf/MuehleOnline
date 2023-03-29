@@ -43,7 +43,7 @@ return new class extends Migration
             $table->string("invite_id");
             $table->boolean("is_active");
             $table->boolean("whites_turn");
-            $table->dateTime("time_to_move");
+            $table->dateTime("time_to_move")->nullable();
             $table->dateTime("end_time")->nullable();
             $table->timestamps();
         });

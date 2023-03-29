@@ -7,9 +7,9 @@ use App\Models\Game;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Logic\DatabaseHelper as helper;
-use App\Events\Quit;
 
 use Carbon\Carbon;
+use Spatie\ShortSchedule\ShortSchedule;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,35 +21,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
-            $timedOutGames = Game::all()->where("is_active", true)->where("time_to_move", "<", Carbon::now());
-            
-            foreach($timedOutGames as $game)
-            {
-                $white = $game->user_to_game()->where("is_white", true)->first()->user()->first();
-                $black = $game->user_to_game()->where("is_white", false)->first()->user()->first();
+    }
 
-                $whites_turn = $game->whites_turn;
-
-                $winner = "";
-                $loser = "";
-
-                if($whites_turn)
-                {
-                    $winner = $black;
-                    $loser = $white;
-                }
-                else
-                {
-                    $winner = $white;
-                    $loser = $black;
-                }
-
-                helper::GameEnded($game, $winner, $loser);
-                event(new Quit($winner));
-            }
-
-        })->everyMinute();
+    protected function shortSchedule(ShortSchedule $schedule)
+    {
+        $schedule->command("endGame")->everySeconds(5);
     }
 
     /**
@@ -59,7 +35,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

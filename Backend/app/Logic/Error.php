@@ -2,7 +2,6 @@
 namespace App\Logic;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Ramsey\Uuid\Type\Integer;
 
 class Error
 {

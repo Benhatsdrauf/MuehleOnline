@@ -34,7 +34,7 @@
   }
 
   .card {
-    border: 6px var(--color-dark-grey) solid;
+    border: 6px var(--color-black) solid;
     border-radius: 10px;
   }
 </style>

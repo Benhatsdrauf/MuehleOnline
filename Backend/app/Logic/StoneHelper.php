@@ -2,16 +2,10 @@
 
 namespace App\Logic;
 
-use Laravel\Sanctum\PersonalAccessToken;
-use App\Http\Controllers\StatisticController as Stat;
-use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Game;
 
-use App\Logic\DatabaseHelper as dbHelper;
-use App\Http\Controllers\UserController;
 use App\Models\UserToGame;
-use Illuminate\Database\Eloquent\Collection;
 
 class StoneHelper
 {
@@ -106,7 +100,7 @@ class StoneHelper
      */
     public static function CanDeleteStone(UserToGame $utg, int $position): bool
     {
-        if($utg->moves()->where("position", "!=", -1)->count() <= 3)
+        if($utg->moves()->where("position", "!=", -1)->count() <= 3 && $utg->moves()->where("position", "=", -1)->count() >= 6)
         {
             return true;
         }

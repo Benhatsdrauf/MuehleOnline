@@ -11,16 +11,12 @@ use App\Http\Controllers\HistoryController as history;
 use App\Http\Controllers\DeletionTokenController as deletion;
 use App\Models\Move;
 use App\Events\MoveEvent;
-use Laravel\Sanctum\PersonalAccessToken;
-use App\Events\Turn;
 use App\Logic\Error;
 use App\Logic\StoneHelper as helper;
 use App\Logic\DatabaseHelper as dbHelper;
-use App\Events\GameOverEvent;
 
 use App\Http\Requests\StoneDeleteRequest;
 use App\Http\Requests\StoneMoveRequest;
-use App\Models\DeletionToken;
 
 class StoneController extends Controller
 {
@@ -54,19 +50,28 @@ class StoneController extends Controller
         Stat::addMove($user);
 
         $deletion_token = "";
+        $ttm = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
 
         if (helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $position)) {
-            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
-            $game->save();
 
-            $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            if(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($opponent, $game)))
+            {
+
+                $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            }
+            else
+            {
+                $game->whites_turn = !$game->whites_turn;
+            }
+
         } else {
             $game->whites_turn = !$game->whites_turn;
-            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
-            $game->save();
         }
 
-        event(new MoveEvent($opponent, null, $position, $deletion_token != ""));
+        $game->time_to_move = $ttm;
+        $game->save();
+
+        event(new MoveEvent($opponent, null, $position, $ttm, $deletion_token != ""));
         history::SetEntry(null, $position, dbHelper::GetUserToGame($user, $game));
 
         $move = new Move;
@@ -74,7 +79,7 @@ class StoneController extends Controller
         $move->utg_id = $user->games()->find($game->id)->pivot->id;
         $move->save();
 
-        return response()->json($deletion_token);
+        return response()->json(["ttm" => $ttm, "deletion_token" => $deletion_token]);
     }
 
     public function delete(StoneDeleteRequest $request)
@@ -114,11 +119,13 @@ class StoneController extends Controller
         Stat::addKill($user);
         Stat::addDeath($opponent);
 
+        $ttm = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+
         $game->whites_turn = !$game->whites_turn;
-        $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
+        $game->time_to_move = $ttm;
         $game->save();
 
-        event(new MoveEvent($opponent, $position, -1));
+        event(new MoveEvent($opponent, $position,-1, $ttm));
 
         $opponentMoves = dbHelper::GetUserToGame($opponent, $game)->moves()->get();
 
@@ -131,7 +138,7 @@ class StoneController extends Controller
             dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
         }
 
-        return response()->json("success");
+        return response()->json(["ttm" => $ttm]);
     }
 
     public function move(StoneMoveRequest $request)
@@ -174,27 +181,30 @@ class StoneController extends Controller
         $oldMove->save();
 
         $deletion_token = "";
+        $ttm = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
         if (helper::UserHasMill(dbHelper::GetUserToGame($user, $game), $newPos)) {
             
             //check if any opponent stones can be deleted
             if(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($opponent, $game)))
             {
-                $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
-                $game->save();
-    
                 $deletion_token = deletion::createToken(dbHelper::GetUserToGame($user, $game));
+            }
+            else
+            {
+                $game->whites_turn = !$game->whites_turn;
             }
             
         } else {
             $game->whites_turn = !$game->whites_turn;
-            $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
-            $game->save();
         }
+
+        $game->time_to_move = $ttm;
+        $game->save();
         
         $oldMove->position = $newPos;
         $oldMove->save();
 
-        event(new MoveEvent($opponent, $oldPos, $newPos, $deletion_token != ""));
+        event(new MoveEvent($opponent, $oldPos, $newPos, $ttm,$deletion_token != ""));
 
         history::SetEntry($oldPos, $newPos, dbHelper::GetUserToGame($user, $game));
         
@@ -203,6 +213,6 @@ class StoneController extends Controller
             dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
         }
         
-        return response()->json($deletion_token);
+        return response()->json(["ttm" => $ttm, "deletion_token" => $deletion_token]);
     }
 }

@@ -9,7 +9,7 @@
     class:brown={!isWhite}
   >
     <h5 style="margin-bottom: 2px"
-    class:text-white={!isWhite}><b>{(isWhite)? "White" : "Brown"}</b></h5>
+    class:text-white={!isWhite}><b>{(isWhite)? "White" : "Black"}</b></h5>
   </div>
 </div>
 
@@ -23,7 +23,7 @@
   }
 
   .card {
-    border: 6px var(--color-dark-grey) solid;
+    border: 6px var(--color-black) solid;
     border-radius: 10px;
   }
 </style>

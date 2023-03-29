@@ -4,17 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Game;
-use App\Models\UserToGame;
 use App\Models\User;
-use App\Models\Move;
 use App\Logic\Error;
 use App\Events\PlayerReady;
-use App\Http\Controllers\StatisticController as Stat;
-use App\Events\Turn;
-use App\Events\Quit;
-use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
-use App\Http\Controllers\UserController;
 use App\Logic\DatabaseHelper as helper;
 
 
@@ -35,7 +28,7 @@ class GameController extends Controller
         $game->is_active = false;
         $game->end_time = null;
         $game->whites_turn = true;
-        $game->time_to_move = Carbon::now()->addMinutes(env('MOVE_TIMEOUT'));
+        $game->time_to_move = null;
         $game->invite_id = bin2hex(openssl_random_pseudo_bytes(16));
         $game->save();
 
@@ -84,6 +77,7 @@ class GameController extends Controller
 
         $user->games()->attach($game->id, ["is_white" => $isWhite, "won" => false, "elo" => 0]);
         $game->is_active = true;
+        $game->time_to_move = Carbon::now()->addMinutes(env("MOVE_TIMEOUT"));
         $game->save();
         
         event(new playerReady($opponent));
@@ -104,8 +98,6 @@ class GameController extends Controller
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
        helper::GameEnded($game, $opponent, $user, " quit the game.");
-
-        //event(new Quit($opponent));
 
         return response()->json();
     }
@@ -152,6 +144,8 @@ class GameController extends Controller
         $data->user->deletion_token = ($deletionToken == null) ? "" : $deletionToken->token;
         $data->white_moves = $WhiteMoves;
         $data->black_moves = $BlackMoves;
+
+        $data->ttm = Carbon::parse($game->time_to_move);
 
 
         $userStatistic = $user->statistic()->first();

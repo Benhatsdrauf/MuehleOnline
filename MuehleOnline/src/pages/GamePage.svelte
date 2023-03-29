@@ -24,6 +24,7 @@
   import { faBolt, faCrown } from "@fortawesome/free-solid-svg-icons";
   import { confetti } from "@neoconfetti/svelte";
   import MessageModal from "../lib/MessageModal.svelte";
+  import GameStatus from "../lib/GamePage/GameStatus.svelte";
 
   const navigate = useNavigate();
 
@@ -37,6 +38,7 @@
   let allMoveLines = [];
   let selectedStone = null;
 
+  let ttm = new Date();
   let canSet = true;
   let canDelete = false;
   let isWhite = false;
@@ -46,6 +48,7 @@
   let opponent = {};
   let whiteMoves;
   let blackMoves;
+
   let showGameOverModal = false;
   let gameOverMessage = "";
   let isWinner = false;
@@ -68,6 +71,7 @@
     .listen("MoveEvent", (e) => {
       let oldPos = e.oldPos == null ? null : Number(e.oldPos);
       let newPos = Number(e.newPos);
+      ttm = new Date(e.ttm);
 
       if (newPos == -1) {
         let index = playerStones.indexOf(oldPos);
@@ -93,6 +97,7 @@
         whiteMoves = data.white_moves;
         blackMoves = data.black_moves;
         deletionToken = data.user.deletion_token;
+        ttm = new Date(data.ttm);
 
         if (isWhite == true) {
           playerStones = whiteMoves;
@@ -168,9 +173,12 @@
 
     AuthorizedGetRequest("game/stone/set/" + pos)
       .then((response) => {
-        if (response != "") {
+
+        ttm = new Date(response.ttm);
+
+        if (response.deletion_token != "") {
           canDelete = true;
-          deletionToken = response;
+          deletionToken = response.deletion_token;
           opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {
           yourTurn = false;
@@ -201,9 +209,12 @@
       new_position: pos,
     })
       .then((response) => {
-        if (response) {
+
+        ttm = new Date(response.ttm);
+
+        if (response.deletion_token != "") {
           canDelete = true;
-          deletionToken = response;
+          deletionToken = response.deletion_token;
           selectedStone = null;
           opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {
@@ -221,7 +232,6 @@
           ShowMessageModal();
         }
       });
-
     clearVariables();
   }
 
@@ -235,6 +245,8 @@
       deletion_token: deletionToken,
     })
       .then((response) => {
+        ttm = new Date(response.ttm);
+
         let index = opponentStones.indexOf(pos);
         opponentStones[index] = -1;
         deletionToken = "";
@@ -364,8 +376,12 @@
         </text>
       </svg>
     </div>
-    <div class="col d-flex justify-content-center">
-      <svg class="game-field">
+    <div class="col flex-column d-flex">
+      <div class="align-self-center mb-2 status-box">
+        <GameStatus {ttm} {yourTurn} {isWhite} />
+      </div>
+
+      <svg class="game-field align-self-center">
         <GameField />
         <!-- Line's for showing possible moves -->
         <PossibleMoveLines {allMoveLines} {possibleMoves} />
@@ -433,11 +449,15 @@
 
 <style>
   .game-field {
-    height: 80vh;
-    width: 80vh;
+    height: 38vw;
+    width: 38vw;
     background: var(--color-board-background);
     border: solid 6px var(--color-black);
     border-radius: 10px;
+  }
+
+  .status-box {
+    width: 38vw;
   }
 
   .none-played {

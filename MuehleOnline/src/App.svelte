@@ -4,6 +4,7 @@
   import HomePage from "./pages/HomePage.svelte";
   import GamePage from "./pages/GamePage.svelte";
   import LobbyPage from "./pages/LobbyPage.svelte";
+  import Impressum from "./pages/Impressum.svelte";
 </script>
 
 <Router>
@@ -22,6 +23,10 @@
 
     <Route>
       <LandingPage />
+    </Route>
+
+    <Route path="impressum">
+      <Impressum/>
     </Route>
   </main>
 </Router>

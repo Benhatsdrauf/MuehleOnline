@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\MoveHistory;
 use App\Models\UserToGame;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 class HistoryController extends Controller
 {

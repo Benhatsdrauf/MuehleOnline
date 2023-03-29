@@ -57,16 +57,7 @@ class UserController extends Controller
 
             $response->game->active = true;
             $response->game->opponent = $activeGame->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first()->name;
-
-
-            $timeToMove = Carbon::parse($activeGame->time_to_move);
-
-            if($userIsWhite != $activeGame->whites_turn)
-            {
-                $timeToMove->addMinute();
-            }
-
-            $response->game->time_to_move  = $timeToMove;
+            $response->game->time_to_move  = Carbon::parse($activeGame->time_to_move);
         }
         else
         {

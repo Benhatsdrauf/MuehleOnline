@@ -245,6 +245,8 @@
       deletion_token: deletionToken,
     })
       .then((response) => {
+        ttm = new Date(response.ttm);
+
         let index = opponentStones.indexOf(pos);
         opponentStones[index] = -1;
         deletionToken = "";

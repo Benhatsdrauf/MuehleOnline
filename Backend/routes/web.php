@@ -13,6 +13,7 @@ use App\Logic\DatabaseHelper as dbHelper;
 
 use App\Events\PlayerReady;
 use App\Events\GameOverEvent;
+use Illuminate\Support\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +48,7 @@ Route::get("/test", function () {
     $game = $user->games()->where("is_active", true)->first();
 
     //dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
-    return response()->json(helper::AnyStoneIsDeletable(dbHelper::GetUserToGame($opponent, $game)));
+    return response()->json(Carbon::parse($game->time_to_move));
 });
 
 Route::prefix("auth")->group(function() {

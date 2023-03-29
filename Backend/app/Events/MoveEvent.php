@@ -21,13 +21,15 @@ class MoveEvent implements ShouldBroadcast
     public $oldPos = 0;
     public $newPos = 0;
     public $waitForDelete = false;
+    public $ttm;
     private $token = "";
 
-    public function __construct(User $opponent, $oldPos, $newPos, bool $hasDeletionToken = false)
+    public function __construct(User $opponent, $oldPos, $newPos, string $ttmDate ,bool $hasDeletionToken = false)
     {
         $this->token = dbHelper::getHashedToken($opponent);
         $this->oldPos = $oldPos;
         $this->newPos = $newPos;
+        $this->ttm = $ttmDate;
 
         $game = dbHelper::GetActiveGameOrNull($opponent);
 

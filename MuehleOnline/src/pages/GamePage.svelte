@@ -71,6 +71,7 @@
     .listen("MoveEvent", (e) => {
       let oldPos = e.oldPos == null ? null : Number(e.oldPos);
       let newPos = Number(e.newPos);
+      ttm = new Date(e.ttm);
 
       if (newPos == -1) {
         let index = playerStones.indexOf(oldPos);
@@ -172,9 +173,12 @@
 
     AuthorizedGetRequest("game/stone/set/" + pos)
       .then((response) => {
-        if (response != "") {
+
+        ttm = new Date(response.ttm);
+
+        if (response.deletion_token != "") {
           canDelete = true;
-          deletionToken = response;
+          deletionToken = response.deletion_token;
           opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {
           yourTurn = false;
@@ -205,9 +209,12 @@
       new_position: pos,
     })
       .then((response) => {
-        if (response) {
+
+        ttm = new Date(response.ttm);
+
+        if (response.deletion_token != "") {
           canDelete = true;
-          deletionToken = response;
+          deletionToken = response.deletion_token;
           selectedStone = null;
           opponentStonesInMill = GetStonesInMill(opponentStones);
         } else {

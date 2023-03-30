@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->string("pw");
             $table->string("salt");
         });
-    
+
         Schema::create("statistic", function (Blueprint $table) {
             $table->id();
             $table->integer("won");
@@ -82,6 +83,32 @@ return new class extends Migration
             $table->unsignedBigInteger("utg_id");
             $table->foreign("utg_id")->references("id")->on("user_to_game")->onDelete("cascade");
         });
+
+        DB::table("statistic")->insert(
+            [
+                "won" => 0,
+                "lost" => 0,
+                "moveCount" => 0,
+                "kills" => 0,
+                "deaths" => 0
+            ]
+        );
+
+        DB::table("shadow")->insert(
+            [
+                "pw" => "IAmJustABot",
+                "salt" => ":)"
+            ]
+        );
+
+        DB::table("user")->insert(
+            [
+                "name" => "MühleBot",
+                "elo" => 3000,
+                "statistic_id" => collect(DB::select("SELECT * FROM statistic"))->first()->id,
+                "shadow_id" => collect(DB::select("SELECT * FROM shadow"))->first()->id
+            ]
+        );
     }
 
     /**

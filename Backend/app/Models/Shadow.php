@@ -12,7 +12,7 @@ class Shadow extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "pw"
+        "pw", "salt"
     ];
 
     public function user()

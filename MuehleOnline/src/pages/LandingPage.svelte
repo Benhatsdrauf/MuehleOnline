@@ -102,7 +102,7 @@
         list-style: none;
         width: 20px;
         height: 20px;
-        background-image: url("../assets/Mühle2.png");
+        background-image: url("../assets/MühleIcon.png");
         background-size: contain;
         animation: animate 25s linear infinite;
         bottom: -150px;

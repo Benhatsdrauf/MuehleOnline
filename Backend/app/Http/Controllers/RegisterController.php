@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
-
-
+use App\Logic\PepperHelper;
 use App\Models\User;
 use App\Models\Shadow;
 use App\Models\Statistic;
@@ -14,10 +13,11 @@ class RegisterController extends Controller
     public function register(RegisterRequest $request)
     {
         $salt = bin2hex(random_bytes(32));
+        $pepper = PepperHelper::Get();
 
         $shadow = new Shadow;
         $shadow->salt = $salt;
-        $shadow->pw = password_hash("$request->pw:$salt", PASSWORD_ARGON2I);
+        $shadow->pw = password_hash("$pepper:$request->pw:$salt", PASSWORD_ARGON2I);
         $shadow->save();
 
         $stat = new Statistic;

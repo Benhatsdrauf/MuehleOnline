@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Models\User;
 
 use App\Logic\Error;
+use App\Logic\PepperHelper;
 
 class LoginController extends Controller
 {
@@ -15,8 +16,10 @@ class LoginController extends Controller
         $user = User::where("name", $request->name)->first();
 
         $salt = $user->shadow()->first()->salt;
+        $pepper = PepperHelper::Get();
 
-        if(password_verify("$request->pw:$salt", $user->shadow()->first()->pw ))
+
+        if(password_verify("$pepper:$request->pw:$salt", $user->shadow()->first()->pw ))
         {
             $user->tokens()->delete();
 

@@ -13,6 +13,7 @@ use App\Logic\DatabaseHelper as dbHelper;
 
 use App\Events\PlayerReady;
 use App\Events\GameOverEvent;
+use App\Http\Controllers\ReplayController;
 use App\Logic\PepperHelper;
 use Illuminate\Support\Carbon;
 
@@ -68,6 +69,10 @@ Route::prefix("game")->group(function() {
         Route::post("/delete", [StoneController::class, "delete"])->middleware("auth:sanctum");
         Route::post("/move", [StoneController::class, "move"])->middleware("auth:sanctum");
     });
+});
+
+Route::prefix("replay")->group(function() {
+    Route::post("/get", [ReplayController::class, "Get"])->middleware("auth:sanctum");
 });
 
 Route::prefix("user")->group(function() {

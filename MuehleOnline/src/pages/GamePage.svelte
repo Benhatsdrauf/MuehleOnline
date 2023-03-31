@@ -448,30 +448,7 @@
 />
 
 <style>
-  .game-field {
-    height: 38vw;
-    width: 38vw;
-    background: var(--color-board-background);
-    border: solid 6px var(--color-black);
-    border-radius: 10px;
-  }
 
-  .status-box {
-    width: 38vw;
-  }
-
-  .none-played {
-    height: 50vh;
-    width: 10vw;
-    background: var(--color-board-background);
-    border: solid 6px var(--color-black);
-    border-radius: 10px;
-  }
-
-  .unplayed-number {
-    font-size: 20px;
-    font-weight: bold;
-  }
   .confetti-pos {
     z-index: 10;
     position: absolute;

@@ -17,8 +17,7 @@ class ReplayController extends Controller
         $inviteId = $request->invite_id;
         $game = Game::where("invite_id", $inviteId)->first();
 
-        if(boolval($game->is_avtive))
-        {
+        if (boolval($game->is_avtive)) {
             Error::throw(["game" => "This game is still active."], 400);
         }
 
@@ -47,9 +46,28 @@ class ReplayController extends Controller
         $result->game->start = $game->created_at;
         $result->game->end = $game->end_time;
 
-        $result->user_moves = $currentUTG->move_histories();
-        $result->opponent_moves = $opponentUTG->move_histories();
-        
+        $result->user_moves = [];
+
+        foreach($currentUTG->move_histories()->get() as $move)
+        {
+            array_push($result->user_moves, [
+                "old_pos" => $move->old_position,
+                "new_pos" => $move->new_position, 
+                "created_at" => $move->created_at
+            ]);
+        }
+
+        $result->opponent_moves = [];
+
+        foreach($opponentUTG->move_histories()->get() as $move)
+        {
+            array_push($result->opponent_moves, [
+                "old_pos" => $move->old_position,
+                "new_pos" => $move->new_position, 
+                "created_at" => $move->created_at
+            ]);
+        }
+
 
         return response()->json($result);
     }

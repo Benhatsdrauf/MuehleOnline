@@ -25,6 +25,7 @@
   import { confetti } from "@neoconfetti/svelte";
   import MessageModal from "../lib/MessageModal.svelte";
   import GameStatus from "../lib/GamePage/GameStatus.svelte";
+  import Loading from "../lib/Loading.svelte";
 
   const navigate = useNavigate();
 
@@ -44,7 +45,7 @@
   let isWhite = false;
   let yourTurn = false;
   let deletionToken;
-  let me = {};
+  let me = null;
   let opponent = {};
   let whiteMoves;
   let blackMoves;
@@ -361,6 +362,11 @@
 {/if}
 
 <div class="container-fluid bgc-primary h-100">
+  {#if me == null}
+  <div class="row pt-5">
+    <Loading show={true}/>
+  </div>
+  {:else}
   <div class="row pt-4">
     <div class="col-auto">
       <div class="mb-2">
@@ -439,6 +445,7 @@
       </svg>
     </div>
   </div>
+  {/if}
 </div>
 
 <MessageModal

@@ -22,6 +22,12 @@
   let opponentStones = [];
   let opponentCurrent = [];
 
+  let replaySpeed;
+  let autoPlayInterval;
+  let playReplay;
+
+  $: replaySpeed, changeInterval();
+
   onMount(() => {
     let path = window.location.pathname;
     let invite_id = path.split("/")[2];
@@ -61,6 +67,8 @@
     opponentHistory.sort(sortByDateAsc);
 
     if (playerHistory.length == 0 && opponentHistory.length == 0) {
+      playReplay = false;
+      pause();
       return;
     }
 
@@ -68,13 +76,11 @@
 
     let opponentDate = new Date(opponentHistory[0]?.created_at);
 
-    if(isNaN(playerDate.getTime()))
-    {
+    if (isNaN(playerDate.getTime())) {
       playerDate = new Date(0);
     }
 
-    if(isNaN(opponentDate.getTime()))
-    {
+    if (isNaN(opponentDate.getTime())) {
       opponentDate = new Date();
     }
 
@@ -94,11 +100,16 @@
   }
 
   function play() {
-    console.log(playerCurrent);
-    console.log(opponentCurrent);
+    playReplay = true;
+    autoPlayInterval = setInterval(function () {
+      forward();
+    }, (1000 / replaySpeed) * 100);
   }
 
-  function pause() {}
+  function pause() {
+    playReplay = false;
+    clearInterval(autoPlayInterval);
+  }
 
   function backward() {
     playerStones.sort(sortByDateDesc);
@@ -112,16 +123,13 @@
 
     let opponentDate = new Date(opponentStones[0]?.created_at);
 
-    if(isNaN(playerDate.getTime()))
-    {
+    if (isNaN(playerDate.getTime())) {
       playerDate = new Date(0);
     }
 
-    if(isNaN(opponentDate.getTime()))
-    {
+    if (isNaN(opponentDate.getTime())) {
       opponentDate = new Date();
     }
-
 
     if (playerDate > opponentDate) {
       playerHistory = [...playerHistory, playerStones[0]];
@@ -148,9 +156,7 @@
         playerCurrent[playerCurrent.indexOf(oldPos)] = newPos;
         playerCurrent = playerCurrent;
       }
-    }
-    else
-    {
+    } else {
       if (oldPos == null) {
         opponentCurrent = [...opponentCurrent, newPos];
       } else {
@@ -160,29 +166,19 @@
     }
   }
 
-  function StoneBackward(oldPos, newPos, isPlayer)
-  {
-    if(isPlayer)
-    {
-      if(oldPos == null)
-      {
+  function StoneBackward(oldPos, newPos, isPlayer) {
+    if (isPlayer) {
+      if (oldPos == null) {
         playerCurrent.splice(playerCurrent.indexOf(newPos), 1);
-      }
-      else
-      {
+      } else {
         playerCurrent[playerCurrent.indexOf(newPos)] = oldPos;
       }
 
       playerCurrent = playerCurrent;
-    }
-    else
-    {
-      if(oldPos == null)
-      {
+    } else {
+      if (oldPos == null) {
         opponentCurrent.splice(opponentCurrent.indexOf(newPos), 1);
-      }
-      else
-      {
+      } else {
         opponentCurrent[opponentCurrent.indexOf(newPos)] = oldPos;
       }
       opponentCurrent = opponentCurrent;
@@ -212,12 +208,23 @@
 
     return 0;
   }
+
+  function changeInterval() {
+    if (playReplay) {
+      pause();
+      play();
+    }
+  }
 </script>
 
 <Navbar>
   <div class="col-auto">
-    <button type="button" class="btn btn-outline-danger" on:click={() => {navigate("/home")}}
-      >Back</button
+    <button
+      type="button"
+      class="btn btn-outline-danger"
+      on:click={() => {
+        navigate("/home");
+      }}>Back</button
     >
   </div>
 </Navbar>
@@ -227,9 +234,6 @@
     <div class="col flex-column d-flex">
       <svg class="game-field align-self-center">
         <GameField />
-        <!-- Line's for showing possible moves -->
-        <!--<PossibleMoveLines {allMoveLines} {possibleMoves} />-->
-
         <!-- Game position circles -->
         {#each positions as position, i (i)}
           <GamePosition
@@ -254,14 +258,14 @@
 
         <!-- opponent stones -->
         {#each opponentCurrent.filter((x) => x != -1) as stone (stone)}
-            <Stone
-              x={positions[stone][0]}
-              y={positions[stone][1]}
-              isWhite={!me.is_white}
-              isSelected={false}
-              isDisabled={true}
-              on:click={() => {}}
-            />
+          <Stone
+            x={positions[stone][0]}
+            y={positions[stone][1]}
+            isWhite={!me.is_white}
+            isSelected={false}
+            isDisabled={true}
+            on:click={() => {}}
+          />
         {/each}
       </svg>
     </div>
@@ -275,24 +279,13 @@
     </div>
     <div class="col">
       <ReplayPlayer
+        bind:isPlay={playReplay}
+        bind:replaySpeed
         on:forward={forward}
         on:play={play}
         on:pause={pause}
         on:backward={backward}
       />
     </div>
-  </div>
-  <div class="col">
-    <!--
-              <PlayerInfo user={me} hasTurn={yourTurn} />
-              <svg class="none-played mt-2">
-                {#each playerStones.filter((x) => x === null) as stone, i}
-                  <Stone x={50} y={20 + 5 * i} {isWhite} />
-                {/each}
-                <text class="unplayed-number" x="50%" y="90%"
-                  >{playerStones.filter((x) => x === null).length}</text
-                >
-              </svg>
-          -->
   </div>
 </div>

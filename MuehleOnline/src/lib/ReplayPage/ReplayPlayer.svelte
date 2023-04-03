@@ -8,7 +8,9 @@
   import Fa from "svelte-fa";
   import { createEventDispatcher } from "svelte";
 
-  let isPlay = true;
+  export let replaySpeed = 100;
+
+  export let isPlay = false;
 
   const dispatch = createEventDispatcher();
 
@@ -32,22 +34,34 @@
 </script>
 
 <div class="card" style="width: 18rem">
-  <div class="card-body d-flex flex-row">
-    <button class="btn flex-fill" on:click={backward}>
-      <Fa icon={faBackward} />
-    </button>
-    {#if isPlay}
-      <button class="btn flex-fill" on:click={play}>
-        <Fa icon={faPlay} />
+  <div class="card-body">
+    <div class="d-flex flex-row">
+      <input
+        type="range"
+        class="form-range"
+        min="25"
+        max="175"
+        step="25"
+        bind:value={replaySpeed}
+      />
+    </div>
+    <div class="d-flex flex-row">
+      <button class="btn flex-fill" on:click={backward}>
+        <Fa icon={faBackward} />
       </button>
-    {:else}
-      <button class="btn flex-fill" on:click={pause}>
-        <Fa icon={faPause} />
+      {#if isPlay}
+        <button class="btn flex-fill" on:click={pause}>
+          <Fa icon={faPause} />
+        </button>
+      {:else}
+        <button class="btn flex-fill" on:click={play}>
+          <Fa icon={faPlay} />
+        </button>
+      {/if}
+      <button class="btn flex-fill" on:click={forward}>
+        <Fa icon={faForward} />
       </button>
-    {/if}
-    <button class="btn flex-fill" on:click={forward}>
-      <Fa icon={faForward} />
-    </button>
+    </div>
   </div>
 </div>
 

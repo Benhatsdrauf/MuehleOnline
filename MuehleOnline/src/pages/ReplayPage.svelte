@@ -10,10 +10,11 @@
   import Stone from "../lib/GamePage/Stone.svelte";
   import ReplayPlayer from "../lib/ReplayPage/ReplayPlayer.svelte";
   import Navbar from "../lib/Navbar.svelte";
+  import Loading from "../lib/Loading.svelte";
 
   const navigate = useNavigate();
   let opponent = {};
-  let me = {};
+  let me = null;
   let playerHistory = [];
   let playerStones = [];
   let playerCurrent = [];
@@ -239,55 +240,68 @@
   </div>
 </Navbar>
 
-<div class="container-fluid bgc-primary h-100">
-  <div class="row pt-4">
-    <div class="col flex-column d-flex">
-      <svg class="game-field align-self-center">
-        <GameField />
-        <!-- Game position circles -->
-        {#each positions as position, i (i)}
-          <GamePosition
-            {position}
-            isPossible={false}
-            isDisabled={true}
-            on:click={() => {}}
-          />
-        {/each}
+<div class="bgc-primary h-100 w-100 d-flex flex-row p-5 justify-content-center">
 
-        <!-- player stones -->
-        {#each playerCurrent.filter((x) => x != -1) as stone (stone)}
-          <Stone
-            x={positions[stone][0]}
-            y={positions[stone][1]}
-            isWhite={me.is_white}
-            isSelected={false}
-            isDisabled={true}
-            on:click={() => {}}
-          />
-        {/each}
+  {#if me == null}
+  <div class="align-self-center">
+    <Loading show={true}/>
+  </div>
+  {:else}
+  <div>
+    <svg class="game-field">
+      <GameField />
+      <!-- Game position circles -->
+      {#each positions as position, i (i)}
+        <GamePosition
+          {position}
+          isPossible={false}
+          isDisabled={true}
+          on:click={() => {}}
+        />
+      {/each}
 
-        <!-- opponent stones -->
-        {#each opponentCurrent.filter((x) => x != -1) as stone (stone)}
-          <Stone
-            x={positions[stone][0]}
-            y={positions[stone][1]}
-            isWhite={!me.is_white}
-            isSelected={false}
-            isDisabled={true}
-            on:click={() => {}}
-          />
-        {/each}
-      </svg>
+      <!-- player stones -->
+      {#each playerCurrent.filter((x) => x != -1) as stone (stone)}
+        <Stone
+          x={positions[stone][0]}
+          y={positions[stone][1]}
+          isWhite={me.is_white}
+          isSelected={false}
+          isDisabled={true}
+          on:click={() => {}}
+        />
+      {/each}
+
+      <!-- opponent stones -->
+      {#each opponentCurrent.filter((x) => x != -1) as stone (stone)}
+        <Stone
+          x={positions[stone][0]}
+          y={positions[stone][1]}
+          isWhite={!me.is_white}
+          isSelected={false}
+          isDisabled={true}
+          on:click={() => {}}
+        />
+      {/each}
+    </svg>
+  </div>
+
+  <div class="d-flex flex-column ms-5">
+    <div class="d-flex flex-row">
+      <div>
+        <ColorIndicator isWhite={!me.is_white} />
+        <div class="mt-3">
+          <ReplayPlayerInfo user={opponent} hasTurn={false} />
+        </div>
+      </div>
+      <div class="ms-5">
+        <ColorIndicator isWhite={me.is_white} />
+        <div class="mt-3">
+          <ReplayPlayerInfo user={me} hasTurn={false} />
+        </div>
+      </div>
     </div>
-    <div class="col-auto">
-      <ColorIndicator isWhite={me.is_white} />
-      <ReplayPlayerInfo user={me} hasTurn={false} />
-    </div>
-    <div class="col-auto">
-      <ColorIndicator isWhite={!me.is_white} />
-      <ReplayPlayerInfo user={opponent} hasTurn={false} />
-    </div>
-    <div class="col">
+    <div class="mt-4 align-self-center">
       <ReplayPlayer
         bind:isPlay={playReplay}
         bind:replaySpeed
@@ -299,4 +313,6 @@
       />
     </div>
   </div>
+  {/if}
+  
 </div>

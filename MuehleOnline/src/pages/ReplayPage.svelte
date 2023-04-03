@@ -15,15 +15,15 @@
   let me = {};
   let playerHistory = [];
   let playerStones = [];
+  let playerCurrent = [];
 
   let opponentHistory = [];
   let opponentStones = [];
+  let opponentCurrent = [];
 
   onMount(() => {
     let path = window.location.pathname;
     let invite_id = path.split("/")[2];
-
-    console.log(invite_id);
 
     let body = {
       invite_id: invite_id,
@@ -39,10 +39,8 @@
         playerHistory = data.user_moves;
         opponentHistory = data.opponent_moves;
 
-        playerStones = playerHistory;
-        opponentStones = opponentHistory;
-
-        console.log(playerStones);
+        //playerStones = playerHistory;
+        //opponentStones = opponentHistory;
       })
       .catch((err) => {
         try {
@@ -56,6 +54,163 @@
         }
       });
   });
+
+  function forward() {
+    playerHistory.sort(sortByDateAsc);
+    opponentHistory.sort(sortByDateAsc);
+
+    if (playerHistory.length == 0 && opponentHistory.length == 0) {
+      return;
+    }
+
+    let playerDate = new Date(playerHistory[0]?.created_at);
+
+    let opponentDate = new Date(opponentHistory[0]?.created_at);
+
+    if(isNaN(playerDate.getTime()))
+    {
+      playerDate = new Date(0);
+    }
+
+    if(isNaN(opponentDate.getTime()))
+    {
+      opponentDate = new Date();
+    }
+
+    if (playerDate < opponentDate) {
+      playerStones = [...playerStones, playerHistory[0]];
+      let current = playerHistory[0];
+      StoneForward(current.old_pos, current.new_pos, true);
+
+      playerHistory.splice(0, 1);
+    } else {
+      opponentStones = [...opponentStones, opponentHistory[0]];
+      let current = opponentHistory[0];
+      StoneForward(current.old_pos, current.new_pos, false);
+
+      opponentHistory.splice(0, 1);
+    }
+  }
+
+  function play() {
+    console.log(playerCurrent);
+    console.log(opponentCurrent);
+  }
+
+  function pause() {}
+
+  function backward() {
+    playerStones.sort(sortByDateDesc);
+    opponentStones.sort(sortByDateDesc);
+
+    if (playerStones.length == 0 && opponentStones.length == 0) {
+      return;
+    }
+
+    let playerDate = new Date(playerStones[0]?.created_at);
+
+    let opponentDate = new Date(opponentStones[0]?.created_at);
+
+    if(isNaN(playerDate.getTime()))
+    {
+      playerDate = new Date(0);
+    }
+
+    if(isNaN(opponentDate.getTime()))
+    {
+      opponentDate = new Date();
+    }
+
+
+    if (playerDate > opponentDate) {
+      playerHistory = [...playerHistory, playerStones[0]];
+
+      let current = playerStones[0];
+      StoneBackward(current.old_pos, current.new_pos, true);
+      playerStones.splice(0, 1);
+      playerStones = playerStones;
+    } else {
+      opponentHistory = [...opponentHistory, opponentStones[0]];
+
+      let current = opponentStones[0];
+      StoneBackward(current.old_pos, current.new_pos, false);
+      opponentStones.splice(0, 1);
+      opponentStones = opponentStones;
+    }
+  }
+
+  function StoneForward(oldPos, newPos, isPlayer) {
+    if (isPlayer) {
+      if (oldPos == null) {
+        playerCurrent = [...playerCurrent, newPos];
+      } else {
+        playerCurrent[playerCurrent.indexOf(oldPos)] = newPos;
+        playerCurrent = playerCurrent;
+      }
+    }
+    else
+    {
+      if (oldPos == null) {
+        opponentCurrent = [...opponentCurrent, newPos];
+      } else {
+        opponentCurrent[opponentCurrent.indexOf(oldPos)] = newPos;
+        opponentCurrent = opponentCurrent;
+      }
+    }
+  }
+
+  function StoneBackward(oldPos, newPos, isPlayer)
+  {
+    if(isPlayer)
+    {
+      if(oldPos == null)
+      {
+        playerCurrent.splice(playerCurrent.indexOf(newPos), 1);
+      }
+      else
+      {
+        playerCurrent[playerCurrent.indexOf(newPos)] = oldPos;
+      }
+
+      playerCurrent = playerCurrent;
+    }
+    else
+    {
+      if(oldPos == null)
+      {
+        opponentCurrent.splice(opponentCurrent.indexOf(newPos), 1);
+      }
+      else
+      {
+        opponentCurrent[opponentCurrent.indexOf(newPos)] = oldPos;
+      }
+      opponentCurrent = opponentCurrent;
+    }
+  }
+
+  function sortByDateDesc(a, b) {
+    if (a.created_at < b.created_at) {
+      return 1;
+    }
+
+    if (a.created_at > b.created_at) {
+      return -1;
+    }
+
+    return 0;
+  }
+
+  function sortByDateAsc(a, b) {
+    if (a.created_at > b.created_at) {
+      return 1;
+    }
+
+    if (a.created_at < b.created_at) {
+      return -1;
+    }
+
+    return 0;
+  }
 </script>
 
 <div class="container-fluid bgc-primary h-100">
@@ -77,10 +232,10 @@
         {/each}
 
         <!-- player stones -->
-        {#each playerStones as stone (stone)}
+        {#each playerCurrent.filter((x) => x != -1) as stone (stone)}
           <Stone
-            x={positions[stone.new_pos][0]}
-            y={positions[stone.new_pos][1]}
+            x={positions[stone][0]}
+            y={positions[stone][1]}
             isWhite={me.is_white}
             isSelected={false}
             isDisabled={true}
@@ -89,15 +244,15 @@
         {/each}
 
         <!-- opponent stones -->
-        {#each opponentStones as stone (stone)}
-          <Stone
-            x={positions[stone.new_pos][0]}
-            y={positions[stone.new_pos][1]}
-            isWhite={!me.is_white}
-            isSelected={false}
-            isDisabled={true}
-            on:click={() => {}}
-          />
+        {#each opponentCurrent.filter((x) => x != -1) as stone (stone)}
+            <Stone
+              x={positions[stone][0]}
+              y={positions[stone][1]}
+              isWhite={!me.is_white}
+              isSelected={false}
+              isDisabled={true}
+              on:click={() => {}}
+            />
         {/each}
       </svg>
     </div>
@@ -110,7 +265,12 @@
       <ReplayPlayerInfo user={opponent} hasTurn={false} />
     </div>
     <div class="col">
-        <ReplayPlayer/>
+      <ReplayPlayer
+        on:forward={forward}
+        on:play={play}
+        on:pause={pause}
+        on:backward={backward}
+      />
     </div>
   </div>
   <div class="col">

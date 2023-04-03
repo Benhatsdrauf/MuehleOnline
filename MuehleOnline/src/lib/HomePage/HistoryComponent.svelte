@@ -35,6 +35,7 @@
             playtime={game.play_time}
             start_date={game.start_date}
             elo={game.elo}
+            gameId={game.invite_id}
           />
         </div>
       {/each}

@@ -39,6 +39,7 @@ class UserController extends Controller
                 $entry->play_time = $created_time->diffInSeconds($end_time);
                 $entry->start_date = $created_time->toDateString();
                 $entry->elo = $userToGame->elo;
+                $entry->invite_id = $game->invite_id;
                 array_push($history, $entry);
             }  
         }
@@ -53,8 +54,6 @@ class UserController extends Controller
             $activeGame = $user->games()->where("is_active", true)->first();
             $activeGame->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first()->name;
             
-            $userIsWhite = dbHelper::GetUserToGame($user, $activeGame)->first()->is_white;
-
             $response->game->active = true;
             $response->game->opponent = $activeGame->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first()->name;
             $response->game->time_to_move  = Carbon::parse($activeGame->time_to_move);

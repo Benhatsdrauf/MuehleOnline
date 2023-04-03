@@ -9,6 +9,7 @@
   import ReplayPlayerInfo from "../lib/ReplayPage/ReplayPlayerInfo.svelte";
   import Stone from "../lib/GamePage/Stone.svelte";
   import ReplayPlayer from "../lib/ReplayPage/ReplayPlayer.svelte";
+  import Navbar from "../lib/Navbar.svelte";
 
   const navigate = useNavigate();
   let opponent = {};
@@ -213,8 +214,16 @@
   }
 </script>
 
+<Navbar>
+  <div class="col-auto">
+    <button type="button" class="btn btn-outline-danger" on:click={() => {navigate("/home")}}
+      >Back</button
+    >
+  </div>
+</Navbar>
+
 <div class="container-fluid bgc-primary h-100">
-  <div class="row">
+  <div class="row pt-4">
     <div class="col flex-column d-flex">
       <svg class="game-field align-self-center">
         <GameField />

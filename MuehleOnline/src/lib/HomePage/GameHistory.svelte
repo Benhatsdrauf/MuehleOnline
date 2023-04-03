@@ -1,14 +1,23 @@
 <script>
-  import { faBolt, faBurst, faCrown, faExplosion, faL } from "@fortawesome/free-solid-svg-icons";
+  import { faArrowRight, faBolt, faBurst, faCrown, faExplosion, faL } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
+  import {  useNavigate } from "svelte-navigator";
+
+  let navigate = useNavigate();
 
     export let won = false;
     export let opponent = "";
     export let playtime = 0;
     export let start_date = "";
     export let elo = 0;
+    export let gameId = "";
 
     let date = new Date(start_date);
+
+    function openReplay()
+    {
+        navigate("/replay/"+ gameId);
+    }
 </script>
 <div class="card">
     <div class="card-body">
@@ -29,8 +38,13 @@
             <div class="col text-center">
                 Play time: <b>{new Date(playtime * 1000).toISOString().slice(11, 19)}</b>
             </div>
-            <div class="col text-end">
+            <div class="col text-center">
                 <b>{`${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`}</b>
+            </div>
+            <div class="col-auto text-end">
+                <button class="btn btn-outline-primary" on:click={openReplay}>
+                    <Fa icon={faArrowRight}/>
+                </button>
             </div>
         </div>
     </div>

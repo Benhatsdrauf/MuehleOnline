@@ -4,6 +4,7 @@
     faForward,
     faPause,
     faPlay,
+    faRotateRight,
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import { createEventDispatcher } from "svelte";
@@ -31,10 +32,20 @@
   function forward() {
     dispatch("forward", {});
   }
+
+  function restart() {
+    dispatch("restart", {});
+  }
 </script>
 
 <div class="card" style="width: 18rem">
   <div class="card-body">
+    <div class="d-flex flex-row">
+      <p class="flex-fill"><b>Replay Speed:</b> {replaySpeed}%</p>
+      <button class="btn" on:click={restart}>
+        <Fa icon={faRotateRight} size="1.2x"/>
+      </button>
+    </div>
     <div class="d-flex flex-row">
       <input
         type="range"

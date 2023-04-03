@@ -62,6 +62,16 @@
       });
   });
 
+  function restart() {
+    playerHistory = playerHistory.concat(playerStones);
+    playerStones = [];
+    playerCurrent = [];
+
+    opponentHistory = opponentHistory.concat(opponentStones);
+    opponentStones = [];
+    opponentCurrent = [];
+  }
+
   function forward() {
     playerHistory.sort(sortByDateAsc);
     opponentHistory.sort(sortByDateAsc);
@@ -281,6 +291,7 @@
       <ReplayPlayer
         bind:isPlay={playReplay}
         bind:replaySpeed
+        on:restart={restart}
         on:forward={forward}
         on:play={play}
         on:pause={pause}

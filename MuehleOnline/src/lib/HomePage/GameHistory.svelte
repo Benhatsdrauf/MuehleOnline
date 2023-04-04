@@ -1,5 +1,5 @@
 <script>
-  import { faArrowRight, faBolt, faBurst, faCrown, faExplosion, faL } from "@fortawesome/free-solid-svg-icons";
+  import { faArrowRight, faBolt, faBurst, faCrown, faExplosion, faL, faMagnifyingGlass, faMagnifyingGlassChart, faRotateRight } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import {  useNavigate } from "svelte-navigator";
 
@@ -43,7 +43,7 @@
             </div>
             <div class="col-auto text-end">
                 <button class="btn btn-outline-primary" on:click={openReplay}>
-                    <Fa icon={faArrowRight}/>
+                    <Fa icon={faMagnifyingGlass}/>
                 </button>
             </div>
         </div>

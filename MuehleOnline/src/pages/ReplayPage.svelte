@@ -35,6 +35,8 @@
     let path = window.location.pathname;
     let invite_id = path.split("/")[2];
 
+    resetMoveLogStore();
+
     let body = {
       invite_id: invite_id,
     };
@@ -65,6 +67,18 @@
       });
   });
 
+
+  function resetMoveLogStore()
+  {
+    $newMessage = {
+      isOpponent: false,
+      action: "",
+      coordinate: ""
+    }
+
+    $oldMessages = [];
+  }
+
   function restart() {
     playerHistory = playerHistory.concat(playerStones);
     playerStones = [];
@@ -73,6 +87,8 @@
     opponentHistory = opponentHistory.concat(opponentStones);
     opponentStones = [];
     opponentCurrent = [];
+
+    resetMoveLogStore();
   }
 
   function forward() {

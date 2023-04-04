@@ -60,18 +60,18 @@ let random = Math.floor(Math.random() * 99);
   }
   @-moz-keyframes spin {
     100% {
-      -moz-transform: rotate(360deg);
+      -moz-transform: rotate(-360deg);
     }
   }
   @-webkit-keyframes spin {
     100% {
-      -webkit-transform: rotate(360deg);
+      -webkit-transform: rotate(-360deg);
     }
   }
   @keyframes spin {
     100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+      -webkit-transform: rotate(-360deg);
+      transform: rotate(-360deg);
     }
   }
 </style>

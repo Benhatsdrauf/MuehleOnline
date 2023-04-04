@@ -1,9 +1,19 @@
 <script>
+  import { onMount } from "svelte";
+  import { useNavigate } from "svelte-navigator";
     import Modal from "../lib/Modal.svelte";
     import { LoginPanel, RegisterPanel } from "../lib/Panels";
     import { Tabs, TabList, TabPanel, Tab } from "../lib/Tabs";
 
     let showModal = false;
+    let navigator = useNavigate();
+
+    onMount(() => {
+        if(localStorage.getItem("token") != null)
+        {
+            navigator("/home");
+        }
+    })
 </script>
 
 <!-- background animation -->

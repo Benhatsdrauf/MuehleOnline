@@ -50,9 +50,6 @@
 
         playerHistory = data.user_moves;
         opponentHistory = data.opponent_moves;
-
-        //playerStones = playerHistory;
-        //opponentStones = opponentHistory;
       })
       .catch((err) => {
         try {
@@ -300,7 +297,7 @@
   </div>
 </Navbar>
 
-<div class="bgc-primary h-100 w-100 d-flex flex-row p-5 justify-content-center">
+<div class="bgc-primary h-100 w-100 d-flex flex-row pt-5 justify-content-center">
   {#if me == null}
     <div class="align-self-center">
       <Loading show={true} />

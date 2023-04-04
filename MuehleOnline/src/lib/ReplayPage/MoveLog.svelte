@@ -57,7 +57,7 @@
   }
 
   .brown {
-    color: var(--color-terra-dark) !important;
+    color: var(--color-terra) !important;
   }
 
   hr {
@@ -71,6 +71,6 @@
 
   .card-size
   {
-    width: 35vw;
+    width: 34vw;
   }
 </style>

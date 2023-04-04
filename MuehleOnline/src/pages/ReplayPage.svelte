@@ -11,6 +11,8 @@
   import ReplayPlayer from "../lib/ReplayPage/ReplayPlayer.svelte";
   import Navbar from "../lib/Navbar.svelte";
   import Loading from "../lib/Loading.svelte";
+  import MoveLog from "../lib/ReplayPage/MoveLog.svelte";
+  import { newMessage, oldMessages } from "../../scripts/MoveLogStore";
 
   const navigate = useNavigate();
   let opponent = {};
@@ -163,21 +165,36 @@
     if (isPlayer) {
       if (oldPos == null) {
         playerCurrent = [...playerCurrent, newPos];
+        addMessage(false, "set a stone to", newPos);
       } else {
         playerCurrent[playerCurrent.indexOf(oldPos)] = newPos;
         playerCurrent = playerCurrent;
+
+        if (newPos == -1) {
+          addMessage(true, "removed a stone from position", oldPos);
+        } else {
+          addMessage(false, "moved a stone from " + oldPos + " to", newPos);
+        }
       }
     } else {
       if (oldPos == null) {
         opponentCurrent = [...opponentCurrent, newPos];
+        addMessage(true, "set a stone to", newPos);
       } else {
         opponentCurrent[opponentCurrent.indexOf(oldPos)] = newPos;
         opponentCurrent = opponentCurrent;
+
+        if (newPos == -1) {
+          addMessage(false, "removed a stone from position", oldPos);
+        } else {
+          addMessage(true, "moved a stone from " + oldPos + " to", newPos);
+        }
       }
     }
   }
 
   function StoneBackward(oldPos, newPos, isPlayer) {
+    removeMessage();
     if (isPlayer) {
       if (oldPos == null) {
         playerCurrent.splice(playerCurrent.indexOf(newPos), 1);
@@ -226,6 +243,33 @@
       play();
     }
   }
+
+  function addMessage(isOpponent, action, newCoordinate) {
+    if ($newMessage.action != "") {
+      $oldMessages = [...$oldMessages, $newMessage];
+    }
+
+    $newMessage = {
+      isOpponent: isOpponent,
+      action: action,
+      coordinate: newCoordinate,
+    };
+  }
+
+  function removeMessage() {
+    if ($oldMessages.length > 0) {
+      let copyOldMessages = $oldMessages.slice().reverse();
+      console.log(copyOldMessages);
+
+      $newMessage = copyOldMessages[0];
+
+      $oldMessages.splice($oldMessages.indexOf(copyOldMessages[0]));
+      $oldMessages = $oldMessages;
+
+    } else {
+      $newMessage = { isOpponent: true, action: "", coordinate: "" };
+    }
+  }
 </script>
 
 <Navbar>
@@ -241,78 +285,79 @@
 </Navbar>
 
 <div class="bgc-primary h-100 w-100 d-flex flex-row p-5 justify-content-center">
-
   {#if me == null}
-  <div class="align-self-center">
-    <Loading show={true}/>
-  </div>
+    <div class="align-self-center">
+      <Loading show={true} />
+    </div>
   {:else}
-  <div>
-    <svg class="game-field">
-      <GameField />
-      <!-- Game position circles -->
-      {#each positions as position, i (i)}
-        <GamePosition
-          {position}
-          isPossible={false}
-          isDisabled={true}
-          on:click={() => {}}
-        />
-      {/each}
+    <div class="me-5">
+      <MoveLog playerName={me.name} opponentName={opponent.name} />
+    </div>
+    <div>
+      <svg class="game-field">
+        <GameField />
+        <!-- Game position circles -->
+        {#each positions as position, i (i)}
+          <GamePosition
+            {position}
+            isPossible={false}
+            isDisabled={true}
+            on:click={() => {}}
+          />
+        {/each}
 
-      <!-- player stones -->
-      {#each playerCurrent.filter((x) => x != -1) as stone (stone)}
-        <Stone
-          x={positions[stone][0]}
-          y={positions[stone][1]}
-          isWhite={me.is_white}
-          isSelected={false}
-          isDisabled={true}
-          on:click={() => {}}
-        />
-      {/each}
+        <!-- player stones -->
+        {#each playerCurrent.filter((x) => x != -1) as stone (stone)}
+          <Stone
+            x={positions[stone][0]}
+            y={positions[stone][1]}
+            isWhite={me.is_white}
+            isSelected={false}
+            isDisabled={true}
+            on:click={() => {}}
+          />
+        {/each}
 
-      <!-- opponent stones -->
-      {#each opponentCurrent.filter((x) => x != -1) as stone (stone)}
-        <Stone
-          x={positions[stone][0]}
-          y={positions[stone][1]}
-          isWhite={!me.is_white}
-          isSelected={false}
-          isDisabled={true}
-          on:click={() => {}}
-        />
-      {/each}
-    </svg>
-  </div>
+        <!-- opponent stones -->
+        {#each opponentCurrent.filter((x) => x != -1) as stone (stone)}
+          <Stone
+            x={positions[stone][0]}
+            y={positions[stone][1]}
+            isWhite={!me.is_white}
+            isSelected={false}
+            isDisabled={true}
+            on:click={() => {}}
+          />
+        {/each}
+      </svg>
+    </div>
 
-  <div class="d-flex flex-column ms-5">
-    <div class="d-flex flex-row">
-      <div>
-        <ColorIndicator isWhite={!me.is_white} />
-        <div class="mt-3">
-          <ReplayPlayerInfo user={opponent} hasTurn={false} />
+    <div class="d-flex flex-column ms-5">
+      <div class="d-flex flex-row">
+        <div>
+          <ColorIndicator isWhite={!me.is_white} />
+          <div class="mt-3">
+            <ReplayPlayerInfo user={opponent} hasTurn={false} />
+          </div>
+        </div>
+        <div class="ms-5">
+          <ColorIndicator isWhite={me.is_white} />
+          <div class="mt-3">
+            <ReplayPlayerInfo user={me} hasTurn={false} />
+          </div>
         </div>
       </div>
-      <div class="ms-5">
-        <ColorIndicator isWhite={me.is_white} />
-        <div class="mt-3">
-          <ReplayPlayerInfo user={me} hasTurn={false} />
-        </div>
+      <div class="mt-4 align-self-center">
+        <ReplayPlayer
+          bind:isPlay={playReplay}
+          bind:replaySpeed
+          on:restart={restart}
+          on:forward={forward}
+          on:play={play}
+          on:pause={pause}
+          on:backward={backward}
+        />
       </div>
     </div>
-    <div class="mt-4 align-self-center">
-      <ReplayPlayer
-        bind:isPlay={playReplay}
-        bind:replaySpeed
-        on:restart={restart}
-        on:forward={forward}
-        on:play={play}
-        on:pause={pause}
-        on:backward={backward}
-      />
-    </div>
-  </div>
   {/if}
-  
 </div>

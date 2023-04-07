@@ -13,6 +13,8 @@
   import Loading from "../lib/Loading.svelte";
   import MoveLog from "../lib/ReplayPage/MoveLog.svelte";
   import { newMessage, oldMessages } from "../../scripts/MoveLogStore";
+  import { draw } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
 
   const navigate = useNavigate();
   let opponent = {};
@@ -56,10 +58,9 @@
               old_pos: move.old_pos,
               new_pos: move.new_pos,
               created_at: new Date(move.created_at),
-            }
+            },
           ];
         });
-
 
         data.opponent_moves.forEach((move) => {
           opponentHistory = [
@@ -308,8 +309,7 @@
 
   $: $newMessage, changePlayerHasTurn();
 
-  function changePlayerHasTurn()
-  {
+  function changePlayerHasTurn() {
     playerHasTurn = !$newMessage.isOpponent;
   }
 </script>
@@ -335,19 +335,37 @@
     </div>
   {:else}
     <div class="me-5">
-      <MoveLog playerName={me.name} opponentName={opponent.name} {winReason} playerIsBlack={!me.is_white}/>
+      <MoveLog
+        playerName={me.name}
+        opponentName={opponent.name}
+        {winReason}
+        playerIsBlack={!me.is_white}
+      />
     </div>
     <div>
       <svg class="game-field">
         <GameField />
+
+        {#if $newMessage.oldPos != null && $newMessage.oldPos > -1 && $newMessage.newPos != -1}
+          <line
+            x1="{positions[$newMessage.oldPos][0]}%"
+            y1="{positions[$newMessage.oldPos][1]}%"
+            x2="{positions[$newMessage.newPos][0]}%"
+            y2="{positions[$newMessage.newPos][1]}%"
+            stroke="green"
+            stroke-width="5"
+            in:draw={{ duration: 1500, easing: quintOut }}
+          />
+        {/if}
+
         <!-- Game position circles -->
         {#each positions as position, i (i)}
-          <GamePosition
-            {position}
-            isPossible={false}
-            isDisabled={true}
-            on:click={() => {}}
-          />
+        <GamePosition
+        {position}
+        isPossible={false}
+        isDisabled={true}
+        on:click={() => {}}
+        />
         {/each}
 
         <!-- player stones -->

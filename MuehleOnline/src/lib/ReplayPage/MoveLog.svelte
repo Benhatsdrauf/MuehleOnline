@@ -1,5 +1,7 @@
 <script>
+  import { coordinates } from "../../../scripts/circlePositions";
   import { oldMessages, newMessage } from "../../../scripts/MoveLogStore";
+  import MoveLogEntry from "./MoveLogEntry.svelte";
 
   export let playerName = "";
   export let opponentName = "";
@@ -8,36 +10,20 @@
 
 <div class="card">
   <div class="card-body card-size">
-    {#if $newMessage.action != ""}
+    {#if $newMessage.oldPos != -2}
       <h2>
-        <b
-          ><span
-            class="white"
-            class:brown={!$newMessage.isOpponent && playerIsBlack}
-          >
-            {$newMessage.isOpponent ? opponentName : playerName}
-          </span>{$newMessage.action}
-          <span class="text-primary">
-            {$newMessage.coordinate}
-          </span></b
-        >
+        <b>
+          <MoveLogEntry playerIsBlack={playerIsBlack} playerName={playerName} opponentName={opponentName} Move={$newMessage}/>
+        </b>
       </h2>
     {:else}
-      <h2 class="text-white">Move Log</h2>
+      <h2 class="text-white">Game Start</h2>
     {/if}
     <hr />
     <div class="list-size">
       {#each $oldMessages.slice().reverse() as olderMessage}
         <h5>
-          <span
-            class="white"
-            class:brown={!olderMessage.isOpponent && playerIsBlack}
-          >
-            {olderMessage.isOpponent ? opponentName : playerName}
-          </span>{olderMessage.action}
-          <span class="text-primary">
-            {olderMessage.coordinate}
-          </span>
+          <MoveLogEntry playerIsBlack={playerIsBlack} playerName={playerName} opponentName={opponentName} Move={olderMessage}/>
         </h5>
       {/each}
     </div>
@@ -52,14 +38,6 @@
     color: var(--color-steel-400);
   }
 
-  .white {
-    color: var(--color-white) !important;
-  }
-
-  .brown {
-    color: var(--color-terra) !important;
-  }
-
   hr {
     border: 2px white solid;
   }
@@ -69,8 +47,7 @@
     overflow-y: auto;
   }
 
-  .card-size
-  {
+  .card-size {
     width: 34vw;
   }
 </style>

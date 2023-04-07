@@ -4,7 +4,7 @@
   import { AuthorizedRequest } from "../../scripts/request";
   import ColorIndicator from "../lib/GamePage/ColorIndicator.svelte";
   import GameField from "../lib/GamePage/GameField.svelte";
-  import { positions } from "../../scripts/circlePositions";
+  import { coordinates, positions } from "../../scripts/circlePositions";
   import GamePosition from "../lib/GamePage/GamePosition.svelte";
   import ReplayPlayerInfo from "../lib/ReplayPage/ReplayPlayerInfo.svelte";
   import Stone from "../lib/GamePage/Stone.svelte";
@@ -69,8 +69,8 @@
   {
     $newMessage = {
       isOpponent: false,
-      action: "",
-      coordinate: ""
+      oldPos: -2,
+      newPos: 0
     }
 
     $oldMessages = [];
@@ -178,31 +178,20 @@
     if (isPlayer) {
       if (oldPos == null) {
         playerCurrent = [...playerCurrent, newPos];
-        addMessage(false, "set a stone to", newPos);
       } else {
         playerCurrent[playerCurrent.indexOf(oldPos)] = newPos;
         playerCurrent = playerCurrent;
 
-        if (newPos == -1) {
-          addMessage(true, "removed a stone from position", oldPos);
-        } else {
-          addMessage(false, "moved a stone from " + oldPos + " to", newPos);
-        }
       }
+      addMessage((newPos == -1), oldPos, newPos);
     } else {
       if (oldPos == null) {
         opponentCurrent = [...opponentCurrent, newPos];
-        addMessage(true, "set a stone to", newPos);
       } else {
         opponentCurrent[opponentCurrent.indexOf(oldPos)] = newPos;
         opponentCurrent = opponentCurrent;
-
-        if (newPos == -1) {
-          addMessage(false, "removed a stone from position", oldPos);
-        } else {
-          addMessage(true, "moved a stone from " + oldPos + " to", newPos);
-        }
       }
+      addMessage((newPos != -1), oldPos, newPos);
     }
   }
 
@@ -257,15 +246,15 @@
     }
   }
 
-  function addMessage(isOpponent, action, newCoordinate) {
-    if ($newMessage.action != "") {
+  function addMessage(isOpponent, oldPos, newPos) {
+    if ($newMessage.oldPos != -2) {
       $oldMessages = [...$oldMessages, $newMessage];
     }
 
     $newMessage = {
       isOpponent: isOpponent,
-      action: action,
-      coordinate: newCoordinate,
+      oldPos: oldPos,
+      newPos: newPos,
     };
   }
 
@@ -280,7 +269,7 @@
       $oldMessages = $oldMessages;
 
     } else {
-      $newMessage = { isOpponent: true, action: "", coordinate: "" };
+      $newMessage = { isOpponent: true, oldPos: -2, newPos: 0 };
     }
   }
 </script>

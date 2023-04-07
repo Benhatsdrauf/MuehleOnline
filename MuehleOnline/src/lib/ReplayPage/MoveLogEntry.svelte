@@ -15,7 +15,7 @@
 
 <div>
   <!-- && newPos != -1 means delete and so it has to switch the user-->
-    <span class="white" class:brown={(Move.isOpponent && Move.newPos != -1) && playerIsBlack }>
+    <span class="white" class:brown={(Move.isOpponent && !playerIsBlack)  && Move.newPos != -1}>
         {Move.isOpponent && Move.newPos != -1 ? opponentName : playerName}
       </span>
       {#if Move.oldPos == null}

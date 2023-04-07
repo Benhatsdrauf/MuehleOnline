@@ -50,8 +50,6 @@
         opponent.won = !me.won;
         winReason = data.game.end_reason;
 
-        console.log(data.user_moves)
-
         data.user_moves.forEach((move) => {
           playerHistory = [
             ...playerHistory,
@@ -140,13 +138,8 @@
       opponentDate = new Date();
     }
 
-    console.log(
-      playerDate + " = " + opponentDate + " => " + (playerDate < opponentDate)
-    );
-
     if (playerDate < opponentDate) {
       let current = playerHistory[0];
-      console.log("add player: " + current.old_pos + " to " + current.new_pos);
 
       playerActiveHistory = [...playerActiveHistory, current];
 
@@ -163,9 +156,6 @@
       addMessage(false, current.old_pos, current.new_pos);
     } else {
       let current = opponentHistory[0];
-      console.log(
-        "add opponent: " + current.old_pos + " to " + current.new_pos
-      );
 
       opponentActiveHistory = [...opponentActiveHistory, current];
 
@@ -217,9 +207,6 @@
 
     if (playerDate > opponentDate) {
       let current = playerActiveHistory[0];
-      console.log(
-        "remove player: " + current.old_pos + " to " + current.new_pos
-      );
 
       playerHistory = [...playerHistory, current];
 
@@ -240,15 +227,7 @@
       playerActiveHistory.splice(0, 1);
     } else {
       let current = opponentActiveHistory[0];
-      console.log(
-        "remove opponent: " +
-          current.old_pos +
-          " to " +
-          current.new_pos +
-          " at   " +
-          current.created_at
-      );
-
+      
       opponentHistory = [...opponentHistory, current];
 
       //check if stone gets set or moved
@@ -326,18 +305,6 @@
       $newMessage = { isOpponent: true, oldPos: -2, newPos: 0 };
     }
   }
-
-  function test() {
-    opponentHistory.forEach((a) => {
-      console.log(a.old_pos + " to " + a.new_pos + " at " + a.created_at);
-    });
-    console.log("-------------------------");
-
-    opponentHistory.sort(sortByDateAsc);
-    opponentHistory.forEach((a) => {
-      console.log(a.old_pos + " to " + a.new_pos + " at " + a.created_at);
-    });
-  }
 </script>
 
 <Navbar>
@@ -361,7 +328,7 @@
     </div>
   {:else}
     <div class="me-5">
-      <MoveLog playerName={me.name} opponentName={opponent.name} {winReason} />
+      <MoveLog playerName={me.name} opponentName={opponent.name} {winReason} playerIsBlack={!me.is_white}/>
     </div>
     <div>
       <svg class="game-field">
@@ -430,5 +397,4 @@
       </div>
     </div>
   {/if}
-  <button class="btn btn-secondary" on:click={test}>aaaa</button>
 </div>

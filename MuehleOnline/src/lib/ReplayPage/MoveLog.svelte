@@ -23,10 +23,17 @@
   <div class="card-body card-size">
     {#if $newMessage.oldPos == -2 && $oldMessages.length == 0}
     <!--Game Start-->
-    <h2 in:fly={{x: 100, duration: 200}} class="text-white">Game Start</h2>
+    <h2 in:fly={{x: 100, duration: 200}}>
+      <span class="white">
+        {(playerIsBlack)? opponentName : playerName}
+      </span>
+      <span class="text-primary">
+        has first move
+      </span>
+    </h2>
     {:else if $newMessage.oldPos == -2 && $oldMessages.length > 0}
     <!--Game End (show los message)-->
-        <h2><span class="white los-underline" class:brown={$newMessage.isOpponent && playerIsBlack}>
+        <h2 in:fly={{x: 100, duration: 200}}><span class="white los-underline" class:brown={$newMessage.isOpponent && !playerIsBlack}>
           {($newMessage.isOpponent) ? opponentName : playerName}
         </span> 
         <span class="text-primary">

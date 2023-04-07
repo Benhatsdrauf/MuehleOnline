@@ -29,14 +29,13 @@
   let autoPlayInterval;
   let playReplay;
   let winReason = "";
+  let playerHasTurn = false;
 
   $: replaySpeed, changeInterval();
 
   onMount(() => {
     let path = window.location.pathname;
     let invite_id = path.split("/")[2];
-
-    resetMoveLogStore();
 
     let body = {
       invite_id: invite_id,
@@ -80,6 +79,7 @@
         } else {
           playerHistory = [...playerHistory, losMsg];
         }
+        resetMoveLogStore();
       })
       .catch((err) => {
         try {
@@ -96,7 +96,7 @@
 
   function resetMoveLogStore() {
     $newMessage = {
-      isOpponent: false,
+      isOpponent: me.is_white,
       oldPos: -2,
       newPos: 0,
     };
@@ -227,7 +227,7 @@
       playerActiveHistory.splice(0, 1);
     } else {
       let current = opponentActiveHistory[0];
-      
+
       opponentHistory = [...opponentHistory, current];
 
       //check if stone gets set or moved
@@ -305,6 +305,13 @@
       $newMessage = { isOpponent: true, oldPos: -2, newPos: 0 };
     }
   }
+
+  $: $newMessage, changePlayerHasTurn();
+
+  function changePlayerHasTurn()
+  {
+    playerHasTurn = !$newMessage.isOpponent;
+  }
 </script>
 
 <Navbar>
@@ -320,7 +327,7 @@
 </Navbar>
 
 <div
-  class="bgc-primary h-100 w-100 d-flex flex-row pt-5 justify-content-center"
+  class="bgc-primary h-100 w-100 d-flex flex-wrap flex-row pt-5 justify-content-center"
 >
   {#if me == null}
     <div class="align-self-center">
@@ -374,13 +381,13 @@
         <div>
           <ColorIndicator isWhite={!me.is_white} />
           <div class="mt-3">
-            <ReplayPlayerInfo user={opponent} hasTurn={false} />
+            <ReplayPlayerInfo user={opponent} hasTurn={playerHasTurn} />
           </div>
         </div>
         <div class="ms-5">
           <ColorIndicator isWhite={me.is_white} />
           <div class="mt-3">
-            <ReplayPlayerInfo user={me} hasTurn={false} />
+            <ReplayPlayerInfo user={me} hasTurn={!playerHasTurn} />
           </div>
         </div>
       </div>

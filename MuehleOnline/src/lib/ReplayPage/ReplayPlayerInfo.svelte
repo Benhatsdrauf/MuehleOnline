@@ -44,7 +44,7 @@
         <p>
           <b>Elo:</b>
           <span class:text-win={user.won} class:text-los={!user.won}>
-            {user.elo}
+            {(user.elo > 0)? "+" + user.elo : user.elo}
           </span>
         </p>
       </div>

@@ -1,7 +1,6 @@
 <script>
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import { oldMessages, newMessage } from "../../../scripts/MoveLogStore";
-
   import MoveLogEntry from "./MoveLogEntry.svelte";
 
   export let playerName = "";

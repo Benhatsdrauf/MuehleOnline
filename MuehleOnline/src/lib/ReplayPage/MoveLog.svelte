@@ -7,6 +7,7 @@
   export let playerName = "";
   export let opponentName = "";
   export let playerIsBlack = true;
+  export let winReason = "";
 
   let animateFlag = true;
 
@@ -20,32 +21,41 @@
 
 <div class="card">
   <div class="card-body card-size">
-    {#if $newMessage.oldPos != -2}
-      {#if animateFlag}
-        <h2 in:fly={{x: 100, duration: 200}}>
-          <b>
-            <MoveLogEntry
-              {playerIsBlack}
-              {playerName}
-              {opponentName}
-              Move={$newMessage}
-            />
-          </b>
-        </h2>
-      {:else}
-        <h2 in:fly={{x: 100, duration: 200}}>
-          <b>
-            <MoveLogEntry
-              {playerIsBlack}
-              {playerName}
-              {opponentName}
-              Move={$newMessage}
-            />
-          </b>
-        </h2>
-      {/if}
+    {#if $newMessage.oldPos == -2 && $oldMessages.length == 0}
+    <!--Game Start-->
+    <h2 in:fly={{x: 100, duration: 200}} class="text-white">Game Start</h2>
+    {:else if $newMessage.oldPos == -2 && $oldMessages.length > 0}
+    <!--Game End (show los message)-->
+        <h2><span class="white los-underline" class:brown={$newMessage.isOpponent && playerIsBlack}>
+          {($newMessage.isOpponent) ? opponentName : playerName}
+        </span> 
+        <span class="text-primary">
+          {winReason}
+        </span></h2>
     {:else}
-      <h2 in:fly={{x: 100, duration: 200}} class="text-white">Game Start</h2>
+    {#if animateFlag}
+    <h2 in:fly={{x: 100, duration: 200}}>
+      <b>
+        <MoveLogEntry
+          {playerIsBlack}
+          {playerName}
+          {opponentName}
+          Move={$newMessage}
+        />
+      </b>
+    </h2>
+  {:else}
+    <h2 in:fly={{x: 100, duration: 200}}>
+      <b>
+        <MoveLogEntry
+          {playerIsBlack}
+          {playerName}
+          {opponentName}
+          Move={$newMessage}
+        />
+      </b>
+    </h2>
+  {/if}
     {/if}
     <hr />
     <div class="list-size">
@@ -85,5 +95,18 @@
 
   .card-size {
     width: 34vw;
+  }
+
+  .white {
+    color: var(--color-white) !important;
+  }
+
+  .brown {
+    color: var(--color-terra) !important;
+  }
+
+  .los-underline {
+    text-decoration: underline var(--color-los) 4px;
+    text-underline-offset: 5px;
   }
 </style>

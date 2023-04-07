@@ -45,6 +45,7 @@ class ReplayController extends Controller
 
         $result->game->start = $game->created_at;
         $result->game->end = $game->end_time;
+        $result->game->end_reason = $game->end_reason;
 
         $result->user_moves = [];
 

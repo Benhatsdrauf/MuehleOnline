@@ -4,7 +4,7 @@
   import { AuthorizedRequest } from "../../scripts/request";
   import ColorIndicator from "../lib/GamePage/ColorIndicator.svelte";
   import GameField from "../lib/GamePage/GameField.svelte";
-  import { coordinates, positions } from "../../scripts/circlePositions";
+  import { positions } from "../../scripts/circlePositions";
   import GamePosition from "../lib/GamePage/GamePosition.svelte";
   import ReplayPlayerInfo from "../lib/ReplayPage/ReplayPlayerInfo.svelte";
   import Stone from "../lib/GamePage/Stone.svelte";
@@ -18,16 +18,17 @@
   let opponent = {};
   let me = null;
   let playerHistory = [];
-  let playerStones = [];
-  let playerCurrent = [];
+  let playerActiveHistory = [];
+  let playerCurrentStones = [];
 
   let opponentHistory = [];
-  let opponentStones = [];
-  let opponentCurrent = [];
+  let opponentActiveHistory = [];
+  let opponentCurrentStones = [];
 
   let replaySpeed;
   let autoPlayInterval;
   let playReplay;
+  let winReason = "";
 
   $: replaySpeed, changeInterval();
 
@@ -47,9 +48,40 @@
         opponent = data.opponent;
 
         opponent.won = !me.won;
+        winReason = data.game.end_reason;
 
-        playerHistory = data.user_moves;
-        opponentHistory = data.opponent_moves;
+        console.log(data.user_moves)
+
+        data.user_moves.forEach((move) => {
+          playerHistory = [
+            ...playerHistory,
+            {
+              old_pos: move.old_pos,
+              new_pos: move.new_pos,
+              created_at: new Date(move.created_at),
+            }
+          ];
+        });
+
+
+        data.opponent_moves.forEach((move) => {
+          opponentHistory = [
+            ...opponentHistory,
+            {
+              old_pos: move.old_pos,
+              new_pos: move.new_pos,
+              created_at: new Date(move.created_at),
+            },
+          ];
+        });
+        // add the los message to the losers history
+        let losMsg = { old_pos: -2, new_pos: 0, created_at: new Date() };
+
+        if (me.won) {
+          opponentHistory = [...opponentHistory, losMsg];
+        } else {
+          playerHistory = [...playerHistory, losMsg];
+        }
       })
       .catch((err) => {
         try {
@@ -64,26 +96,24 @@
       });
   });
 
-
-  function resetMoveLogStore()
-  {
+  function resetMoveLogStore() {
     $newMessage = {
       isOpponent: false,
       oldPos: -2,
-      newPos: 0
-    }
+      newPos: 0,
+    };
 
     $oldMessages = [];
   }
 
   function restart() {
-    playerHistory = playerHistory.concat(playerStones);
-    playerStones = [];
-    playerCurrent = [];
+    playerHistory = playerHistory.concat(playerActiveHistory);
+    playerActiveHistory = [];
+    playerCurrentStones = [];
 
-    opponentHistory = opponentHistory.concat(opponentStones);
-    opponentStones = [];
-    opponentCurrent = [];
+    opponentHistory = opponentHistory.concat(opponentActiveHistory);
+    opponentActiveHistory = [];
+    opponentCurrentStones = [];
 
     resetMoveLogStore();
   }
@@ -103,25 +133,53 @@
     let opponentDate = new Date(opponentHistory[0]?.created_at);
 
     if (isNaN(playerDate.getTime())) {
-      playerDate = new Date(0);
+      playerDate = new Date();
     }
 
     if (isNaN(opponentDate.getTime())) {
       opponentDate = new Date();
     }
 
+    console.log(
+      playerDate + " = " + opponentDate + " => " + (playerDate < opponentDate)
+    );
+
     if (playerDate < opponentDate) {
-      playerStones = [...playerStones, playerHistory[0]];
       let current = playerHistory[0];
-      StoneForward(current.old_pos, current.new_pos, true);
+      console.log("add player: " + current.old_pos + " to " + current.new_pos);
+
+      playerActiveHistory = [...playerActiveHistory, current];
+
+      //check if stone gets set or moved
+      if (current.old_pos == null) {
+        playerCurrentStones = [...playerCurrentStones, current.new_pos];
+      } else {
+        playerCurrentStones[playerCurrentStones.indexOf(current.old_pos)] =
+          current.new_pos;
+        playerCurrentStones = playerCurrentStones;
+      }
 
       playerHistory.splice(0, 1);
+      addMessage(false, current.old_pos, current.new_pos);
     } else {
-      opponentStones = [...opponentStones, opponentHistory[0]];
       let current = opponentHistory[0];
-      StoneForward(current.old_pos, current.new_pos, false);
+      console.log(
+        "add opponent: " + current.old_pos + " to " + current.new_pos
+      );
+
+      opponentActiveHistory = [...opponentActiveHistory, current];
+
+      //check if stone gets set or moved
+      if (current.old_pos == null) {
+        opponentCurrentStones = [...opponentCurrentStones, current.new_pos];
+      } else {
+        opponentCurrentStones[opponentCurrentStones.indexOf(current.old_pos)] =
+          current.new_pos;
+        opponentCurrentStones = opponentCurrentStones;
+      }
 
       opponentHistory.splice(0, 1);
+      addMessage(true, current.old_pos, current.new_pos);
     }
   }
 
@@ -138,81 +196,78 @@
   }
 
   function backward() {
-    playerStones.sort(sortByDateDesc);
-    opponentStones.sort(sortByDateDesc);
+    playerActiveHistory.sort(sortByDateDesc);
+    opponentActiveHistory.sort(sortByDateDesc);
 
-    if (playerStones.length == 0 && opponentStones.length == 0) {
+    if (playerActiveHistory.length == 0 && opponentActiveHistory.length == 0) {
       return;
     }
 
-    let playerDate = new Date(playerStones[0]?.created_at);
+    let playerDate = new Date(playerActiveHistory[0]?.created_at);
 
-    let opponentDate = new Date(opponentStones[0]?.created_at);
+    let opponentDate = new Date(opponentActiveHistory[0]?.created_at);
 
     if (isNaN(playerDate.getTime())) {
       playerDate = new Date(0);
     }
 
     if (isNaN(opponentDate.getTime())) {
-      opponentDate = new Date();
+      opponentDate = new Date(0);
     }
 
     if (playerDate > opponentDate) {
-      playerHistory = [...playerHistory, playerStones[0]];
+      let current = playerActiveHistory[0];
+      console.log(
+        "remove player: " + current.old_pos + " to " + current.new_pos
+      );
 
-      let current = playerStones[0];
-      StoneBackward(current.old_pos, current.new_pos, true);
-      playerStones.splice(0, 1);
-      playerStones = playerStones;
-    } else {
-      opponentHistory = [...opponentHistory, opponentStones[0]];
+      playerHistory = [...playerHistory, current];
 
-      let current = opponentStones[0];
-      StoneBackward(current.old_pos, current.new_pos, false);
-      opponentStones.splice(0, 1);
-      opponentStones = opponentStones;
-    }
-  }
-
-  function StoneForward(oldPos, newPos, isPlayer) {
-    if (isPlayer) {
-      if (oldPos == null) {
-        playerCurrent = [...playerCurrent, newPos];
+      //check if stone gets set or moved
+      if (current.old_pos == null) {
+        playerCurrentStones.splice(
+          playerCurrentStones.indexOf(current.new_pos),
+          1
+        );
       } else {
-        playerCurrent[playerCurrent.indexOf(oldPos)] = newPos;
-        playerCurrent = playerCurrent;
-
+        playerCurrentStones[playerCurrentStones.indexOf(current.new_pos)] =
+          current.old_pos;
       }
-      addMessage((newPos == -1), oldPos, newPos);
+
+      //trigger reactivity
+      playerCurrentStones = playerCurrentStones;
+
+      playerActiveHistory.splice(0, 1);
     } else {
-      if (oldPos == null) {
-        opponentCurrent = [...opponentCurrent, newPos];
-      } else {
-        opponentCurrent[opponentCurrent.indexOf(oldPos)] = newPos;
-        opponentCurrent = opponentCurrent;
-      }
-      addMessage((newPos != -1), oldPos, newPos);
-    }
-  }
+      let current = opponentActiveHistory[0];
+      console.log(
+        "remove opponent: " +
+          current.old_pos +
+          " to " +
+          current.new_pos +
+          " at   " +
+          current.created_at
+      );
 
-  function StoneBackward(oldPos, newPos, isPlayer) {
+      opponentHistory = [...opponentHistory, current];
+
+      //check if stone gets set or moved
+      if (current.old_pos == null) {
+        opponentCurrentStones.splice(
+          opponentCurrentStones.indexOf(current.new_pos),
+          1
+        );
+      } else {
+        opponentCurrentStones[opponentCurrentStones.indexOf(current.new_pos)] =
+          current.old_pos;
+      }
+
+      //trigger reactivity
+      opponentCurrentStones = opponentCurrentStones;
+
+      opponentActiveHistory.splice(0, 1);
+    }
     removeMessage();
-    if (isPlayer) {
-      if (oldPos == null) {
-        playerCurrent.splice(playerCurrent.indexOf(newPos), 1);
-      } else {
-        playerCurrent[playerCurrent.indexOf(newPos)] = oldPos;
-      }
-
-      playerCurrent = playerCurrent;
-    } else {
-      if (oldPos == null) {
-        opponentCurrent.splice(opponentCurrent.indexOf(newPos), 1);
-      } else {
-        opponentCurrent[opponentCurrent.indexOf(newPos)] = oldPos;
-      }
-      opponentCurrent = opponentCurrent;
-    }
   }
 
   function sortByDateDesc(a, b) {
@@ -247,7 +302,8 @@
   }
 
   function addMessage(isOpponent, oldPos, newPos) {
-    if ($newMessage.oldPos != -2) {
+    if ($newMessage.oldPos == -2 && $oldMessages.length == 0) {
+    } else {
       $oldMessages = [...$oldMessages, $newMessage];
     }
 
@@ -261,16 +317,26 @@
   function removeMessage() {
     if ($oldMessages.length > 0) {
       let copyOldMessages = $oldMessages.slice().reverse();
-      console.log(copyOldMessages);
 
       $newMessage = copyOldMessages[0];
 
       $oldMessages.splice($oldMessages.indexOf(copyOldMessages[0]));
       $oldMessages = $oldMessages;
-
     } else {
       $newMessage = { isOpponent: true, oldPos: -2, newPos: 0 };
     }
+  }
+
+  function test() {
+    opponentHistory.forEach((a) => {
+      console.log(a.old_pos + " to " + a.new_pos + " at " + a.created_at);
+    });
+    console.log("-------------------------");
+
+    opponentHistory.sort(sortByDateAsc);
+    opponentHistory.forEach((a) => {
+      console.log(a.old_pos + " to " + a.new_pos + " at " + a.created_at);
+    });
   }
 </script>
 
@@ -286,14 +352,16 @@
   </div>
 </Navbar>
 
-<div class="bgc-primary h-100 w-100 d-flex flex-row pt-5 justify-content-center">
+<div
+  class="bgc-primary h-100 w-100 d-flex flex-row pt-5 justify-content-center"
+>
   {#if me == null}
     <div class="align-self-center">
       <Loading show={true} />
     </div>
   {:else}
     <div class="me-5">
-      <MoveLog playerName={me.name} opponentName={opponent.name} />
+      <MoveLog playerName={me.name} opponentName={opponent.name} {winReason} />
     </div>
     <div>
       <svg class="game-field">
@@ -309,7 +377,7 @@
         {/each}
 
         <!-- player stones -->
-        {#each playerCurrent.filter((x) => x != -1) as stone (stone)}
+        {#each playerCurrentStones.filter((x) => x != -1) as stone (stone)}
           <Stone
             x={positions[stone][0]}
             y={positions[stone][1]}
@@ -321,7 +389,7 @@
         {/each}
 
         <!-- opponent stones -->
-        {#each opponentCurrent.filter((x) => x != -1) as stone (stone)}
+        {#each opponentCurrentStones.filter((x) => x != -1) as stone (stone)}
           <Stone
             x={positions[stone][0]}
             y={positions[stone][1]}
@@ -362,4 +430,5 @@
       </div>
     </div>
   {/if}
+  <button class="btn btn-secondary" on:click={test}>aaaa</button>
 </div>

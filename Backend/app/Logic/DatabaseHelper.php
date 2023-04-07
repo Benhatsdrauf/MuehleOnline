@@ -34,6 +34,7 @@ class DatabaseHelper
 
         $game->is_active = false;
         $game->end_time = Carbon::now();
+        $game->end_reason = $message;
         $game->save();
 
         UserController::eloUpdate($winner, $loser, $game);

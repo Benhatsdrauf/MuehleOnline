@@ -81,6 +81,8 @@
         try {
           err.json().then((e) => {
             if (e.message == "Unauthenticated.") {
+
+              localStorage.clear();
               navigate("/");
             }
           });

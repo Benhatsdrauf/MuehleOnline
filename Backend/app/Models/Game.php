@@ -12,7 +12,7 @@ class Game extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        "is_active", "end_time", "invite_id", "whites_turn", "time_to_move"
+        "is_active", "end_time", "invite_id", "whites_turn", "time_to_move", "end_reason"
     ];
 
     public function user_to_game()

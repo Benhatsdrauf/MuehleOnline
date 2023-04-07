@@ -14,8 +14,9 @@
 </script>
 
 <div>
-    <span class="white" class:brown={Move.isOpponent && playerIsBlack}>
-        {Move.isOpponent ? opponentName : playerName}
+  <!-- && newPos != -1 means delete and so it has to switch the user-->
+    <span class="white" class:brown={(Move.isOpponent && Move.newPos != -1) && playerIsBlack }>
+        {Move.isOpponent && Move.newPos != -1 ? opponentName : playerName}
       </span>
       {#if Move.oldPos == null}
         set stone to
@@ -37,9 +38,6 @@
           {coordinates[Move.newPos]}
         </span>
       {/if}
-      <button class="btn">
-
-    </button>
 </div>
 
 

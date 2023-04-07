@@ -46,6 +46,7 @@ return new class extends Migration
             $table->boolean("whites_turn");
             $table->dateTime("time_to_move")->nullable();
             $table->dateTime("end_time")->nullable();
+            $table->string("end_reason")->nullable();
             $table->timestamps();
         });
 

@@ -37,8 +37,10 @@
     --color-dark-grey: #434343;
     --color-info: #57cafb;
     --color-success: #43A017;
+    --color-success-trans: rgba(66, 160, 23, 0.8);
     --color-success-light: #73D95F;
     --color-error: #E52828;
+    --color-error-trans: rgba(229, 40, 40, 0.80);
     --color-warning: #fc9803;
     --color-error-light: #FF7070;
     --color-clay-light: #F89939;

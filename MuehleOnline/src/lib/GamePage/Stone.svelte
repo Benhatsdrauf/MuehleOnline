@@ -10,11 +10,12 @@
     export let isDeletable = false;
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <circle
     on:click
     cx="{x}%"
     cy="{y}%"
-    r="22"
+    r="2.7%"
     class:selected={isSelected}
     class:white={isWhite}
     class:black={!isWhite}
@@ -23,21 +24,23 @@
     in:draw={{ duration: 1000, easing: quintOut }}
     out:draw={{ duration: 1000, easing: quintOut }}
 />
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <circle
     on:click
     cx="{x}%"
     cy="{y}%"
-    r="14"
+    r="1.6%"
     class:white={isWhite}
     class:black={!isWhite}
     class:disabled={isDisabled}
     class="innercircle"
 />
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <circle
     on:click
     cx="{x}%"
     cy="{y}%"
-    r="4"
+    r="0.5%"
     class:white={isWhite}
     class:black={!isWhite}
     class:disabled={isDisabled}

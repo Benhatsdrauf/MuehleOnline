@@ -343,29 +343,82 @@
       />
     </div>
     <div>
-      <svg class="game-field">
+      <svg class="game-field" xmlns="http://www.w3.org/2000/svg">
         <GameField />
 
+        <!--Mark moved line-->
         {#if $newMessage.oldPos != null && $newMessage.oldPos > -1 && $newMessage.newPos != -1}
           <line
             x1="{positions[$newMessage.oldPos][0]}%"
             y1="{positions[$newMessage.oldPos][1]}%"
             x2="{positions[$newMessage.newPos][0]}%"
             y2="{positions[$newMessage.newPos][1]}%"
-            stroke="green"
-            stroke-width="5"
+            stroke="var(--color-success)"
+            stroke-width="8"
             in:draw={{ duration: 1500, easing: quintOut }}
           />
+
+          <line
+            x1="{positions[$newMessage.oldPos][0]}%"
+            y1="{positions[$newMessage.oldPos][1]}%"
+            x2="{positions[$newMessage.newPos][0]}%"
+            y2="{positions[$newMessage.newPos][1]}%"
+            stroke="var(--color-success-light)"
+            stroke-width="6"
+          >
+            {#if positions[$newMessage.oldPos][0] != positions[$newMessage.newPos][0]}
+              <animate
+                attributeName="x2"
+                values="{positions[$newMessage.oldPos][0]}%; {positions[
+                  $newMessage.newPos
+                ][0]}%"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            {:else}
+              <animate
+                attributeName="y2"
+                values="{positions[$newMessage.oldPos][1]}%; {positions[
+                  $newMessage.newPos
+                ][1]}%"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            {/if}
+          </line>
+        {/if}
+
+
+        {#if $newMessage.oldPos == null}
+        <circle class="circle-add" r="0%" cx="{positions[$newMessage.newPos][0]}%" cy="{positions[$newMessage.newPos][1]}%" fill="var(--color-success-trans)">
+          <animate
+                attributeName="r"
+                values="2.7%; 4%"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+        </circle>
+        {/if}
+
+        {#if $newMessage.newPos == -1}
+        <circle class="circle-add" r="0%" cx="{positions[$newMessage.oldPos][0]}%" cy="{positions[$newMessage.oldPos][1]}%" fill="var(--color-error-trans)">
+          <animate
+                attributeName="r"
+                values="3.5%; 1%"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+        </circle>
         {/if}
 
         <!-- Game position circles -->
         {#each positions as position, i (i)}
-        <GamePosition
-        {position}
-        isPossible={false}
-        isDisabled={true}
-        on:click={() => {}}
-        />
+          <GamePosition
+            {position}
+            isPossible={false}
+            isDisabled={true}
+            on:click={() => {}}
+          />
         {/each}
 
         <!-- player stones -->
@@ -423,3 +476,6 @@
     </div>
   {/if}
 </div>
+
+<style>
+</style>

@@ -9,7 +9,7 @@
     on:click
     cx="{x}%"
     cy="{y}%"
-    r="15"
+    r="2%"
     class:possible={isPossible}
     class:disabled={isDisabled}
 />

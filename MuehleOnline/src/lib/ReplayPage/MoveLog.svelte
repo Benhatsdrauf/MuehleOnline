@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
   import { fly } from "svelte/transition";
   import { oldMessages, newMessage } from "../../../scripts/MoveLogStore";
   import MoveLogEntry from "./MoveLogEntry.svelte";
@@ -32,11 +34,11 @@
     </h2>
     {:else if $newMessage.oldPos == -2 && $oldMessages.length > 0}
     <!--Game End (show los message)-->
-        <h2 in:fly={{x: 100, duration: 200}}><span class="white los-underline" class:brown={$newMessage.isOpponent && !playerIsBlack}>
+        <h2 in:fly={{x: 100, duration: 200}}><span class="white los-underline" class:brown={$newMessage.isOpponent ^ playerIsBlack}>
           {($newMessage.isOpponent) ? opponentName : playerName}
         </span> 
         <span class="text-primary">
-          {winReason}
+          has {winReason}
         </span></h2>
     {:else}
     {#if animateFlag}

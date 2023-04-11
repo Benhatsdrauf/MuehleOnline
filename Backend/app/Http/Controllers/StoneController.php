@@ -17,6 +17,7 @@ use App\Logic\DatabaseHelper as dbHelper;
 
 use App\Http\Requests\StoneDeleteRequest;
 use App\Http\Requests\StoneMoveRequest;
+use App\Logic\GameEndReason;
 
 class StoneController extends Controller
 {
@@ -130,12 +131,12 @@ class StoneController extends Controller
         $opponentMoves = dbHelper::GetUserToGame($opponent, $game)->moves()->get();
 
         if ($opponentMoves->where("position", "!=", -1)->count() < 3 && $opponentMoves->count() == 9) {
-            dbHelper::GameEnded($game, $user, $opponent, "got no more stones left.");
+            dbHelper::GameEnded($game, $user, $opponent, GameEndReason::ELIMINATION);
         }
 
         if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
         {
-            dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
+            dbHelper::GameEnded($game, $user, $opponent, GameEndReason::BLOCKED);
         }
 
         return response()->json(["ttm" => $ttm]);
@@ -210,7 +211,7 @@ class StoneController extends Controller
         
         if(helper::IsOpponentStale(dbHelper::GetUserToGame($user, $game), dbHelper::GetUserToGame($opponent, $game)))
         {
-            dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
+            dbHelper::GameEnded($game, $user, $opponent, GameEndReason::BLOCKED);
         }
         
         return response()->json(["ttm" => $ttm, "deletion_token" => $deletion_token]);

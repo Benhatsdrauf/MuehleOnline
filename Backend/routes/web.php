@@ -49,7 +49,6 @@ Route::get("/test", function () {
 
     $game = $user->games()->where("is_active", true)->first();
 
-    //dbHelper::GameEnded($game, $user, $opponent, "can not move any stones.");
     return response()->json(PepperHelper::Get());
 });
 

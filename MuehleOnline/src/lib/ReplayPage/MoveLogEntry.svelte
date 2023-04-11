@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
   import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import { coordinates } from "../../../scripts/circlePositions";
@@ -15,7 +17,7 @@
 
 <div>
   <!-- && newPos != -1 means delete and so it has to switch the user-->
-    <span class="white" class:brown={(Move.isOpponent && !playerIsBlack)  && Move.newPos != -1}>
+    <span class="white" class:brown={(Move.isOpponent ^ playerIsBlack)  && Move.newPos != -1}>
         {Move.isOpponent && Move.newPos != -1 ? opponentName : playerName}
       </span>
       {#if Move.oldPos == null}

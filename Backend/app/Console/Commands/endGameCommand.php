@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Logic\DatabaseHelper as helper;
+use App\Logic\GameEndReason;
 use Carbon\Carbon;
 use App\Models\Game;
 
@@ -55,7 +56,7 @@ class endGameCommand extends Command
                 }
 
                 info("Game ended: $game->id");
-                helper::GameEnded($game, $winner, $loser, "have not moved in time.");
+                helper::GameEnded($game, $winner, $loser, GameEndReason::INACTIVE);
             }
     }
 }

@@ -9,7 +9,7 @@ use App\Logic\Error;
 use App\Events\PlayerReady;
 use Carbon\Carbon;
 use App\Logic\DatabaseHelper as helper;
-
+use App\Logic\GameEndReason;
 
 class GameController extends Controller
 {
@@ -97,7 +97,7 @@ class GameController extends Controller
 
         $opponent = $game->user_to_game()->where("user_id", "!=", $user->id)->first()->user()->first();
 
-       helper::GameEnded($game, $opponent, $user, " quit the game.");
+       helper::GameEnded($game, $opponent, $user, GameEndReason::QUIT->value);
 
         return response()->json();
     }

@@ -26,6 +26,7 @@
   import MessageModal from "../lib/MessageModal.svelte";
   import GameStatus from "../lib/GamePage/GameStatus.svelte";
   import Loading from "../lib/Loading.svelte";
+  import ViewStones from "../lib/GamePage/ViewStones.svelte";
 
   const navigate = useNavigate();
 
@@ -375,7 +376,7 @@
       <PlayerInfo user={opponent} hasTurn={!yourTurn} />
       <svg class="none-played mt-2">
         {#each opponentStones.filter((x) => x === null) as stone, i}
-          <Stone x={50} y={20 + 5 * i} isWhite={!isWhite} />
+          <ViewStones x={50} y={20 + 5 * i} isWhite={!isWhite} />
         {/each}
         <text class="unplayed-number" x="50%" y="90%">
           {opponentStones.filter((x) => x === null).length}
@@ -437,7 +438,7 @@
       <PlayerInfo user={me} hasTurn={yourTurn} />
       <svg class="none-played mt-2">
         {#each playerStones.filter((x) => x === null) as stone, i}
-          <Stone x={50} y={20 + 5 * i} {isWhite} />
+          <ViewStones x={50} y={20 + 5 * i} {isWhite} />
         {/each}
         <text class="unplayed-number" x="50%" y="90%"
           >{playerStones.filter((x) => x === null).length}</text

@@ -21,7 +21,7 @@ class DatabaseHelper
         return PersonalAccessToken::where("tokenable_id", $user->id)->first()->token;
     }
 
-    public static function GameEnded(Game $game, User $winner, User $loser, string $message)
+    public static function GameEnded(Game $game, User $winner, User $loser, GameEndReason $endReason)
     {
         $loser->games()->updateExistingPivot($game->id, ["won" => false]);
         Stat::addLos($loser);
@@ -34,13 +34,13 @@ class DatabaseHelper
 
         $game->is_active = false;
         $game->end_time = Carbon::now();
-        $game->end_reason = $message;
+        $game->end_reason = $endReason->value;
         $game->save();
 
         UserController::eloUpdate($winner, $loser, $game);
 
-        event(new GameOverEvent($winner, true, "Your opponent " . $message));
-        event(new GameOverEvent($loser, false, "You " . $message));
+        event(new GameOverEvent($winner, true, "Your opponent has " . $endReason->value));
+        event(new GameOverEvent($loser, false, "You have " . $endReason->value));
     }
 
     public static function GetUserToGame(User $user, Game $game)
